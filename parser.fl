@@ -22,9 +22,8 @@ NOME [(a-zA-Z)|"_"]+
 /* DATA "("({VAR}(","{VAR})*")" */
 NUMERO [0-9]
 EOL \n
+
 %%
-
-
 
 {CREA} {return (C);}
 
