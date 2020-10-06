@@ -19,10 +19,7 @@
 %token VAR
 %error-verbose
 
-
-
 %%
-
 
 PROGRAM: PROGRAM LINGUAGGIO
 |LINGUAGGIO 
@@ -44,13 +41,16 @@ DDL:C NOME DB EOL {	creaDB($2); }
 ;
 
 DDL2: A TAB NOME EOL{printf("aggiungi cose \n");}
-	| A TAB attr EOL { printf("Aggiunto attributo %s a tabella %s.\n", $3, $4); }
+	| A dest attr EOL { printf("Aggiunto attributo a tabella.\n"); }
 	| A error EOL{yyerrok;printf("Il token [%s] e errato o non esistente\n",yylval); yyclearin; printf("Per la sintassi completa usare help A:\n");}
 ;
 
 /* Attributo della tabella */
 attr: NOME TYPE { printf("Trovato attributo: %s %s\n", $1, $2); }
-	| NOME { printf("Trovato attributo stringa: %s\n", $1); }
+;
+
+/* Destinazione di un comando */
+dest : DB NOME TAB NOME {}
 ;
 
 %%
