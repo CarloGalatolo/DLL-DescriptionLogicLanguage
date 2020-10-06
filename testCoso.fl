@@ -1,0 +1,31 @@
+%{
+	#include <stdio.h> 
+	#include <string.h> 
+	#include "BisonP2.tab.h"
+%}
+
+%option noyywrap
+
+CREA "C:"
+RIMUOVI "R:"
+DATABASE "DB:"
+TABELLA "TAB:"
+NOME [(a-zA-Z)|"_"]+
+EOL \n
+%%
+
+
+{CREA} {return ("C");}
+
+{RIMUOVI} {return ("R");}
+tes
+{DATABASE} {return (DB);}
+
+{TABELLA} {return (TAB);}
+
+{EOL} {printf ("EOL");}
+
+{NOME} { yylval.str = strdup(yytext); 
+		return (NOME);}
+
+%%

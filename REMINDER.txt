@@ -1,0 +1,4 @@
+PER COMPILARE:
+ 1) Bison con bison -d BisonP2.y
+ 2) Flex con flex parser.ly
+ 3) C con gcc lex.yy.c BisonP2.tab.c DDLfunctionsDefine.c -o Nome.exe
