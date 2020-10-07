@@ -6,3 +6,5 @@ BisonP2.tab.h
 lex.yy.c
 
 minisql.out
+
+miniDB.out

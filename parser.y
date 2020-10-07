@@ -40,17 +40,21 @@ DDL:C NOME DB EOL {	creaDB($2); }
 |R error EOL{yyerrok; yyclearin;printf("Per la sintassi completa usare help R: \n");}
 ;
 
-DDL2: A TAB NOME EOL{printf("aggiungi cose \n");}
-	| A dest attr EOL { printf("Aggiunto attributo a tabella.\n"); }
-	| A error EOL{yyerrok;printf("Il token [%s] e errato o non esistente\n",yylval); yyclearin; printf("Per la sintassi completa usare help A:\n");}
+DDL2: A dest attr EOL { printf("Aggiunto attributo a tabella.\n"); }
+	| A error EOL	  { yyerrok;
+						printf("Il token [%s] e errato o non esistente\n",yylval);
+						yyclearin;
+						printf("Per la sintassi completa usare help A:\n"); }
 ;
 
 /* Attributo della tabella */
-attr: NOME TYPE { printf("Trovato attributo: %s %s\n", $1, $2); }
+attr: NOME TYPE		 { printf("Trovato attributo: %s %s\n", $1, $2); }
+	| attr NOME TYPE { printf("Trovata catena di attributi. Ultimo: %s %s\n", $2, $3); }
 ;
 
 /* Destinazione di un comando */
 dest : DB NOME TAB NOME {}
+	 | TAB NOME {}
 ;
 
 %%
