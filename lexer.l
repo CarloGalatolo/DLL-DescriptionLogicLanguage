@@ -4,7 +4,6 @@
 
 %option noyywrap
 
-TYPE("[STRINGA]"|"[NUMERO]")
 EXIT "EXIT:"
 DATABASE "DB:"
 TABELLA "TAB:"
@@ -15,12 +14,18 @@ DELETE "D:"
 SELEZIONA "S:"
 DA "DA:"
 DOVE "W:"
-DIMENSIONE "#"[(1-9)(0-9)*]
-CARICA "LOAD:"
-VAR [{NOME}|{NUMERO}]+
+LOAD "LOAD:"
+
 NOME [(a-zA-Z)|"_"]+
-/* DATA "("({VAR}(","{VAR})*")" */
 NUMERO [-+]?([0-9]*\.[0-9]+|[0-9]+\.)([Ee][-+]?[0-9]+)?
+DIMENSIONE "#"[(1-9)(0-9)*]
+TYPE("[STRINGA]"|"[NUMERO]")
+VAR [{NOME}|{NUMERO}]+
+/* DATA "("({VAR}(","{VAR})*")" */
+
+KEY "KEY"
+COMMA ","
+
 EOL \n
 
 %%
@@ -39,10 +44,10 @@ EOL \n
 
 {DOVE} {return (W);}
 
+{LOAD} { return (L); }
+
 {DIMENSIONE} {yylval.str = strdup(yytext);
 			  return (DIM);}
-
-{CARICA} {return (L);}
 
 {EOL} {return (EOL);}
 
@@ -52,6 +57,9 @@ EOL \n
 
 {NUMERO} {yylval.str = strdup(yytext);
 		  return (NUM);}
+
+{KEY}	{ return (KEY); }
+{COMMA}	{ return (COMMA); }
 
 {EXIT} { return (EXIT);}
 

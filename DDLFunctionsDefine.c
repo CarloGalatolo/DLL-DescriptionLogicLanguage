@@ -10,8 +10,19 @@
 #include <unistd.h>
 #include <limits.h>
 
-char* loadedDB;
+
+typedef struct attr {
+	char* name;
+	char* type;
+	int key;
+} Attr;
+
+char* loadedDB, loadedTAB;
 int isLoaded = 0;
+
+void setLoadedDB (char* str) {
+	strcpy(loadedDB, str);
+}
 
 void creaDB (char* nomeDB) {
 	int check; 
@@ -107,29 +118,9 @@ int rimuoviDB (char* nomeDB) {
 	} 
 }
 
-void appendAttrDB (char* db, char* table, char* attr, char* type) {
-	printf("Database scelto: %s; Table scelta: %s; Attributo inserito: %s; Tipo: %s.\n", db, table, attr, type);	// DEBUG
-	FILE *f;
-
-	// Creazione stringa di PATH
-	char pathBuffer[PATH_MAX + 1];
-	strcpy(pathBuffer, "./");
-	strcat(pathBuffer, db);
-	strcat(pathBuffer, "/");
-	strcat(pathBuffer, table);
-	strcat(pathBuffer, ".txt");
-
-	if ( (f = fopen(pathBuffer, "a")) == NULL ) {
-		printf("ERRORE: tabella non trovata.");
-	} else {
-		fprintf(f, "%s%s||", attr, type);
-		fclose(f);
-	}
-}
-
-void appendAttrTAB (char* table, char* attr, char* type) {
+void appendAttr (char* table, char* chain) {
 	if (isLoaded == 1) {	// DB exists.
-		printf("Database caricato: %s; Table scelta: %s; Attributo inserito: %s; Tipo: %s.\n", loadedDB, table, attr, type);	// DEBUG
+		printf("Inserimento attributi. Database caricato: %s; Table scelta: %s.\n", loadedDB, table);	// DEBUG
 		FILE *f;
 
 		// Creazione stringa di PATH
@@ -143,7 +134,30 @@ void appendAttrTAB (char* table, char* attr, char* type) {
 		if ( (f = fopen(pathBuffer, "a")) == NULL ) {
 			printf("ERRORE: tabella non trovata.");
 		} else {
-			fprintf(f, "%s%s||", attr, type);
+			printf("Sono qui");
+			char* token;
+			Attr a;
+			strcpy(a.name, "");
+			strcpy(a.type, "");
+			a.key = 0;
+
+			while (token = strtok(chain, " ")) {
+				if (strcmp(token, ",") == 0) {
+					fprintf(f, "%s%s", a.name, a.type);
+					if (a.key) fprintf(f, "*");
+					fprintf(f, "||");
+					strcpy(a.name, "");
+					strcpy(a.type, "");
+					a.key = 0;
+				} else if (strcmp(token, "KEY") == 0) {
+					a.key = 1;
+				} else if (strcmp(token, "[STRINGA]") == 0 || strcmp(token, "[NUMERO]") == 0) {
+					strcpy(a.type, token);
+				} else {	// Nome dell'attributo
+					strcpy(a.name, token);
+				}
+			}
+			
 			fclose(f);
 		}
 	} else {

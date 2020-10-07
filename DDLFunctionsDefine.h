@@ -3,10 +3,11 @@
 char* loadedDB;
 int isLoaded;
 
+void setLoadedDB (char*);
+
 void creaDB(char* nomeDB);
 void creaTable(char* nomeTable);
 
 int rimuoviDB(char* nomeDB);
 
-void appendAttrDB (char*, char*, char*, char*);
-void appendAttrTAB (char*, char*, char*);
+void appendAttr (char*, char*);
