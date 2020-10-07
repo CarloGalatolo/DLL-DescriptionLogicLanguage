@@ -10,7 +10,6 @@
 #include <unistd.h>
 #include <limits.h>
 
-
 char* loadedDB;
 int isLoaded = 0;
 
@@ -21,7 +20,11 @@ void creaDB (char* nomeDB) {
 		closedir(dir);
 		printf("ATTENZIONE: Database Esistente con nome [%s], usare LOAD: per caricare il Database\n", nomeDB);				
 	} else if (ENOENT == errno) {
-		check = mkdir(nomeDB); 
+		#if defined(_WIN32)
+			check = _mkdir(nomeBD);
+		#else 
+			check = mkdir(nomeDB, 0777);
+		#endif
 	  
 		if (!check) {	// Check if directory is created or not.		
 			printf("Database Creato e caricato!\n"); 
@@ -59,62 +62,50 @@ void creaTable (char* nomeTable) {
 	}		
 }
 
-
-int rimuoviDB(char* nomeDB){
+int rimuoviDB (char* nomeDB) {
 	int check; 
-
 	DIR* dir = opendir(nomeDB);
 
 	if (dir) {	// Directory exists.
-		closedir(dir);
-		if( nomeDB==loadedDB)
-			isLoaded=0;								 
-					   size_t path_len = strlen(nomeDB);
-					   int r = -1;
-					
-					   if (dir) {
-					      struct dirent *p;				 	
-					      r = 0;
-					      while (!r && (p=readdir(dir))) {
-					          int r2 = -1;
-					          char *buf;
-					          size_t len;					
-					          /* Skip the names "." and ".." as we don't want to recurse on them. */
-					          if (!strcmp(p->d_name, ".") || !strcmp(p->d_name, "..")){			
-								 continue;
-							}					        
-					          len = path_len + strlen(p->d_name) + 2; 
-					          buf = malloc(len);
-					
-					          if (buf) {
-					             struct stat statbuf;
-					
-					             snprintf(buf, len, "%s/%s", nomeDB, p->d_name);
-					             if (!stat(buf, &statbuf)) {
-					                if (S_ISDIR(statbuf.st_mode))
-					                  r2 = rimuoviDB(buf);
-					                else
-					              
-					                 r2 = unlink(buf);
-					             }
-					             free(buf);
-					          }
-					          r = r2;
-					      }
-					      closedir(dir);
-					   }
-					
-					   if (!r)		
-					     r = rmdir(nomeDB);							 						 	
-						return r;						  									 						
-	}
+		if (nomeDB == loadedDB)	isLoaded = 0;								 
+		size_t path_len = strlen(nomeDB);
+		int r = -1;
 	
-	else if (ENOENT == errno){
-		check = mkdir(nomeDB); 
-          /*check if directory is created or not */
-			printf("ERRORE: Database non esistente\n");   	 	
-		} 
-	}
+		if (dir) {
+			struct dirent *p;				 	
+			r = 0;
+			while (!r && (p=readdir(dir))) {
+				int r2 = -1;
+				char *buf;
+				size_t len;					
+				/* Skip the names "." and ".." as we don't want to recurse on them. */
+				if (!strcmp(p->d_name, ".") || !strcmp(p->d_name, "..")){			
+					continue;
+				}					        
+				len = path_len + strlen(p->d_name) + 2; 
+				buf = malloc(len);
+	
+				if (buf) {
+					struct stat statbuf;
+	
+					snprintf(buf, len, "%s/%s", nomeDB, p->d_name);
+					if (!stat(buf, &statbuf)) {
+						if (S_ISDIR(statbuf.st_mode)) r2 = rimuoviDB(buf);
+						else r2 = unlink(buf);
+					}
+					free(buf);
+				}
+				r = r2;
+			}
+			closedir(dir);
+		}
+	
+		if (!r)	r = rmdir(nomeDB);							 						 	
+		return r;						  									 						
+	} else if (ENOENT == errno) {	// Check if directory is created or not.
+		printf("ERRORE: Database non esistente\n");   	 	
+	} 
+}
 
 void appendAttrDB (char* db, char* table, char* attr, char* type) {
 	printf("Database scelto: %s; Table scelta: %s; Attributo inserito: %s; Tipo: %s.\n", db, table, attr, type);	// DEBUG

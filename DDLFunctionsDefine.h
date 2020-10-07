@@ -5,6 +5,7 @@ int isLoaded;
 
 void creaDB(char* nomeDB);
 void creaTable(char* nomeTable);
+
 int rimuoviDB(char* nomeDB);
 
 void appendAttrDB (char*, char*, char*, char*);
