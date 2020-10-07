@@ -1,10 +1,10 @@
 %{
-	#include "BisonP2.tab.h"
+	#include "parser.tab.h"
 %}
 
 %option noyywrap
 
-TYPE("[STRINGA]"|"[INTERO]")
+TYPE("[STRINGA]"|"[NUMERO]")
 EXIT "EXIT:"
 DATABASE "DB:"
 TABELLA "TAB:"
@@ -20,7 +20,7 @@ CARICA "LOAD:"
 VAR [{NOME}|{NUMERO}]+
 NOME [(a-zA-Z)|"_"]+
 /* DATA "("({VAR}(","{VAR})*")" */
-NUMERO [0-9]
+NUMERO (+|-)?([0-9]*\.[0-9]+|[0-9]+\.)([Ee](+|-)?[0-9]+)?
 EOL \n
 
 %%

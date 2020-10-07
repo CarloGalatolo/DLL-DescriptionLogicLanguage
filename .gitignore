@@ -8,3 +8,7 @@ lex.yy.c
 minisql.out
 
 miniDB.out
+
+parser.tab.c
+
+parser.tab.h

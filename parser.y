@@ -53,14 +53,13 @@ attr: NOME TYPE		 { printf("Trovato attributo: %s %s\n", $1, $2); }
 ;
 
 /* Destinazione di un comando */
-dest : DB NOME TAB NOME {}
-	 | TAB NOME {}
+dest: DB NOME TAB NOME {}
+	| TAB NOME {}
 ;
 
 %%
 
-main(int argc, char **argv)	{
-
+main (int argc, char **argv)	{
 	yyparse();	
 }
 
