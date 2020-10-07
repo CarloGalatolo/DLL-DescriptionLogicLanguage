@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <limits.h>
 
@@ -58,26 +59,62 @@ void creaTable (char* nomeTable) {
 	}		
 }
 
-void rimuoviDB (char* nomeDB) {
+
+int rimuoviDB(char* nomeDB){
 	int check; 
+
 	DIR* dir = opendir(nomeDB);
 
 	if (dir) {	// Directory exists.
 		closedir(dir);
-		if (nomeDB == loadedDB) isLoaded=0;							 			
-		printf("ATTENZIONE: Database Esistente con nome [%s], usare LOAD: per caricare il Database\n", nomeDB);				
-	} else if (ENOENT == errno) {	// Check if directory is created or not.
+		if( nomeDB==loadedDB)
+			isLoaded=0;								 
+					   size_t path_len = strlen(nomeDB);
+					   int r = -1;
+					
+					   if (dir) {
+					      struct dirent *p;				 	
+					      r = 0;
+					      while (!r && (p=readdir(dir))) {
+					          int r2 = -1;
+					          char *buf;
+					          size_t len;					
+					          /* Skip the names "." and ".." as we don't want to recurse on them. */
+					          if (!strcmp(p->d_name, ".") || !strcmp(p->d_name, "..")){			
+								 continue;
+							}					        
+					          len = path_len + strlen(p->d_name) + 2; 
+					          buf = malloc(len);
+					
+					          if (buf) {
+					             struct stat statbuf;
+					
+					             snprintf(buf, len, "%s/%s", nomeDB, p->d_name);
+					             if (!stat(buf, &statbuf)) {
+					                if (S_ISDIR(statbuf.st_mode))
+					                  r2 = rimuoviDB(buf);
+					                else
+					              
+					                 r2 = unlink(buf);
+					             }
+					             free(buf);
+					          }
+					          r = r2;
+					      }
+					      closedir(dir);
+					   }
+					
+					   if (!r)		
+					     r = rmdir(nomeDB);							 						 	
+						return r;						  									 						
+	}
+	
+	else if (ENOENT == errno){
 		check = mkdir(nomeDB); 
-		
-		if (!check) {			
-			printf("Database Creato e caricato!\n"); 
-			loadedDB = nomeDB;
-			isLoaded = 1;
-		} else { 
-			printf("ERRORE: Non e' stato possibile creare il Database\n");   	 	
+          /*check if directory is created or not */
+			printf("ERRORE: Database non esistente\n");   	 	
 		} 
 	}
-}
 
 void appendAttrDB (char* db, char* table, char* attr, char* type) {
 	printf("Database scelto: %s; Table scelta: %s; Attributo inserito: %s; Tipo: %s.\n", db, table, attr, type);	// DEBUG
@@ -122,7 +159,5 @@ void appendAttrTAB (char* table, char* attr, char* type) {
 		printf("ATTENZIONE: Database non caricato; caricare il DB con LOAD: prima di creare Tabelle\n");
 	}
 }
-
-
 
 
