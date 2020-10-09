@@ -46,8 +46,8 @@ LINGUAGGIO: C DB NOME EOL   { creaDB($3); }
 /* Attributo della tabella */
 attr: NOME TYPE		  			{ myToUpper($2); sprintf($$, "%s|%s", $1, $2); }
 	| NOME TYPE KEY	  			{ myToUpper($2); sprintf($$, "%s|%s|KEY", $1, $2); }
-	| attr COMMA NOME TYPE		{ myToUpper($4); sprintf($$, "%s|,|%s|%s", $3, $4); }
-	| attr COMMA NOME TYPE KEY	{ myToUpper($4); sprintf($$, "%s|,|%s|%s|KEY", $3, $4); }
+	| attr COMMA NOME TYPE		{ myToUpper($4); sprintf($$, "%s|,|%s|%s", $1, $3, $4); }
+	| attr COMMA NOME TYPE KEY	{ myToUpper($4); sprintf($$, "%s|,|%s|%s|KEY", $1, $3, $4); }
 ;
 
 /* Destinazione di un comando */

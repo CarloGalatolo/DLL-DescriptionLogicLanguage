@@ -179,10 +179,9 @@ void appendAttr (char* table, char* chain) {
 			strcpy(type, "");
 			int key = 0;
 
-			while ((token = strtok(chain, "|")) != NULL) {
-				printf("%s", token);
+			token = strtok(chain, "|");
+			while (token) {
 				if (strcmp(token, ",") == 0) {
-					printf("a.name: %s, a.type = %s\n", name, type);
 					fprintf(f, "%s%s", name, type);
 					if (key) fprintf(f, "*");
 					fprintf(f, "|");
@@ -193,14 +192,11 @@ void appendAttr (char* table, char* chain) {
 					key = 1;
 				} else if (strcmp(token, "[STRINGA]") == 0 || strcmp(token, "[NUMERO]") == 0) {
 					strcpy(type, token);
-					printf("a.type = %s\n", type);
 				} else {	// Nome dell'attributo
 					strcpy(name, token);
-					printf("a.name: %s\n", name);
 				}
 				
 				token = strtok(0, "|");
-				printf("%s ", token);
 			}
 
 			fprintf(f, "%s%s", name, type);
