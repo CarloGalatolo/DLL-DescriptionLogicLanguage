@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <math.h>
 #include <dirent.h>
 #include <errno.h>
@@ -19,6 +20,14 @@ typedef struct attr {
 
 char* loadedDB, loadedTAB;
 int isLoaded = 0;
+
+void myToUpper (char* str) {
+	int i;
+
+	for (i = 0; i < strlen(str); i++) {
+		str[i] = toupper(str[i]);
+	}
+}
 
 void setLoadedDB (char* str) {
 	DIR* dir = opendir(str);
@@ -55,7 +64,7 @@ void creaDB (char* nomeDB) {
 	}
 }
 
-void creaTable (char* nomeTable) {		
+void creaTable (char* nomeTable) {
 	if (isLoaded == 1) {	// DB exists.
 		printf("Database Esistente con nome [%s], Creazione Table [%s] \n", loadedDB, nomeTable);
 		FILE *f;
@@ -149,11 +158,11 @@ void appendAttr (char* table, char* chain) {
 			strcpy(a.type, "");
 			a.key = 0;
 
-			while (token = strtok(chain, " ")) {
+			while (token = strtok(chain, "|")) {
 				if (strcmp(token, ",") == 0) {
 					fprintf(f, "%s%s", a.name, a.type);
 					if (a.key) fprintf(f, "*");
-					fprintf(f, "||");
+					fprintf(f, "|");
 					strcpy(a.name, "");
 					strcpy(a.type, "");
 					a.key = 0;

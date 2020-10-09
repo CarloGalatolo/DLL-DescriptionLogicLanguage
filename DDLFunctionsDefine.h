@@ -3,11 +3,13 @@
 char* loadedDB;
 int isLoaded;
 
+void myToUpper (char*);
+
 void setLoadedDB (char*);
 
-void creaDB(char* nomeDB);
-void creaTable(char* nomeTable);
+void creaDB(char*);
+void creaTable(char*);
 
-int rimuoviDB(char* nomeDB);
+int rimuoviDB(char*);
 
 void appendAttr (char*, char*);
