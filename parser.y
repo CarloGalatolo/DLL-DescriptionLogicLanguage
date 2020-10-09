@@ -36,7 +36,7 @@ LINGUAGGIO: C DB NOME EOL   { creaDB($3); }
 		  | R DB NOME EOL	{ rimuoviDB($3); }
 		  | R TAB NOME EOL  { rimuoviTable($3); }
 		  | R error EOL		{ yyerrok; yyclearin; printf("Per la sintassi completa usare HELP R: \n");}
-		  | A dest attr EOL { /*DEBUG*/ printf("%s%s",$3,$2); appendAttr($2, $3); }
+		  | A dest attr EOL { appendAttr($2, $3); }
 		  | A error EOL	    { yyerrok;
 							  printf("Il token [%s] e errato o non esistente\n",yylval);
 							  yyclearin;
@@ -44,9 +44,10 @@ LINGUAGGIO: C DB NOME EOL   { creaDB($3); }
 ;
 
 /* Attributo della tabella */
-attr: NOME TYPE		  { myToUpper($2); sprintf($$, "%s|%s", $1, $2); }
-	| NOME TYPE KEY	  { myToUpper($2); sprintf($$, "%s|%s|KEY", $1, $2); }
-	| attr COMMA attr { sprintf($$, "$s|,|$s", $1, $3); }
+attr: NOME TYPE		  			{ myToUpper($2); sprintf($$, "%s|%s", $1, $2); }
+	| NOME TYPE KEY	  			{ myToUpper($2); sprintf($$, "%s|%s|KEY", $1, $2); }
+	| attr COMMA NOME TYPE		{ myToUpper($4); sprintf($$, "%s|,|%s|%s", $3, $4); }
+	| attr COMMA NOME TYPE KEY	{ myToUpper($4); sprintf($$, "%s|,|%s|%s|KEY", $3, $4); }
 ;
 
 /* Destinazione di un comando */

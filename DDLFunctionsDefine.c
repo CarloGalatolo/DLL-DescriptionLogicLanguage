@@ -12,12 +12,6 @@
 #include <limits.h>
 
 
-typedef struct attr {
-	char name[100];
-	char type[100];
-	int key;
-} Attr;
-
 char* loadedDB, loadedTAB;
 int isLoaded = 0;
 
@@ -165,7 +159,6 @@ void rimuoviTable (char* nomeTable){
 
 void appendAttr (char* table, char* chain) {
 	if (isLoaded == 1) {	// DB exists.
-		printf("Inserimento attributi. Database caricato: %s; Table scelta: %s.\n", loadedDB, table);	// DEBUG
 		FILE *f;
 
 		// Creazione stringa di PATH
@@ -180,30 +173,41 @@ void appendAttr (char* table, char* chain) {
 			printf("ERRORE: tabella non trovata.");
 		} else {
 			char* token = (char*) malloc(100);
-			Attr a;
-			strcpy(a.name, "");
-			strcpy(a.type, "");
-			a.key = 0;
+			char* name = (char*) malloc(100);
+			char* type = (char*) malloc(100);
+			strcpy(name, "");
+			strcpy(type, "");
+			int key = 0;
 
-			while (token = strtok(chain, "|")) {
+			while ((token = strtok(chain, "|")) != NULL) {
+				printf("%s", token);
 				if (strcmp(token, ",") == 0) {
-					fprintf(f, "%s%s", a.name, a.type);
-					if (a.key) fprintf(f, "*");
+					printf("a.name: %s, a.type = %s\n", name, type);
+					fprintf(f, "%s%s", name, type);
+					if (key) fprintf(f, "*");
 					fprintf(f, "|");
-					strcpy(a.name, "");
-					strcpy(a.type, "");
-					a.key = 0;
+					strcpy(name, "");
+					strcpy(type, "");
+					key = 0;
 				} else if (strcmp(token, "KEY") == 0) {
-					a.key = 1;
+					key = 1;
 				} else if (strcmp(token, "[STRINGA]") == 0 || strcmp(token, "[NUMERO]") == 0) {
-					strcpy(a.type, token);
+					strcpy(type, token);
+					printf("a.type = %s\n", type);
 				} else {	// Nome dell'attributo
-					strcpy(a.name, token);
+					strcpy(name, token);
+					printf("a.name: %s\n", name);
 				}
 			}
+
+			fprintf(f, "%s%s", name, type);
+			if (key) fprintf(f, "*");
+			fprintf(f, "|");
 			
 			fclose(f);
 			free(token);
+			free(name);
+			free(type);
 		}
 	} else {
 		printf("ATTENZIONE: Database non caricato; caricare il DB con LOAD: prima di creare Tabelle\n");

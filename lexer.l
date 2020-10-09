@@ -19,7 +19,7 @@ LOAD "LOAD:"
 NOME [(a-zA-Z)|"_"]+
 NUMERO [-+]?([0-9]*\.[0-9]+|[0-9]+\.)([Ee][-+]?[0-9]+)?
 DIMENSIONE "#"[(1-9)(0-9)*]
-TYPE("[STRINGA]"|"[NUMERO]")
+TYPE ("[STRINGA]"|"[NUMERO]")
 VAR [{NOME}|{NUMERO}]+
 /* DATA "("({VAR}(","{VAR})*")" */
 
