@@ -13,8 +13,8 @@
 
 
 typedef struct attr {
-	char* name;
-	char* type;
+	char name[100];
+	char type[100];
 	int key;
 } Attr;
 
@@ -51,7 +51,7 @@ void creaDB (char* nomeDB) {
 		#if defined(_WIN32)
 			check = _mkdir(nomeDB);
 		#else 
-			check = mkdir(nomeDB, 0777);
+			check = mkdir(nomeDB, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 		#endif
 	  
 		if (!check) {	// Check if directory is created or not.		
@@ -80,7 +80,7 @@ void creaTable (char* nomeTable) {
 
 		if ( (f = fopen(pathBuffer, "a")) == NULL ) {
 			printf("Table NON Creata \n");
-			printf("Path cercato: %s \n",pathBuffer);
+			printf("Path cercato: %s \n", pathBuffer);
 		} else {
 			fclose(f);
 			printf("Table Creata \n");
@@ -135,8 +135,7 @@ int rimuoviDB (char* nomeDB) {
 	} 
 }
 
-
-rimuoviTable (char* nomeTable){
+void rimuoviTable (char* nomeTable){
 	if (isLoaded == 1) {	// DB exists.
 		printf("Database Esistente con nome [%s], Rimozione Table [%s] \n", loadedDB, nomeTable);
 		FILE *f;
@@ -164,8 +163,6 @@ rimuoviTable (char* nomeTable){
 
 }
 
-
-
 void appendAttr (char* table, char* chain) {
 	if (isLoaded == 1) {	// DB exists.
 		printf("Inserimento attributi. Database caricato: %s; Table scelta: %s.\n", loadedDB, table);	// DEBUG
@@ -182,8 +179,7 @@ void appendAttr (char* table, char* chain) {
 		if ( (f = fopen(pathBuffer, "a")) == NULL ) {
 			printf("ERRORE: tabella non trovata.");
 		} else {
-			printf("Sono qui");
-			char* token;
+			char* token = (char*) malloc(100);
 			Attr a;
 			strcpy(a.name, "");
 			strcpy(a.type, "");
@@ -207,6 +203,7 @@ void appendAttr (char* table, char* chain) {
 			}
 			
 			fclose(f);
+			free(token);
 		}
 	} else {
 		printf("ATTENZIONE: Database non caricato; caricare il DB con LOAD: prima di creare Tabelle\n");

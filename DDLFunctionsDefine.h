@@ -11,5 +11,6 @@ void creaDB(char*);
 void creaTable(char*);
 
 int rimuoviDB(char*);
+void rimuoviTable (char*);
 
 void appendAttr (char*, char*);
