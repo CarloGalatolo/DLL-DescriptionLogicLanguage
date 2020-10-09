@@ -21,7 +21,15 @@ char* loadedDB, loadedTAB;
 int isLoaded = 0;
 
 void setLoadedDB (char* str) {
-	strcpy(loadedDB, str);
+	DIR* dir = opendir(str);
+	if (dir) {	// Directory exists.
+		loadedDB = str;
+		isLoaded = 1;					
+	}
+	else	{
+		printf("ERRORE: Database non esistente!\n");  
+	}
+
 }
 
 void creaDB (char* nomeDB) {
@@ -32,7 +40,7 @@ void creaDB (char* nomeDB) {
 		printf("ATTENZIONE: Database Esistente con nome [%s], usare LOAD: per caricare il Database\n", nomeDB);				
 	} else if (ENOENT == errno) {
 		#if defined(_WIN32)
-			check = _mkdir(nomeBD);
+			check = _mkdir(nomeDB);
 		#else 
 			check = mkdir(nomeDB, 0777);
 		#endif
@@ -42,7 +50,7 @@ void creaDB (char* nomeDB) {
 			loadedDB = nomeDB;
 			isLoaded = 1;
 		} else { 
-			printf("ERRORE: Non � stato possibile creare il Database\n");   	 	
+			printf("ERRORE: Non e stato possibile creare il Database\n");   	 	
 		} 
 	}
 }
