@@ -24,15 +24,12 @@ void myToUpper (char* str) {
 }
 
 void setLoadedDB (char* str) {
-	DIR* dir = opendir(str);
-	if (dir) {	// Directory exists.
+	if (opendir(str)) {	// Directory exists.
 		loadedDB = str;
 		isLoaded = 1;					
-	}
-	else	{
+	} else {
 		printf("ERRORE: Database non esistente!\n");  
 	}
-
 }
 
 void creaDB (char* nomeDB) {
@@ -50,8 +47,7 @@ void creaDB (char* nomeDB) {
 	  
 		if (!check) {	// Check if directory is created or not.		
 			printf("Database Creato e caricato!\n"); 
-			loadedDB = nomeDB;
-			isLoaded = 1;
+			setLoadedDB(nomeDB);
 		} else { 
 			printf("ERRORE: Non e stato possibile creare il Database\n");   	 	
 		} 
