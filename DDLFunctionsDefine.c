@@ -135,6 +135,37 @@ int rimuoviDB (char* nomeDB) {
 	} 
 }
 
+
+rimuoviTable (char* nomeTable){
+	if (isLoaded == 1) {	// DB exists.
+		printf("Database Esistente con nome [%s], Rimozione Table [%s] \n", loadedDB, nomeTable);
+		FILE *f;
+		char pathBuffer[PATH_MAX + 1];
+
+		strcpy(pathBuffer, "./");
+		strcat(pathBuffer, loadedDB);
+		strcat(pathBuffer, "/");
+		strcat(pathBuffer, nomeTable);
+		strcat(pathBuffer, ".txt");
+
+		//f = fopen(loadedDB, "a");
+
+		if ( (f = fopen(pathBuffer, "r")) == NULL ) {
+			printf("Table Non esistente \n");
+		
+		} else {
+			fclose(f);
+			remove(pathBuffer);
+			printf("Table Rimossa \n");
+		}				
+	} else {
+		printf("ATTENZIONE: Database non caricato; caricare il DB con LOAD: prima di creare Tabelle\n");
+	}
+
+}
+
+
+
 void appendAttr (char* table, char* chain) {
 	if (isLoaded == 1) {	// DB exists.
 		printf("Inserimento attributi. Database caricato: %s; Table scelta: %s.\n", loadedDB, table);	// DEBUG
