@@ -1420,7 +1420,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 37 "parser.y"
-    { ;}
+    { rimuoviTable((yyvsp[(2) - (4)].str));;}
     break;
 
   case 12:

@@ -34,7 +34,7 @@ LINGUAGGIO: C NOME DB EOL {	creaDB($2); }
 		  | C NOME TAB EOL { creaTable($2); }
 		  | C error EOL {yyerrok; yyclearin; printf("Per la sintassi completa usare help C: \n");}
 		  | R NOME DB EOL { rimuoviDB($2); }
-		  | R NOME TAB EOL  { }
+		  | R NOME TAB EOL  { rimuoviTable($2);}
 		  | R error EOL		{yyerrok; yyclearin;printf("Per la sintassi completa usare help R: \n");}
 		  | A dest attr EOL { printf("%s%s",$3,$2);
 		  							/*appendAttr($2, $3); }*/}
