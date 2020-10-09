@@ -198,6 +198,9 @@ void appendAttr (char* table, char* chain) {
 					strcpy(name, token);
 					printf("a.name: %s\n", name);
 				}
+				
+				token = strtok(0, "|");
+				printf("%s ", token);
 			}
 
 			fprintf(f, "%s%s", name, type);
