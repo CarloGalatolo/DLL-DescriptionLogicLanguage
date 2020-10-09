@@ -46,7 +46,7 @@ LINGUAGGIO: C NOME DB EOL {	creaDB($2); }
 
 /* Attributi della tabella */
 attr: NOME TYPE					{ sprintf($$,"%s|%s,",$1,$2);}
-	| NOME TYPE KEY				{sprintf($$,"%s|%s|KEY,",$1,$2); }
+	| NOME TYPE KEY				{ sprintf($$,"%s|%s|KEY,",$1,$2); }
 	| NOME TYPE COMMA			{ sprintf($$,"%s|%s,",$1,$2); }
 	| NOME TYPE KEY COMMA		{ sprintf($$,"%s|%s|Key,",$1,$2); }
 	| attr NOME TYPE			{ sprintf($$,"%s%s|%s,",$1,$2,$3); }

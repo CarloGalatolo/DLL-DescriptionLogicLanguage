@@ -1459,7 +1459,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 49 "parser.y"
-    {sprintf((yyval.str),"%s|%s|KEY,",(yyvsp[(1) - (3)].str),(yyvsp[(2) - (3)].str)); ;}
+    { sprintf((yyval.str),"%s|%s|KEY,",(yyvsp[(1) - (3)].str),(yyvsp[(2) - (3)].str)); ;}
     break;
 
   case 17:

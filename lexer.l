@@ -2,7 +2,7 @@
 	#include "parser.tab.h"
 %}
 
-%option noyywrap
+%option noyywrap case-insensitive
 
 EXIT "EXIT:"
 DATABASE "DB:"
