@@ -4,37 +4,43 @@
 
 %option noyywrap case-insensitive
 
+CREATE (C|CREATE)":"
+REMOVE (R|REMOVE)":"
+APPEND (A|APPEND)":"
+LOAD   (L|LOAD)":"
+
+KEY (K|KEY)
+
 EXIT "EXIT:"
 DATABASE "DB:"
 TABELLA "TAB:"
-CREA "C:"
-RIMUOVI "R:"
-AGGIUNGI "A:"
 DELETE "D:"
 SELEZIONA "S:"
 DA "DA:"
 DOVE "W:"
-LOAD "LOAD:"
 
-NOME [(a-zA-Z)|"_"]+
-NUMERO [-+]?([0-9]*\.[0-9]+|[0-9]+\.)([Ee][-+]?[0-9]+)?
+NAME [(a-zA-Z)|"_"]+
+NUMERO [-+]?([0-9]*\.[0-9]+|[0-9]+\.)(E[-+]?[0-9]+)?
 DIMENSIONE "#"[(1-9)(0-9)*]
 TYPE ("[STRINGA]"|"[NUMERO]")
-VAR [{NOME}|{NUMERO}]+
+VAR [{NAME}|{NUMERO}]+
 /* DATA "("({VAR}(","{VAR})*")" */
-
-KEY "KEY"
-COMMA ","
 
 EOL \n
 
 %%
 
-{CREA} {return (C);}
+	/* Single character literal tokens */
+"*" |
+"," |
+"|" 	{ return yytext[0]; }
 
-{RIMUOVI} {return (R);}
+{CREATE} { return (C); }
+{REMOVE} { return (R); }
+{APPEND} { return (A); }
+{LOAD}	 { return (L); }
 
-{AGGIUNGI} {return (A);}
+{KEY}	 { return (K); }
 
 {DELETE} {return (D);}
 
@@ -44,7 +50,7 @@ EOL \n
 
 {DOVE} {return (W);}
 
-{LOAD} { return (L); }
+
 
 {DIMENSIONE} {yylval.str = strdup(yytext);
 			  return (DIM);}
@@ -58,16 +64,13 @@ EOL \n
 {NUMERO} {yylval.str = strdup(yytext);
 		  return (NUM);}
 
-{KEY}	{ return (KEY); }
-{COMMA}	{ return (COMMA); }
-
 {EXIT} { return (EXIT);}
 
 {TYPE} { 	yylval.str = strdup(yytext);
 			return (TYPE);}
 
-{NOME} {yylval.str = strdup(yytext); 
-		return (NOME);}
+{NAME} {yylval.str = strdup(yytext); 
+		return (NAME);}
 
 %%
 

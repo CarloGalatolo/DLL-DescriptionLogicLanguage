@@ -80,7 +80,7 @@ void creaTable (char* nomeTable) {
 	}		
 }
 
-int rimuoviDB (char* nomeDB) {
+int  rimuoviDB (char* nomeDB) {
 	int check; 
 	DIR* dir = opendir(nomeDB);
 
