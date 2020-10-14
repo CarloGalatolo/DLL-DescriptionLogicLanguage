@@ -1,42 +1,45 @@
 %{	
 	#include <stdio.h> 
 	#include <string.h> 
-	#include "DDLFunctionsDefine.h"	
+	#include "DDLFunctionsDefine.h"
+	#include "headers/ast.h"
 %}
+
+%error-verbose
 
 %union
 {
-    char *str;
+    double d;
+	char *str;
+	AstNode* ast;
 }
 
-%type <str> db tab dest attr
-
-%token <str> NAME NUM TYPE DIM
+%token <d> NUM
+%token <str> NAME TYPE DIM
 %token C R A D S K DA W L DB TAB EXIT
 %token EOL
 %token VAR
-%error-verbose
+
+%type <ast> db tab dest attr
+%type <ast> program lang create remove append load
 
 %%
 
-PROGRAM: PROGRAM LINGUAGGIO
-|LINGUAGGIO 
-|NUM {printf("Yuppie ka ye");}
-|VAR {printf("Yuppws");}
-|error EOL{yyerrok; yyclearin;printf("Comando non riconosciuto, usare help per vedere la lista di comandi \n");}
+program: program lang { if($1 != NULL) run($1); run($2); }
+	   | program error EOL { drop($1); yyerrok; yyclearin; printf("Comando non riconosciuto, usare help per vedere la lista di comandi \n"); }
 ;
 
-LINGUAGGIO: LINGUAGGIO EOL
-		  | create
-		  | remove
-		  | append
-		  | load
+lang: lang EOL
+	| create
+	| remove
+	| append
+	| load
 ;
 
-db: DB NAME	{ $$ = $2; }
+db: DB NAME	{ $$ = newString('B', $2); /*$$ = $2;*/ }
 ;
 
-tab: TAB NAME { $$ = $2; }
+tab: TAB NAME { $$ = newString('T', $2); /*$$ = $2;*/ }
 ;
 
 key: K
@@ -52,27 +55,20 @@ dest: db tab { setLoadedDB($1); $$ = $2; }
 	| tab	 { $$ = $1; }
 ;
 
-create: C db		 { creaDB($2); /* Loads DB as well. */ }
+create: C db		 { $$ = newRule('C', $2); /*creaDB($2); /* Loads DB as well. */ }
 	  | create db 	 { creaDB($2); }
 	  | C tab		 { creaTable($2); }
 	  | create tab	 { creaTable($2); }
-	  | C error 	 { yyerrok; yyclearin; printf("Per la sintassi completa usare HELP C: \n"); }
-	  | create error { yyerrok; yyclearin; printf("Per la sintassi completa usare HELP C: \n"); }
 ;
 
 remove: R db 		 { rimuoviDB($2); }
 	  | remove db	 { rimuoviDB($2); }
 	  | R tab 		 { rimuoviTable($2); }
 	  | remove tab 	 { rimuoviTable($2); }
-	  | R error 	 { yyerrok; yyclearin; printf("Per la sintassi completa usare HELP R: \n"); }
-	  | remove error { yyerrok; yyclearin; printf("Per la sintassi completa usare HELP R: \n"); }
 ;
 
 append: A dest attr { appendAttr($2, $3); }
-	  | A error 	{ yyerrok;
-					  printf("Il token [%s] e errato o non esistente\n",yylval);
-					  yyclearin;
-					  printf("Per la sintassi completa usare help A:\n"); }
+;
 
 load: L db { setLoadedDB($2); }
 
