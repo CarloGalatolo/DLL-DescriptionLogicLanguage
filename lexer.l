@@ -4,73 +4,46 @@
 
 %option noyywrap case-insensitive
 
-CREATE (C|CREATE)":"
-REMOVE (R|REMOVE)":"
-APPEND (A|APPEND)":"
-LOAD   (L|LOAD)":"
+/* Type definition */
 
-KEY (K|KEY)
-
-EXIT "EXIT:"
-DATABASE "DB:"
-TABELLA "TAB:"
-DELETE "D:"
-SELEZIONA "S:"
-DA "DA:"
-DOVE "W:"
-
-NAME [(a-zA-Z)|"_"]+
-NUMERO [-+]?([0-9]*\.[0-9]+|[0-9]+\.)(E[-+]?[0-9]+)?
-DIMENSIONE "#"[(1-9)(0-9)*]
-TYPE ("[STRINGA]"|"[NUMERO]")
-VAR [{NAME}|{NUMERO}]+
-/* DATA "("({VAR}(","{VAR})*")" */
-
-EOL \n
-
-%%
-
-	/* Single character literal tokens */
-"*" |
-"," |
-"|" 	{ return yytext[0]; }
-
-{CREATE} { return (C); }
-{REMOVE} { return (R); }
-{APPEND} { return (A); }
-{LOAD}	 { return (L); }
-
-{KEY}	 { return (K); }
-
-{DELETE} {return (D);}
-
-{SELEZIONA} {return (S);}
-
-{DA} {return (DA);}
-
-{DOVE} {return (W);}
+STRINGA (S|STRING)
+INTERO (I|INTEGER)
+BOOLEANO (B|BOOLEAN)
 
 
+/* Compound Type definition */
 
-{DIMENSIONE} {yylval.str = strdup(yytext);
-			  return (DIM);}
+CONCETTO (CONCEPT|C)
+RUOLO (ROLE|R)
+INDIVIDUO (INDIVIUAL|CHAP|I)
 
-{EOL} {return (EOL);}
+/* Logic operators definition */
+INTERSEZIONE (=|INTESECTION)
+CONGIUNZIONE (^|AND)
 
-{DATABASE} {return (DB);}
+UNIONE (U|UNION)
+DISGIUNZIONE (V|OR)
 
-{TABELLA} {return (TAB);}
+NEGAZIONE (!|NOT)
+COMPLEMENTO (-|COMPLEMENT)
 
-{NUMERO} {yylval.str = strdup(yytext);
-		  return (NUM);}
+/* Restriction definition */
+ESISTENZIALE (E|EXIST)
+UNIVERSALE (A|HAS|IS)
+/* Restriction definition DA USARE IN BISON */
+COMMA (.)
+/* IMPLICAZIONI */
+IMPLICAZIONE ('->'|IF)
+DOPPIA_IMPLICAZIONE  ('<->'|IFF)
+/* Structure for assertion */
 
-{EXIT} { return (EXIT);}
+/*ISTANCE_ASSERTION meglio gestirle in Bison */
+/*CONCEPT_ASSERTION definisco pero le parentesi per la struttura, con l'aggiunta del terminatore */
+STRUCTURE_FLAG_START ('(')
+STRUCTURE_FLAG_END (')')
+STRUCTURE_TERMINATOR(';')
 
-{TYPE} { 	yylval.str = strdup(yytext);
-			return (TYPE);}
-
-{NAME} {yylval.str = strdup(yytext); 
-		return (NAME);}
-
-%%
-
+/*DEFINIZIONE CONTROLLO */
+WHILE (W|WHILE)
+IF (IF)
+ELSE (ELSE)
