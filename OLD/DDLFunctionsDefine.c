@@ -210,3 +210,83 @@ void appendAttr (char* table, char* chain) {
 }
 
 
+void countColsRows(FILE* db, int* row, int* col){
+	
+	char ch;
+	int numrows=0,numcols=0;
+	
+	while((ch=fgetc(db))!=EOF) {
+      if(ch=='|' && numrows==0)
+         numcols++;
+	  if(ch=='\n')
+         numrows++;
+   }
+	
+};
+
+
+tableLoader(char*** DBTable, int* DBStruct, FILE* tableFile){
+	int bufferLength = 255;
+	char buffer[bufferLength];
+	char* strrFinderTypeStart;
+	char* strrfinderTypeEnd;
+	char* strrfinderIsKey;
+	
+	char characterStart = '[';
+	char characterEnd = ']';
+	char characterKey = '*';
+	int colCounter=0;
+	int rowCounter=0;
+	
+while(fgets(buffer, bufferLength, tableFile)) {
+     	char* token = (char*) malloc(100);		 
+		token = strtok(buffer, "|");
+     	while (token) {    		
+			strrFinderTypeStart=strrchr( token, characterStart);
+			strrFinderTypeEnd=strrchr( token, characterEnd );	
+			strrFinderIsKey=strrchr( token, characterKey);	
+			
+			if (strrFinderTypeStart)
+			strncpy(DBTable[rowCounter][colCounter][],token, 5)
+			if (strrFinderIsKey)			
+			token = strtok(0, "|");
+			}
+}
+
+};
+
+
+void appendTuple(char* table, char* chain){
+	if (isLoaded == 1) {	// DB exists.
+		FILE *f;
+
+		// Creazione stringa di PATH
+		char pathBuffer[PATH_MAX + 1];
+		strcpy(pathBuffer, "./");
+		strcat(pathBuffer, loadedDB);
+		strcat(pathBuffer, "/");
+		strcat(pathBuffer, table);
+		strcat(pathBuffer, ".txt");
+
+		if ( (f = fopen(pathBuffer, "a+")) == NULL ) {
+			printf("ERRORE: tabella non trovata.");
+		} else {
+				
+  					int rows,cols;
+  					countColsRows(&f,&rows,&cols);
+  					rewind(f);
+  					char ***DBMatrix;
+  					int  DBStructure[cols];
+  					DBMatrix=malloc(rows * cols * 100 * sizeof(char)); 
+  					tableLoader(&DBStructure,&DBMatrix, &f); 
+  								 					
+  				
+				  		
+		
+		}
+	
+	
+	
+	
+}
+

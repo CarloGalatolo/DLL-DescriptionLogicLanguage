@@ -21,8 +21,6 @@
 
 PROGRAM: PROGRAM LINGUAGGIO
 |LINGUAGGIO 
-|NUM {printf("Yuppie ka ye");}
-|VAR {printf("Yuppws");}
 |error EOL{yyerrok; yyclearin;printf("Comando non riconosciuto, usare help per vedere la lista di comandi \n");}
 ;
 
