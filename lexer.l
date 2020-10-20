@@ -2,48 +2,50 @@
 	#include "parser.tab.h"
 %}
 
-%option noyywrap case-insensitive
+%option noyywrap
 
-/* Type definition */
+/* Simple Types */
+INT  ("INT")  /* Integer */
+BOOL ("BOOL") /* Boolean */
+STR  ("STR")  /* String  */
 
-STRINGA (S|STRING)
-INTERO (I|INTEGER)
-BOOLEANO (B|BOOLEAN)
+/* Complex Types */
+CONCETTO (CONCEPT)
+RUOLO (ROLE)
+INDIVIDUO (INDIVIUAL)
 
+/* Logic operators */
+CONJ ("&&")	/* Conjunction */
+DISJ ("||") /* Disjunction */
+CMPL ("!")  /* Complement  */
+CARD "#"	/* Cardinality */
 
-/* Compound Type definition */
+/* Restrictions */
+EXISTENTIAL (EXIST)
+UNIVERSAL   (ALL)
 
-CONCETTO (CONCEPT|C)
-RUOLO (ROLE|R)
-INDIVIDUO (INDIVIUAL|CHAP|I)
+/* Punctuation */
+DOT   (".") /* Used in restrictions */
+COLON (":") /* Used in assertions */
+SEMIC (";") /* End of statement */
 
-/* Logic operators definition */
-INTERSEZIONE (=|INTESECTION)
-CONGIUNZIONE (^|AND)
+/* Math operators */
+ADD "+"
+SUB "-"
+MUL "*"
+DIV "/"
+MOD "%"
 
-UNIONE (U|UNION)
-DISGIUNZIONE (V|OR)
+/* Comparison operators */
+GETS "="
+EQLS "=="
+LT "<"
+GT ">"
+LTEQ "<="
+GTEQ ">="
+NOTEQ "!="
 
-NEGAZIONE (!|NOT)
-COMPLEMENTO (-|COMPLEMENT)
-
-/* Restriction definition */
-ESISTENZIALE (E|EXIST)
-UNIVERSALE (A|HAS|IS)
-/* Restriction definition DA USARE IN BISON */
-COMMA (.)
-/* IMPLICAZIONI */
-IMPLICAZIONE ('->'|IF)
-DOPPIA_IMPLICAZIONE  ('<->'|IFF)
-/* Structure for assertion */
-
-/*ISTANCE_ASSERTION meglio gestirle in Bison */
-/*CONCEPT_ASSERTION definisco pero le parentesi per la struttura, con l'aggiunta del terminatore */
-STRUCTURE_FLAG_START ('(')
-STRUCTURE_FLAG_END (')')
-STRUCTURE_TERMINATOR(';')
-
-/*DEFINIZIONE CONTROLLO */
-WHILE (W|WHILE)
+/* DEFINIZIONE CONTROLLO */
+WHILE (WHILE)
 IF (IF)
 ELSE (ELSE)
