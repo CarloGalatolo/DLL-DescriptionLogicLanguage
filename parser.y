@@ -4,9 +4,9 @@
 	#include "TreeParser.h"	
 %}
 
-%union
-{
-    char *str;
+%union {
+ struct ast *a;
+ char *str;
 }
 
 %token <str> NAME
@@ -15,9 +15,29 @@
 %token CON ROL IND 
 %token CONJ DISJ CMPL CARD 
 %token EXS ALL
-%token DOT COLON SEMIC
+%token DOT COLON SEMIC COMMA
 %token SOPEN SCLOSE
 %token WHILE IF ELSE
 
+%type <a> Exp IstanceIndividual
+%type name
 
-%error-verbose
+%error-verbose 
+
+%%
+
+Linguaggio: Linguaggio Exp EOL{eval($2);cleartree($2);}
+|Linguaggio EOL
+;
+
+Exp: exp IstanceIndividual { $$=chainAst("CH",$1,$2);}
+| exp IstanceRole
+| exp IstanceConcept
+;
+
+IstanceIndividual: IND SOPEN name SCLOSE { $$=astIndividual("IND",$3);}
+;
+
+name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
+| NAME { sprintf($$, "%s", $1);}
+;

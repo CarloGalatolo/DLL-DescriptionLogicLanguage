@@ -28,7 +28,7 @@ UNIVERSAL   (ALL)
 DOT   (".") /* Used in restrictions */
 COLON (":") /* Used in assertions */
 SEMIC (";") /* End of statement */
-
+COMMA   (",") /* Separator */
 
 /*ISTANCE_ASSERTION meglio gestirle in Bison */
 /*CONCEPT_ASSERTION definisco pero le parentesi per la struttura, con l'aggiunta del terminatore */
@@ -72,6 +72,7 @@ NAME [(a-zA-Z)|"_"]+
 {DOT} {return (DOT);}
 {COLON} {return (COLON);}
 {SEMIC} {return (SEMIC);}
+{COMMA}  {return (COMMA);}
 
 {STRUCTURE_FLAG_START} {return (SOPEN);}
 {STRUCTURE_FLAG_END} {return (SCLOSE);}
