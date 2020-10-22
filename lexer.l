@@ -29,23 +29,58 @@ DOT   (".") /* Used in restrictions */
 COLON (":") /* Used in assertions */
 SEMIC (";") /* End of statement */
 
-/* Math operators */
-ADD "+"
-SUB "-"
-MUL "*"
-DIV "/"
-MOD "%"
 
-/* Comparison operators */
-GETS "="
-EQLS "=="
-LT "<"
-GT ">"
-LTEQ "<="
-GTEQ ">="
-NOTEQ "!="
+/*ISTANCE_ASSERTION meglio gestirle in Bison */
+/*CONCEPT_ASSERTION definisco pero le parentesi per la struttura, con l'aggiunta del terminatore */
+STRUCTURE_FLAG_START ('(')
+STRUCTURE_FLAG_END (')')
 
-/* DEFINIZIONE CONTROLLO */
-WHILE (WHILE)
+/*DEFINIZIONE CONTROLLO */
+WHILE (W|WHILE)
 IF (IF)
 ELSE (ELSE)
+
+NAME [(a-zA-Z)|"_"]+
+
+
+
+%%
+
+	/* Single character literal tokens */
+"*" |
+"," |
+"|" 	{ return yytext[0]; }
+
+{STR} { return (STR); }
+{INT} { return (INT); }
+{BOOL} { return (BOOL); }
+
+
+{CONCETTO}	 { return (CON); }
+{RUOLO}	 { return (ROL); }
+{INDIVIDUO} {return (IND);}
+
+{CONJ} {return (CONJ);}
+{DISJ} {return (DISJ);}
+{CMPL} {return (CMPL);}
+{CARD} {return (CARD);}
+
+{ESISTENZIALE} {return (EXS)}
+{UNIVERSALE} {return (ALL);}
+
+
+{DOT} {return (DOT);}
+{COLON} {return (COLON);}
+{SEMIC} {return (SEMIC);}
+
+{STRUCTURE_FLAG_START} {return (SOPEN);}
+{STRUCTURE_FLAG_END} {return (SCLOSE);}
+
+{WHILE} {return (WHILE);}
+{IF} {return (IF);}
+{ELSE} {return (ELSE);}
+
+{NAME} {yylval.str = strdup(yytext); 
+		return (NAME);}
+
+%%
