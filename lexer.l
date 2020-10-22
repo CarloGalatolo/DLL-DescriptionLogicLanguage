@@ -17,18 +17,10 @@ INDIVIDUO (INDIVIUAL)
 /* Logic operators */
 CONJ ("&&")	/* Conjunction */
 DISJ ("||") /* Disjunction */
-CMPL ("!")  /* Complement  */
-CARD "#"	/* Cardinality */
 
 /* Restrictions */
-EXISTENTIAL (EXIST)
-UNIVERSAL   (ALL)
-
-/* Punctuation */
-DOT   (".") /* Used in restrictions */
-COLON (":") /* Used in assertions */
-SEMIC (";") /* End of statement */
-COMMA   (",") /* Separator */
+ESISTENZIALE (EXISTS)
+UNIVERSALE   (ALL)
 
 /*ISTANCE_ASSERTION meglio gestirle in Bison */
 /*CONCEPT_ASSERTION definisco pero le parentesi per la struttura, con l'aggiunta del terminatore */
@@ -40,48 +32,58 @@ WHILE (W|WHILE)
 IF (IF)
 ELSE (ELSE)
 
-NAME [(a-zA-Z)|"_"]+
-
-
+NAME ([a-zA-Z]|[_-])+
 
 %%
+	// Ignore empty spaces and comments.
+" "    |
+"\t"   |
+"\n"   |
+"//".* |	// C++-style comment.
+"/*".*"*/" {} // C-style comment.
 
 	/* Single character literal tokens */
+	// DL punctuation
+"." |	// Used in restrictions. E.g.: EXISTS role . Concept
+":" |	// Used in assertions. E.g.: indv : Concept
+"|" |	// Concat more assertions of the same concept or role. E.g.: i1 | i2 : Concept
+"," |	// Separator used in role assertions. E.g.: (i1, i2) : role
+";" |	// End of statenìment.
+"#" |	// Cardinality of a concept. E.g.: #Concept
+"!" |	// Complement of a concept. E.g.: !Concept
+	// Math operators
+"+" |
+"-" |
 "*" |
-"," |
-"|" 	{ return yytext[0]; }
+"/" |
+"^" |	// Power. E.g.: 2^3 (= 8)
+"%" |	// Modulo. E.g.: 5%2 (= 1)
+"(" |
+")" |
+"{" |	// Curly brackets determine a block of statements or instructions.
+"}"		{ return yytext[0]; }
 
-{STR} { return (STR); }
-{INT} { return (INT); }
+{STR}  { return (STR); }
+{INT}  { return (INT); }
 {BOOL} { return (BOOL); }
 
-
-{CONCETTO}	 { return (CON); }
-{RUOLO}	 { return (ROL); }
-{INDIVIDUO} {return (IND);}
+{CONCETTO}  { return (CON); }
+{RUOLO}	    { return (ROL); }
+{INDIVIDUO} { return (IND); }
 
 {CONJ} {return (CONJ);}
 {DISJ} {return (DISJ);}
-{CMPL} {return (CMPL);}
-{CARD} {return (CARD);}
 
 {ESISTENZIALE} {return (EXS)}
 {UNIVERSALE} {return (ALL);}
-
-
-{DOT} {return (DOT);}
-{COLON} {return (COLON);}
-{SEMIC} {return (SEMIC);}
-{COMMA}  {return (COMMA);}
 
 {STRUCTURE_FLAG_START} {return (SOPEN);}
 {STRUCTURE_FLAG_END} {return (SCLOSE);}
 
 {WHILE} {return (WHILE);}
-{IF} {return (IF);}
-{ELSE} {return (ELSE);}
+{IF}    {return (IF);}
+{ELSE}  {return (ELSE);}
 
-{NAME} {yylval.str = strdup(yytext); 
-		return (NAME);}
+{NAME} { yylval.str = strdup(yytext); return (NAME);}
 
 %%
