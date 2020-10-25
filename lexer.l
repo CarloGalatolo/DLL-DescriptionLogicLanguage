@@ -11,7 +11,7 @@ STR  (STR)
 
 CONCETTO (CONCEPT)
 RUOLO (ROLE)
-INDIVIDUO (INDIVIUAL)
+INDIVIDUO (INDIVIDUAL)
 
 CONJ (&&)	
 DISJ ("||") 
@@ -33,41 +33,37 @@ WHILE (W|WHILE)
 IF (IF)
 ELSE (ELSE)
 
-NAME [(a-zA-Z)|"_"]+
+NAME ([a-zA-Z]|[_-])+
 
 %%
-{INT} { return (INT); }
-{STR} { return (STR); }
+
+{STR}  { return (STR); }
+{INT}  { return (INT); }
 {BOOL} { return (BOOL); }
 
-
-{CONCETTO}	 { return (CON); }
-{RUOLO}	 { return (ROL); }
-{INDIVIDUO} {return (IND);}
+{CONCETTO}  { return (CON); }
+{RUOLO}	    { return (ROL); }
+{INDIVIDUO} { return (IND); }
 
 {CONJ} {return (CONJ);}
 {DISJ} {return (DISJ);}
-{CMPL} {return (CMPL);}
-{CARD} {return (CARD);}
 
 {EXISTENTIAL} {return (EXS);}
 {UNIVERSAL} {return (ALL);}
 
-
-{DOT} {return (DOT);}
-{COLON} {return (COLON);}
-{SEMIC} {return (SEMIC);}
-{COMMA}  {return (COMMA);}
+{DOT}  { return (DOT); }
+{COLON}	    { return (COLON); }
+{SEMIC} { return (SEMIC); }
+{COMMA} { return (COMMA); }
 
 {STRUCTURE_FLAG_START} {return (SOPEN);}
 {STRUCTURE_FLAG_END} {return (SCLOSE);}
 
 {WHILE} {return (WHILE);}
-{IF} {return (IF);}
-{ELSE} {return (ELSE);}
+{IF}    {return (IF);}
+{ELSE}  {return (ELSE);}
 
-{NAME} {yylval.str = strdup(yytext); 
-		return (NAME);}
+{NAME} { yylval.str = strdup(yytext); return (NAME);}
 
 %%
 
