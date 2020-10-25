@@ -1,58 +1,43 @@
 %{
 	#include "parser.tab.h"
+	#include "Tree.h"
 %}
 
 %option noyywrap
 
-/* Simple Types */
-INT  ("INT")  /* Integer */
-BOOL ("BOOL") /* Boolean */
-STR  ("STR")  /* String  */
+INT  (INT)  
+BOOL (BOOL) 
+STR  (STR)  
 
-/* Complex Types */
 CONCETTO (CONCEPT)
 RUOLO (ROLE)
 INDIVIDUO (INDIVIUAL)
 
-/* Logic operators */
-CONJ ("&&")	/* Conjunction */
-DISJ ("||") /* Disjunction */
-CMPL ("!")  /* Complement  */
-CARD "#"	/* Cardinality */
+CONJ (&&)	
+DISJ ("||") 
+CMPL ("!") 
+CARD ("#")	
 
-/* Restrictions */
 EXISTENTIAL (EXIST)
 UNIVERSAL   (ALL)
 
-/* Punctuation */
-DOT   (".") /* Used in restrictions */
-COLON (":") /* Used in assertions */
-SEMIC (";") /* End of statement */
-COMMA   (",") /* Separator */
+DOT   (".") 
+COLON (":") 
+SEMIC (";") 
+COMMA   (",") 
 
-/*ISTANCE_ASSERTION meglio gestirle in Bison */
-/*CONCEPT_ASSERTION definisco pero le parentesi per la struttura, con l'aggiunta del terminatore */
-STRUCTURE_FLAG_START ('(')
-STRUCTURE_FLAG_END (')')
+STRUCTURE_FLAG_START ("(")
+STRUCTURE_FLAG_END (")")
 
-/*DEFINIZIONE CONTROLLO */
 WHILE (W|WHILE)
 IF (IF)
 ELSE (ELSE)
 
 NAME [(a-zA-Z)|"_"]+
 
-
-
 %%
-
-	/* Single character literal tokens */
-"*" |
-"," |
-"|" 	{ return yytext[0]; }
-
-{STR} { return (STR); }
 {INT} { return (INT); }
+{STR} { return (STR); }
 {BOOL} { return (BOOL); }
 
 
@@ -65,8 +50,8 @@ NAME [(a-zA-Z)|"_"]+
 {CMPL} {return (CMPL);}
 {CARD} {return (CARD);}
 
-{ESISTENZIALE} {return (EXS)}
-{UNIVERSALE} {return (ALL);}
+{EXISTENTIAL} {return (EXS);}
+{UNIVERSAL} {return (ALL);}
 
 
 {DOT} {return (DOT);}
@@ -85,3 +70,11 @@ NAME [(a-zA-Z)|"_"]+
 		return (NAME);}
 
 %%
+
+main (int argc, char **argv)	{
+	yyparse();	
+}
+
+ void yyerror (char *s, ...) {
+   fprintf (stderr, "%s\n", s);
+ }

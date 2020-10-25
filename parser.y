@@ -1,7 +1,7 @@
 %{	
 	#include <stdio.h> 
 	#include <string.h> 
-	#include "TreeParser.h"	
+	#include "Tree.h"	
 %}
 
 %union {
@@ -19,23 +19,20 @@
 %token SOPEN SCLOSE
 %token WHILE IF ELSE
 
-%type <a> Exp IstanceIndividual
-%type name
-
-%error-verbose 
+%type <a> EXP IstanceIndividual
+%type <str> name
 
 %%
 
-Linguaggio: Linguaggio Exp EOL{eval($2);cleartree($2);}
-|Linguaggio EOL
+LINGUAGGIO: EXP {eval($1);}
 ;
 
-Exp: exp IstanceIndividual { $$=chainAst("CH",$1,$2);}
-| exp IstanceRole
-| exp IstanceConcept
+EXP: EXP IstanceIndividual { $$=newast('H',$1,$2);}
+|IstanceIndividual {$$=$1;}
 ;
 
-IstanceIndividual: IND SOPEN name SCLOSE { $$=astIndividual("IND",$3);}
+IstanceIndividual: IND name SEMIC { printf("%s",$2);
+								$$=newnum($2);}
 ;
 
 name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}

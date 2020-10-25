@@ -10,15 +10,24 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <limits.h>
+# include "TreeParser.h"
 
 
-struct ast *
-chainAst(int nodetype, struct ast *l, struct ast *r)
+
+extern int yylineno; /* from lexer */
+void yyerror(char *s, ...);
+
+
+
+char ** individual;
+int individualList=0;
+
+struct ast *chainAst(int nodetype, struct ast *l, struct ast *r)
 {
  struct ast *a = malloc(sizeof(struct ast));
 
  if(!a) {
- yyerror("out of space");
+
  exit(0);
  }
  a->nodetype = nodetype;
@@ -27,12 +36,11 @@ chainAst(int nodetype, struct ast *l, struct ast *r)
  return a;
 }
 
-struct ast *
-astComplexType(int nodetype, string namelist)
+struct ast *astComplexType(int nodetype, char* namelist)
 {
  struct stringval *a = malloc(sizeof(struct stringval));
  if(!a) {
- yyerror("out of space");
+
  exit(0);
  }
  a->nodetype = nodetype;
@@ -41,17 +49,34 @@ astComplexType(int nodetype, string namelist)
 }
 
 
-
 double eval(struct ast *a)
 {
- double v; calculated value of this subtree
+ char* s;
+ double v;
  switch(a->nodetype) {
-
- case 'IND': v=listIndividual(a->string) ; break;
+ case 'I': 	 
+ 			 s= ((struct stringval *)a)->string; 
+			 v=listIndividual(s); 
+			 break;
  case 'H': v = eval(a->l); eval(a->r); break;
-
  default: printf("internal error: bad node %c\n", a->nodetype);
  }
  return v;
 }
+
+
+
+int listIndividual(char* individualList){
+	char* token = strtok(individualList, "|");
+			while (token) {
+					// Nome dell'attributo					
+					//	strcpy(individual[individualList], token);
+					printf(token);
+					individualList++;
+					token = strtok(0, "|");
+			}
+			return 1;
+}
+
+
 
