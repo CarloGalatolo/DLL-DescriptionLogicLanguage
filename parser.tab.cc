@@ -32,17 +32,8 @@
 
 
 // First part of user declarations.
-#line 10 "parser.yy" // lalr1.cc:404
 
-	#include <iostream>
-	#include <cstdlib>
-	#include <fstream>
-	#include <cstdio>
-	#include <cstring>
-	#include <string>
-	#include "Tree.h"
-
-#line 46 "parser.tab.cc" // lalr1.cc:404
+#line 37 "parser.tab.cc" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -56,9 +47,18 @@
 
 // User implementation prologue.
 
-#line 60 "parser.tab.cc" // lalr1.cc:412
+#line 51 "parser.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 39 "parser.yy" // lalr1.cc:413
+#line 29 "parser.yy" // lalr1.cc:413
+
+	#include <iostream>
+	#include <cstdlib>
+	#include <fstream>
+	#include <cstdio>
+	#include <cstring>
+	#include <string>
+	#include "Tree.h"
+	#include "src/dl_driver.hpp"
 
 	#undef yylex
 	#define yylex scanner.yylex
@@ -78,6 +78,25 @@
 # endif
 #endif
 
+#define YYRHSLOC(Rhs, K) ((Rhs)[K].location)
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+# ifndef YYLLOC_DEFAULT
+#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
+          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
+        }                                                               \
+    while (/*CONSTCOND*/ false)
+# endif
 
 
 // Suppress unused-variable warnings by "using" E.
@@ -129,20 +148,21 @@
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 #line 6 "parser.yy" // lalr1.cc:479
-namespace MC {
-#line 134 "parser.tab.cc" // lalr1.cc:479
+namespace DL {
+#line 153 "parser.tab.cc" // lalr1.cc:479
 
   /// Build a parser object.
-  MC_Parser::MC_Parser (MC_Scanner  &scanner_yyarg)
+  DL_Parser::DL_Parser (DL_Scanner &scanner_yyarg, DL_Driver &driver_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
       yycdebug_ (&std::cerr),
 #endif
-      scanner (scanner_yyarg)
+      scanner (scanner_yyarg),
+      driver (driver_yyarg)
   {}
 
-  MC_Parser::~MC_Parser ()
+  DL_Parser::~DL_Parser ()
   {}
 
 
@@ -151,26 +171,28 @@ namespace MC {
   `---------------*/
 
   inline
-  MC_Parser::syntax_error::syntax_error (const std::string& m)
+  DL_Parser::syntax_error::syntax_error (const location_type& l, const std::string& m)
     : std::runtime_error (m)
+    , location (l)
   {}
 
   // basic_symbol.
   template <typename Base>
   inline
-  MC_Parser::basic_symbol<Base>::basic_symbol ()
+  DL_Parser::basic_symbol<Base>::basic_symbol ()
     : value ()
   {}
 
   template <typename Base>
   inline
-  MC_Parser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
+  DL_Parser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
     : Base (other)
     , value ()
+    , location (other.location)
   {
       switch (other.type_get ())
     {
-      case 25: // concept
+      case 26: // concept
         value.copy< DL::Concept > (other.value);
         break;
 
@@ -194,14 +216,15 @@ namespace MC {
 
   template <typename Base>
   inline
-  MC_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v)
+  DL_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
     : Base (t)
     , value ()
+    , location (l)
   {
     (void) v;
       switch (this->type_get ())
     {
-      case 25: // concept
+      case 26: // concept
         value.copy< DL::Concept > (v);
         break;
 
@@ -225,33 +248,37 @@ namespace MC {
   // Implementation of basic_symbol constructor for each type.
 
   template <typename Base>
-  MC_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t)
+  DL_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
     : Base (t)
     , value ()
+    , location (l)
   {}
 
   template <typename Base>
-  MC_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const DL::Concept v)
+  DL_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const DL::Concept v, const location_type& l)
     : Base (t)
     , value (v)
+    , location (l)
   {}
 
   template <typename Base>
-  MC_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v)
+  DL_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
     : Base (t)
     , value (v)
+    , location (l)
   {}
 
   template <typename Base>
-  MC_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v)
+  DL_Parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
     : Base (t)
     , value (v)
+    , location (l)
   {}
 
 
   template <typename Base>
   inline
-  MC_Parser::basic_symbol<Base>::~basic_symbol ()
+  DL_Parser::basic_symbol<Base>::~basic_symbol ()
   {
     clear ();
   }
@@ -259,7 +286,7 @@ namespace MC {
   template <typename Base>
   inline
   void
-  MC_Parser::basic_symbol<Base>::clear ()
+  DL_Parser::basic_symbol<Base>::clear ()
   {
     // User destructor.
     symbol_number_type yytype = this->type_get ();
@@ -274,7 +301,7 @@ namespace MC {
     // Type destructor.
     switch (yytype)
     {
-      case 25: // concept
+      case 26: // concept
         value.template destroy< DL::Concept > ();
         break;
 
@@ -299,7 +326,7 @@ namespace MC {
   template <typename Base>
   inline
   bool
-  MC_Parser::basic_symbol<Base>::empty () const
+  DL_Parser::basic_symbol<Base>::empty () const
   {
     return Base::type_get () == empty_symbol;
   }
@@ -307,12 +334,12 @@ namespace MC {
   template <typename Base>
   inline
   void
-  MC_Parser::basic_symbol<Base>::move (basic_symbol& s)
+  DL_Parser::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 25: // concept
+      case 26: // concept
         value.move< DL::Concept > (s.value);
         break;
 
@@ -331,34 +358,35 @@ namespace MC {
         break;
     }
 
+    location = s.location;
   }
 
   // by_type.
   inline
-  MC_Parser::by_type::by_type ()
+  DL_Parser::by_type::by_type ()
     : type (empty_symbol)
   {}
 
   inline
-  MC_Parser::by_type::by_type (const by_type& other)
+  DL_Parser::by_type::by_type (const by_type& other)
     : type (other.type)
   {}
 
   inline
-  MC_Parser::by_type::by_type (token_type t)
+  DL_Parser::by_type::by_type (token_type t)
     : type (yytranslate_ (t))
   {}
 
   inline
   void
-  MC_Parser::by_type::clear ()
+  DL_Parser::by_type::clear ()
   {
     type = empty_symbol;
   }
 
   inline
   void
-  MC_Parser::by_type::move (by_type& that)
+  DL_Parser::by_type::move (by_type& that)
   {
     type = that.type;
     that.clear ();
@@ -366,155 +394,161 @@ namespace MC {
 
   inline
   int
-  MC_Parser::by_type::type_get () const
+  DL_Parser::by_type::type_get () const
   {
     return type;
   }
   // Implementation of make_symbol for each symbol type.
-  MC_Parser::symbol_type
-  MC_Parser::make_BOOLVAL (const int& v)
+  DL_Parser::symbol_type
+  DL_Parser::make_BOOLVAL (const int& v, const location_type& l)
   {
-    return symbol_type (token::BOOLVAL, v);
+    return symbol_type (token::BOOLVAL, v, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_INTVAL (const int& v)
+  DL_Parser::symbol_type
+  DL_Parser::make_INTVAL (const int& v, const location_type& l)
   {
-    return symbol_type (token::INTVAL, v);
+    return symbol_type (token::INTVAL, v, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_NAME (const std::string& v)
+  DL_Parser::symbol_type
+  DL_Parser::make_NAME (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::NAME, v);
+    return symbol_type (token::NAME, v, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_STRVAL (const std::string& v)
+  DL_Parser::symbol_type
+  DL_Parser::make_STRVAL (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::STRVAL, v);
+    return symbol_type (token::STRVAL, v, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_INT ()
+  DL_Parser::symbol_type
+  DL_Parser::make_INT (const location_type& l)
   {
-    return symbol_type (token::INT);
+    return symbol_type (token::INT, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_BOOL ()
+  DL_Parser::symbol_type
+  DL_Parser::make_BOOL (const location_type& l)
   {
-    return symbol_type (token::BOOL);
+    return symbol_type (token::BOOL, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_STR ()
+  DL_Parser::symbol_type
+  DL_Parser::make_STR (const location_type& l)
   {
-    return symbol_type (token::STR);
+    return symbol_type (token::STR, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_CONCEPT ()
+  DL_Parser::symbol_type
+  DL_Parser::make_CONCEPT (const location_type& l)
   {
-    return symbol_type (token::CONCEPT);
+    return symbol_type (token::CONCEPT, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_ROLE ()
+  DL_Parser::symbol_type
+  DL_Parser::make_ROLE (const location_type& l)
   {
-    return symbol_type (token::ROLE);
+    return symbol_type (token::ROLE, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_INDV ()
+  DL_Parser::symbol_type
+  DL_Parser::make_INDV (const location_type& l)
   {
-    return symbol_type (token::INDV);
+    return symbol_type (token::INDV, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_SUBS ()
+  DL_Parser::symbol_type
+  DL_Parser::make_SUBS (const location_type& l)
   {
-    return symbol_type (token::SUBS);
+    return symbol_type (token::SUBS, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_CONJ ()
+  DL_Parser::symbol_type
+  DL_Parser::make_CONJ (const location_type& l)
   {
-    return symbol_type (token::CONJ);
+    return symbol_type (token::CONJ, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_DISJ ()
+  DL_Parser::symbol_type
+  DL_Parser::make_DISJ (const location_type& l)
   {
-    return symbol_type (token::DISJ);
+    return symbol_type (token::DISJ, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_EX ()
+  DL_Parser::symbol_type
+  DL_Parser::make_EX (const location_type& l)
   {
-    return symbol_type (token::EX);
+    return symbol_type (token::EX, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_ALL ()
+  DL_Parser::symbol_type
+  DL_Parser::make_ALL (const location_type& l)
   {
-    return symbol_type (token::ALL);
+    return symbol_type (token::ALL, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_THING ()
+  DL_Parser::symbol_type
+  DL_Parser::make_THING (const location_type& l)
   {
-    return symbol_type (token::THING);
+    return symbol_type (token::THING, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_NOTHING ()
+  DL_Parser::symbol_type
+  DL_Parser::make_NOTHING (const location_type& l)
   {
-    return symbol_type (token::NOTHING);
+    return symbol_type (token::NOTHING, l);
   }
 
-  MC_Parser::symbol_type
-  MC_Parser::make_COMPARISON (const int& v)
+  DL_Parser::symbol_type
+  DL_Parser::make_END (const location_type& l)
   {
-    return symbol_type (token::COMPARISON, v);
+    return symbol_type (token::END, l);
+  }
+
+  DL_Parser::symbol_type
+  DL_Parser::make_COMPARISON (const int& v, const location_type& l)
+  {
+    return symbol_type (token::COMPARISON, v, l);
   }
 
 
 
   // by_state.
   inline
-  MC_Parser::by_state::by_state ()
+  DL_Parser::by_state::by_state ()
     : state (empty_state)
   {}
 
   inline
-  MC_Parser::by_state::by_state (const by_state& other)
+  DL_Parser::by_state::by_state (const by_state& other)
     : state (other.state)
   {}
 
   inline
   void
-  MC_Parser::by_state::clear ()
+  DL_Parser::by_state::clear ()
   {
     state = empty_state;
   }
 
   inline
   void
-  MC_Parser::by_state::move (by_state& that)
+  DL_Parser::by_state::move (by_state& that)
   {
     state = that.state;
     that.clear ();
   }
 
   inline
-  MC_Parser::by_state::by_state (state_type s)
+  DL_Parser::by_state::by_state (state_type s)
     : state (s)
   {}
 
   inline
-  MC_Parser::symbol_number_type
-  MC_Parser::by_state::type_get () const
+  DL_Parser::symbol_number_type
+  DL_Parser::by_state::type_get () const
   {
     if (state == empty_state)
       return empty_symbol;
@@ -523,17 +557,17 @@ namespace MC {
   }
 
   inline
-  MC_Parser::stack_symbol_type::stack_symbol_type ()
+  DL_Parser::stack_symbol_type::stack_symbol_type ()
   {}
 
 
   inline
-  MC_Parser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
-    : super_type (s)
+  DL_Parser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
+    : super_type (s, that.location)
   {
       switch (that.type_get ())
     {
-      case 25: // concept
+      case 26: // concept
         value.move< DL::Concept > (that.value);
         break;
 
@@ -557,13 +591,13 @@ namespace MC {
   }
 
   inline
-  MC_Parser::stack_symbol_type&
-  MC_Parser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  DL_Parser::stack_symbol_type&
+  DL_Parser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
       switch (that.type_get ())
     {
-      case 25: // concept
+      case 26: // concept
         value.copy< DL::Concept > (that.value);
         break;
 
@@ -582,6 +616,7 @@ namespace MC {
         break;
     }
 
+    location = that.location;
     return *this;
   }
 
@@ -589,7 +624,7 @@ namespace MC {
   template <typename Base>
   inline
   void
-  MC_Parser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+  DL_Parser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
     if (yymsg)
       YY_SYMBOL_PRINT (yymsg, yysym);
@@ -598,7 +633,7 @@ namespace MC {
 #if YYDEBUG
   template <typename Base>
   void
-  MC_Parser::yy_print_ (std::ostream& yyo,
+  DL_Parser::yy_print_ (std::ostream& yyo,
                                      const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
@@ -609,7 +644,8 @@ namespace MC {
     if (yysym.empty ())
       std::abort ();
     yyo << (yytype < yyntokens_ ? "token" : "nterm")
-        << ' ' << yytname_[yytype] << " (";
+        << ' ' << yytname_[yytype] << " ("
+        << yysym.location << ": ";
     YYUSE (yytype);
     yyo << ')';
   }
@@ -617,7 +653,7 @@ namespace MC {
 
   inline
   void
-  MC_Parser::yypush_ (const char* m, state_type s, symbol_type& sym)
+  DL_Parser::yypush_ (const char* m, state_type s, symbol_type& sym)
   {
     stack_symbol_type t (s, sym);
     yypush_ (m, t);
@@ -625,7 +661,7 @@ namespace MC {
 
   inline
   void
-  MC_Parser::yypush_ (const char* m, stack_symbol_type& s)
+  DL_Parser::yypush_ (const char* m, stack_symbol_type& s)
   {
     if (m)
       YY_SYMBOL_PRINT (m, s);
@@ -634,40 +670,40 @@ namespace MC {
 
   inline
   void
-  MC_Parser::yypop_ (unsigned int n)
+  DL_Parser::yypop_ (unsigned int n)
   {
     yystack_.pop (n);
   }
 
 #if YYDEBUG
   std::ostream&
-  MC_Parser::debug_stream () const
+  DL_Parser::debug_stream () const
   {
     return *yycdebug_;
   }
 
   void
-  MC_Parser::set_debug_stream (std::ostream& o)
+  DL_Parser::set_debug_stream (std::ostream& o)
   {
     yycdebug_ = &o;
   }
 
 
-  MC_Parser::debug_level_type
-  MC_Parser::debug_level () const
+  DL_Parser::debug_level_type
+  DL_Parser::debug_level () const
   {
     return yydebug_;
   }
 
   void
-  MC_Parser::set_debug_level (debug_level_type l)
+  DL_Parser::set_debug_level (debug_level_type l)
   {
     yydebug_ = l;
   }
 #endif // YYDEBUG
 
-  inline MC_Parser::state_type
-  MC_Parser::yy_lr_goto_state_ (state_type yystate, int yysym)
+  inline DL_Parser::state_type
+  DL_Parser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - yyntokens_] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
@@ -677,19 +713,19 @@ namespace MC {
   }
 
   inline bool
-  MC_Parser::yy_pact_value_is_default_ (int yyvalue)
+  DL_Parser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   inline bool
-  MC_Parser::yy_table_value_is_error_ (int yyvalue)
+  DL_Parser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
-  MC_Parser::parse ()
+  DL_Parser::parse ()
   {
     // State.
     int yyn;
@@ -702,6 +738,9 @@ namespace MC {
 
     /// The lookahead symbol.
     symbol_type yyla;
+
+    /// The locations where the error started and ended.
+    stack_symbol_type yyerror_range[3];
 
     /// The return value of parse ().
     int yyresult;
@@ -744,7 +783,7 @@ namespace MC {
         YYCDEBUG << "Reading a token: ";
         try
           {
-            yyla.type = yytranslate_ (yylex (&yyla.value));
+            yyla.type = yytranslate_ (yylex (&yyla.value, &yyla.location));
           }
         catch (const syntax_error& yyexc)
           {
@@ -800,7 +839,7 @@ namespace MC {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 25: // concept
+      case 26: // concept
         yylhs.value.build< DL::Concept > ();
         break;
 
@@ -820,6 +859,11 @@ namespace MC {
     }
 
 
+      // Compute the default @$.
+      {
+        slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+      }
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
@@ -828,13 +872,13 @@ namespace MC {
           switch (yyn)
             {
   case 2:
-#line 86 "parser.yy" // lalr1.cc:859
-    { DL::Onthology.AllConcepts.push_back(new Concept(yystack_[0].value.as< std::string > ())); }
-#line 834 "parser.tab.cc" // lalr1.cc:859
+#line 91 "parser.yy" // lalr1.cc:859
+    { 	DL::Onthology::getInstance().AllConcepts.push_back(*new DL::Concept(yystack_[0].value.as< std::string > ())); }
+#line 878 "parser.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 838 "parser.tab.cc" // lalr1.cc:859
+#line 882 "parser.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -862,10 +906,11 @@ namespace MC {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        error (yysyntax_error_ (yystack_[0].state, yyla));
+        error (yyla.location, yysyntax_error_ (yystack_[0].state, yyla));
       }
 
 
+    yyerror_range[1].location = yyla.location;
     if (yyerrstatus_ == 3)
       {
         /* If just tried and failed to reuse lookahead token after an
@@ -895,6 +940,7 @@ namespace MC {
        code.  */
     if (false)
       goto yyerrorlab;
+    yyerror_range[1].location = yystack_[yylen - 1].location;
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -926,11 +972,14 @@ namespace MC {
           if (yystack_.size () == 1)
             YYABORT;
 
+          yyerror_range[1].location = yystack_[0].location;
           yy_destroy_ ("Error: popping", yystack_[0]);
           yypop_ ();
           YY_STACK_PRINT ();
         }
 
+      yyerror_range[2].location = yyla.location;
+      YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
       error_token.state = yyn;
@@ -982,73 +1031,73 @@ namespace MC {
   }
 
   void
-  MC_Parser::error (const syntax_error& yyexc)
+  DL_Parser::error (const syntax_error& yyexc)
   {
-    error (yyexc.what());
+    error (yyexc.location, yyexc.what());
   }
 
   // Generate an error message.
   std::string
-  MC_Parser::yysyntax_error_ (state_type, const symbol_type&) const
+  DL_Parser::yysyntax_error_ (state_type, const symbol_type&) const
   {
     return YY_("syntax error");
   }
 
 
-  const signed char MC_Parser::yypact_ninf_ = -11;
+  const signed char DL_Parser::yypact_ninf_ = -11;
 
-  const signed char MC_Parser::yytable_ninf_ = -1;
+  const signed char DL_Parser::yytable_ninf_ = -1;
 
   const signed char
-  MC_Parser::yypact_[] =
+  DL_Parser::yypact_[] =
   {
      -10,    -4,   -11,   -11,     2,   -11,   -11
   };
 
   const unsigned char
-  MC_Parser::yydefact_[] =
+  DL_Parser::yydefact_[] =
   {
        0,     0,     3,     4,     0,     2,     1
   };
 
   const signed char
-  MC_Parser::yypgoto_[] =
+  DL_Parser::yypgoto_[] =
   {
      -11,   -11
   };
 
   const signed char
-  MC_Parser::yydefgoto_[] =
+  DL_Parser::yydefgoto_[] =
   {
       -1,     4
   };
 
   const unsigned char
-  MC_Parser::yytable_[] =
+  DL_Parser::yytable_[] =
   {
        1,     5,     6,     0,     0,     0,     0,     0,     2,     3
   };
 
   const signed char
-  MC_Parser::yycheck_[] =
+  DL_Parser::yycheck_[] =
   {
       10,     5,     0,    -1,    -1,    -1,    -1,    -1,    18,    19
   };
 
   const unsigned char
-  MC_Parser::yystos_[] =
+  DL_Parser::yystos_[] =
   {
-       0,    10,    18,    19,    25,     5,     0
+       0,    10,    18,    19,    26,     5,     0
   };
 
   const unsigned char
-  MC_Parser::yyr1_[] =
+  DL_Parser::yyr1_[] =
   {
-       0,    24,    25,    25,    25
+       0,    25,    26,    26,    26
   };
 
   const unsigned char
-  MC_Parser::yyr2_[] =
+  DL_Parser::yyr2_[] =
   {
        0,     2,     2,     1,     1
   };
@@ -1058,24 +1107,24 @@ namespace MC {
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a yyntokens_, nonterminals.
   const char*
-  const MC_Parser::yytname_[] =
+  const DL_Parser::yytname_[] =
   {
   "$end", "error", "$undefined", "BOOLVAL", "INTVAL", "NAME", "STRVAL",
   "INT", "BOOL", "STR", "CONCEPT", "ROLE", "INDV", "SUBS", "CONJ", "DISJ",
-  "EX", "ALL", "THING", "NOTHING", "'.'", "COMPARISON", "'#'", "'!'",
-  "$accept", "concept", YY_NULLPTR
+  "EX", "ALL", "THING", "NOTHING", "END", "COMPARISON", "'#'", "'!'",
+  "'.'", "$accept", "concept", YY_NULLPTR
   };
 
 
   const unsigned char
-  MC_Parser::yyrline_[] =
+  DL_Parser::yyrline_[] =
   {
-       0,    86,    86,    87,    88
+       0,    91,    91,    92,    93
   };
 
   // Print the state stack on the debug stream.
   void
-  MC_Parser::yystack_print_ ()
+  DL_Parser::yystack_print_ ()
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
@@ -1088,7 +1137,7 @@ namespace MC {
 
   // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
-  MC_Parser::yy_reduce_print_ (int yyrule)
+  DL_Parser::yy_reduce_print_ (int yyrule)
   {
     unsigned int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
@@ -1104,8 +1153,8 @@ namespace MC {
 
   // Symbol number corresponding to token number t.
   inline
-  MC_Parser::token_number_type
-  MC_Parser::yytranslate_ (int t)
+  DL_Parser::token_number_type
+  DL_Parser::yytranslate_ (int t)
   {
     static
     const token_number_type
@@ -1115,7 +1164,7 @@ namespace MC {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,    23,     2,    22,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,    20,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,    24,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1138,9 +1187,9 @@ namespace MC {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    21
+      15,    16,    17,    18,    19,    20,    21
     };
-    const unsigned int user_token_number_max_ = 275;
+    const unsigned int user_token_number_max_ = 276;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1152,5 +1201,12 @@ namespace MC {
   }
 
 #line 6 "parser.yy" // lalr1.cc:1167
-} // MC
-#line 1157 "parser.tab.cc" // lalr1.cc:1167
+} // DL
+#line 1206 "parser.tab.cc" // lalr1.cc:1167
+#line 111 "parser.yy" // lalr1.cc:1168
+
+
+void DL::DL_Parser::error( const location_type &l, const std::string &err_message )
+{
+   std::cerr << "Error: " << err_message << " at " << l << "\n";
+}

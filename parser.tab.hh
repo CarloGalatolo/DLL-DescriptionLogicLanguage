@@ -32,7 +32,7 @@
 
 /**
  ** \file parser.tab.hh
- ** Define the MC::parser class.
+ ** Define the DL::parser class.
  */
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
@@ -40,14 +40,14 @@
 #ifndef YY_YY_PARSER_TAB_HH_INCLUDED
 # define YY_YY_PARSER_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 20 "parser.yy" // lalr1.cc:377
+#line 9 "parser.yy" // lalr1.cc:377
 
-	namespace MC {
-		class MC_Scanner;
+	#include "src/Onthology.hpp"
+	namespace DL {
+		class DL_Driver;
+		class DL_Scanner;
 	}
 	
-	#include "src/Onthology.hpp"
-
 	// The following definitions is missing when %locations isn't used
 	# ifndef YY_NULLPTR
 	#  if defined __cplusplus && 201103L <= __cplusplus
@@ -59,15 +59,15 @@
 
 #line 61 "parser.tab.hh" // lalr1.cc:377
 
-
+# include <cassert>
 # include <cstdlib> // std::abort
 # include <iostream>
 # include <stdexcept>
 # include <string>
 # include <vector>
 # include "stack.hh"
-
-
+# include "location.hh"
+#include <typeinfo>
 #ifndef YYASSERT
 # include <cassert>
 # define YYASSERT assert
@@ -133,7 +133,7 @@
 #endif
 
 #line 6 "parser.yy" // lalr1.cc:377
-namespace MC {
+namespace DL {
 #line 138 "parser.tab.hh" // lalr1.cc:377
 
 
@@ -151,11 +151,13 @@ namespace MC {
 
     /// Empty construction.
     variant ()
+      : yytypeid_ (YY_NULLPTR)
     {}
 
     /// Construct and fill.
     template <typename T>
     variant (const T& t)
+      : yytypeid_ (&typeid (T))
     {
       YYASSERT (sizeof (T) <= S);
       new (yyas_<T> ()) T (t);
@@ -163,13 +165,18 @@ namespace MC {
 
     /// Destruction, allowed only if empty.
     ~variant ()
-    {}
+    {
+      YYASSERT (!yytypeid_);
+    }
 
     /// Instantiate an empty \a T in here.
     template <typename T>
     T&
     build ()
     {
+      YYASSERT (!yytypeid_);
+      YYASSERT (sizeof (T) <= S);
+      yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T;
     }
 
@@ -178,6 +185,9 @@ namespace MC {
     T&
     build (const T& t)
     {
+      YYASSERT (!yytypeid_);
+      YYASSERT (sizeof (T) <= S);
+      yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T (t);
     }
 
@@ -186,6 +196,8 @@ namespace MC {
     T&
     as ()
     {
+      YYASSERT (*yytypeid_ == typeid (T));
+      YYASSERT (sizeof (T) <= S);
       return *yyas_<T> ();
     }
 
@@ -194,6 +206,8 @@ namespace MC {
     const T&
     as () const
     {
+      YYASSERT (*yytypeid_ == typeid (T));
+      YYASSERT (sizeof (T) <= S);
       return *yyas_<T> ();
     }
 
@@ -209,6 +223,8 @@ namespace MC {
     void
     swap (self_type& other)
     {
+      YYASSERT (yytypeid_);
+      YYASSERT (*yytypeid_ == *other.yytypeid_);
       std::swap (as<T> (), other.as<T> ());
     }
 
@@ -238,6 +254,7 @@ namespace MC {
     destroy ()
     {
       as<T> ().~T ();
+      yytypeid_ = YY_NULLPTR;
     }
 
   private:
@@ -270,11 +287,14 @@ namespace MC {
       /// A buffer large enough to store any of the semantic values.
       char yyraw[S];
     } yybuffer_;
+
+    /// Whether the content is built: if defined, the name of the stored type.
+    const std::type_info *yytypeid_;
   };
 
 
   /// A Bison parser.
-  class MC_Parser
+  class DL_Parser
   {
   public:
 #ifndef YYSTYPE
@@ -299,11 +319,14 @@ namespace MC {
 #else
     typedef YYSTYPE semantic_type;
 #endif
+    /// Symbol locations.
+    typedef location location_type;
 
     /// Syntax errors thrown from user actions.
     struct syntax_error : std::runtime_error
     {
-      syntax_error (const std::string& m);
+      syntax_error (const location_type& l, const std::string& m);
+      location_type location;
     };
 
     /// Tokens.
@@ -328,7 +351,8 @@ namespace MC {
         ALL = 272,
         THING = 273,
         NOTHING = 274,
-        COMPARISON = 275
+        END = 275,
+        COMPARISON = 276
       };
     };
 
@@ -349,7 +373,7 @@ namespace MC {
     /// Expects its Base type to provide access to the symbol type
     /// via type_get().
     ///
-    /// Provide access to semantic value.
+    /// Provide access to semantic value and location.
     template <typename Base>
     struct basic_symbol : Base
     {
@@ -364,18 +388,19 @@ namespace MC {
 
       /// Constructor for valueless symbols, and symbols from each type.
 
-  basic_symbol (typename Base::kind_type t);
+  basic_symbol (typename Base::kind_type t, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const DL::Concept v);
+  basic_symbol (typename Base::kind_type t, const DL::Concept v, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const int v);
+  basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const std::string v);
+  basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
 
 
       /// Constructor for symbols with semantic value.
       basic_symbol (typename Base::kind_type t,
-                    const semantic_type& v);
+                    const semantic_type& v,
+                    const location_type& l);
 
       /// Destroy the symbol.
       ~basic_symbol ();
@@ -391,6 +416,9 @@ namespace MC {
 
       /// The semantic value.
       semantic_type value;
+
+      /// The location.
+      location_type location;
 
     private:
       /// Assignment operator.
@@ -437,80 +465,84 @@ namespace MC {
     // Symbol constructors declarations.
     static inline
     symbol_type
-    make_BOOLVAL (const int& v);
+    make_BOOLVAL (const int& v, const location_type& l);
 
     static inline
     symbol_type
-    make_INTVAL (const int& v);
+    make_INTVAL (const int& v, const location_type& l);
 
     static inline
     symbol_type
-    make_NAME (const std::string& v);
+    make_NAME (const std::string& v, const location_type& l);
 
     static inline
     symbol_type
-    make_STRVAL (const std::string& v);
+    make_STRVAL (const std::string& v, const location_type& l);
 
     static inline
     symbol_type
-    make_INT ();
+    make_INT (const location_type& l);
 
     static inline
     symbol_type
-    make_BOOL ();
+    make_BOOL (const location_type& l);
 
     static inline
     symbol_type
-    make_STR ();
+    make_STR (const location_type& l);
 
     static inline
     symbol_type
-    make_CONCEPT ();
+    make_CONCEPT (const location_type& l);
 
     static inline
     symbol_type
-    make_ROLE ();
+    make_ROLE (const location_type& l);
 
     static inline
     symbol_type
-    make_INDV ();
+    make_INDV (const location_type& l);
 
     static inline
     symbol_type
-    make_SUBS ();
+    make_SUBS (const location_type& l);
 
     static inline
     symbol_type
-    make_CONJ ();
+    make_CONJ (const location_type& l);
 
     static inline
     symbol_type
-    make_DISJ ();
+    make_DISJ (const location_type& l);
 
     static inline
     symbol_type
-    make_EX ();
+    make_EX (const location_type& l);
 
     static inline
     symbol_type
-    make_ALL ();
+    make_ALL (const location_type& l);
 
     static inline
     symbol_type
-    make_THING ();
+    make_THING (const location_type& l);
 
     static inline
     symbol_type
-    make_NOTHING ();
+    make_NOTHING (const location_type& l);
 
     static inline
     symbol_type
-    make_COMPARISON (const int& v);
+    make_END (const location_type& l);
+
+    static inline
+    symbol_type
+    make_COMPARISON (const int& v, const location_type& l);
 
 
     /// Build a parser object.
-    MC_Parser (MC_Scanner  &scanner_yyarg);
-    virtual ~MC_Parser ();
+    DL_Parser (DL_Scanner &scanner_yyarg, DL_Driver &driver_yyarg);
+    virtual ~DL_Parser ();
 
     /// Parse.
     /// \returns  0 iff parsing succeeded.
@@ -531,16 +563,17 @@ namespace MC {
 #endif
 
     /// Report a syntax error.
+    /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
-    virtual void error (const std::string& msg);
+    virtual void error (const location_type& loc, const std::string& msg);
 
     /// Report a syntax error.
     void error (const syntax_error& err);
 
   private:
     /// This class is not copyable.
-    MC_Parser (const MC_Parser&);
-    MC_Parser& operator= (const MC_Parser&);
+    DL_Parser (const DL_Parser&);
+    DL_Parser& operator= (const DL_Parser&);
 
     /// State numbers.
     typedef int state_type;
@@ -713,18 +746,19 @@ namespace MC {
       yyfinal_ = 6, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 24  ///< Number of tokens.
+      yyntokens_ = 25  ///< Number of tokens.
     };
 
 
     // User arguments.
-    MC_Scanner  &scanner;
+    DL_Scanner &scanner;
+    DL_Driver &driver;
   };
 
 
 #line 6 "parser.yy" // lalr1.cc:377
-} // MC
-#line 728 "parser.tab.hh" // lalr1.cc:377
+} // DL
+#line 762 "parser.tab.hh" // lalr1.cc:377
 
 
 

@@ -1,15 +1,13 @@
 %{
 	#include <string>
-	#include "parser.tab.hh"
-	#include "Tree.h"
 
 	/* Implementation of yyFlexScanner */ 
-	#include "mc_scanner.hpp"
+	#include "src/dl_scanner.hpp"
 	#undef  YY_DECL
-	#define YY_DECL int MC::MC_Scanner::yylex( MC::MC_Parser::semantic_type * const lval, MC::MC_Parser::location_type *location )
+	#define YY_DECL int DL::DL_Scanner::yylex( DL::DL_Parser::semantic_type * const lval, DL::DL_Parser::location_type *location )
 
 	/* using "token" to make the returns for the tokens shorter to type */
-	using token = MC::MC_Parser::token;
+	using token = DL::DL_Parser::token;
 
 	/* define yyterminate as this instead of NULL */
 	#define yyterminate() return( token::END )
@@ -19,11 +17,13 @@
 
 	/* update location on matching */
 	#define YY_USER_ACTION loc->step(); loc->columns(yyleng);
+
+	int oldstate;
 %}
 
 %option debug
 %option nodefault
-%option yyclass="MC::MC_Scanner"
+%option yyclass="DL::DL_Scanner"
 %option noyywrap
 %option c++
 
@@ -35,6 +35,7 @@
 %s QUERY
 %x COMMENT
 
+
 /* A line containing only "%%" and white spaces. */
 SECTION ^[ \t]*%%[ \t]*$
 
@@ -42,7 +43,7 @@ SECTION ^[ \t]*%%[ \t]*$
 
 %{  /* Code executed at the beginning of yylex */
 	yylval = lval;
-	initial_state = YY_START;
+	BEGIN NAMES_DECL;
 %}
 
 	/* Changing section with "%%" */
@@ -52,14 +53,14 @@ SECTION ^[ \t]*%%[ \t]*$
 <INT_D>{SECTION}		{ BEGIN QUERY; }
 
 	/* Single character literal tokens */
-	// DL punctuation
-"." |	// Used in restrictions. E.g.: EX role . Concept
+	/* DL punctuation */
+"."	/* Used in restrictions. E.g.: EX role . Concept */
 ":" |	// Used in assertions. E.g.: indv : Concept
 "," |	// Separator used in role assertions. E.g.: (i1, i2) : role
 ";" |	// End of statenìment.
 "#" |	// Cardinality of a concept. E.g.: #Concept
 "!" |	// Complement of a concept. E.g.: !Concept.
-	// Brackets
+	/* Brackets */
 "(" |
 ")" |
 "{" |	// Curly brackets determine a block of statements or instructions.
@@ -74,7 +75,7 @@ SECTION ^[ \t]*%%[ \t]*$
 "!=" { yylval->build<int>(6); return token::COMPARISON; }
 
 	/* Integer values */
--?[0-9]+	{ yylval->build<int>(atoi(yytext)); return INTVAL; }
+-?[0-9]+	{ yylval->build<int>(atoi(yytext)); return token::INTVAL; }
 
 	/* Boolean values */
 TRUE	{ yylval->build<int>(1); return token::BOOLVAL; }
@@ -82,7 +83,7 @@ FALSE	{ yylval->build<int>(0); return token::BOOLVAL; }
 
 	/* Strings */
 \"[^"\n]*\"	{ yylval->build<std::string>(yytext); return token::STRVAL; }
-\"[^"\n]*$	{ yyerror("Unterminated string %s", yytext); }
+\"[^"\n]*$	{ DL::DL_Scanner::yyerror(std::string("Unterminated string ").append(yytext)); }
 
 	/* Keywords */
 ALL		{ return token::ALL; }
@@ -99,27 +100,26 @@ STR(ING)?	{ return token::STR; }
 SUBS(UMPTION)?	{ return token::SUBS; }
 THING	{ return token::THING; }
 
-	// Unquoted names
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.strval = strdup(yytext); return token::NAME; }
+	/* Unquoted names */
+[a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
 
-	// C-style comments
+	/* C-style comments */
 "/*"			 { oldstate = YY_START; BEGIN COMMENT; }
 <COMMENT>"*/"	 { BEGIN oldstate; }
 <COMMENT>.|\n 	 ;
-<COMMENT><<EOF>> { yyerror("Unclosed comment before EOF."); }
+<COMMENT><<EOF>> { DL::DL_Scanner::yyerror("Unclosed comment before EOF."); }
 
-	// Ignore empty spaces and comments.
+	/* Ignore empty spaces and comments. */
 [ \t\n] |
 "//".*  ;	// C++-style comment.
 
 %%
-
+/*
 main (int argc, char **argv) {
 	yyparse();	
 }
 
 void yyerror (char *s, ...) {
-	/*fprintf (stderr, "%s\n", s);*/
-
-	std::cerr << s << std::endl;
+	fprintf (stderr, "%s\n", s);
 }
+*/

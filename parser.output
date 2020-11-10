@@ -21,10 +21,11 @@ Terminals unused in grammar
    DISJ
    EX
    ALL
-   '.'
+   END
    COMPARISON
    '#'
    '!'
+   '.'
 
 
 Regole inutili nella grammatica
@@ -74,14 +75,15 @@ EX (271)
 ALL (272)
 THING (273) 2
 NOTHING (274) 3
-COMPARISON (275)
+END (275)
+COMPARISON (276)
 
 
 Simboli nonterminali e regole in cui appaiono
 
-$accept (24)
+$accept (25)
     nel primo membro: 0
-concept (25)
+concept (26)
     nel primo membro: 1 2 3, nel secondo membro: 0
 
 

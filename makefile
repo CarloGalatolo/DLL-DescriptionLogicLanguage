@@ -1,7 +1,7 @@
 CC    ?= clang
 CXX   ?= clang++
 
-EXE = dlogic
+EXE = dlogic.out
 
 CDEBUG = -g -Wall
 
@@ -14,18 +14,21 @@ CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD)
 CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
 
 
-CPPOBJ = main
-SOBJ =  parser lexer
+CPPOBJ = main src/dl_driver src/Onthology
+SOBJ = parser lexer
+#SLIBS = src/Othology
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
 
 OBJS  = $(addsuffix .o, $(CPPOBJ))
 
+#LIBS = $(addsuffix .hpp, $(SLIBS))
+
 CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
-				 parser.tab.cc parser.tab.hh \
-				 location.hh position.hh \
+				parser.tab.cc parser.tab.hh \
+				location.hh position.hh \
 			    stack.hh parser.output parser.o \
-				 lexer.o lexer.yy.cc $(EXE)\
+				lexer.o lexer.yy.cc $(EXE)\
 
 .PHONY: all
 all: wc

@@ -32,7 +32,7 @@
 
 /**
  ** \file stack.hh
- ** Define the MC::stack class.
+ ** Define the DL::stack class.
  */
 
 #ifndef YY_YY_STACK_HH_INCLUDED
@@ -41,7 +41,7 @@
 # include <vector>
 
 #line 6 "parser.yy" // stack.hh:132
-namespace MC {
+namespace DL {
 #line 46 "stack.hh" // stack.hh:132
   template <class T, class S = std::vector<T> >
   class stack
@@ -151,7 +151,7 @@ namespace MC {
   };
 
 #line 6 "parser.yy" // stack.hh:132
-} // MC
+} // DL
 #line 156 "stack.hh" // stack.hh:132
 
 #endif // !YY_YY_STACK_HH_INCLUDED

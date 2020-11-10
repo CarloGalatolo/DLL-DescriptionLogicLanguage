@@ -2,6 +2,39 @@
 #include <string>
 #include "Onthology.hpp"
 
+void DL::Onthology::put (DL::Concept c)
+{
+	AllConcepts.push_back(c);
+}
+
+void DL::Onthology::put (DL::Role c)
+{
+	AllRoles.push_back(c);
+}
+
+void DL::Onthology::put (DL::Individual c)
+{
+	AllIndividuals.push_back(c);
+}
+
+void DL::Onthology::put_c (std::string s)
+{
+	DL::Concept c(s);
+	AllConcepts.push_back(c);
+}
+
+void DL::Onthology::put_r (std::string s)
+{
+	DL::Role c(s);
+	AllRoles.push_back(c);
+}
+
+void DL::Onthology::put_i (std::string s)
+{
+	DL::Individual c(s);
+	AllIndividuals.push_back(c);
+}
+
 DL::Individual::Individual (std::string name)
 {
 	this->name = name;

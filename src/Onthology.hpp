@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
@@ -28,6 +27,13 @@ namespace DL
 			return instance;
 		}
 
+		void put (Concept);
+		void put (Role);
+		void put (Individual);
+		void put_c (std::string);
+		void put_r (std::string);
+		void put_i (std::string);
+
 	private:
 		Onthology () {}
 		Onthology (Onthology const&) = delete;
@@ -42,6 +48,7 @@ namespace DL
 		std::vector<Role*> roles;
 
 	public:
+		Individual () {};
 		Individual (std::string);
 
 		void addConcept (Concept*);
@@ -58,6 +65,7 @@ namespace DL
 		std::map<Individual*, Individual*> pairs;
 
 	public:
+		Role () {};
 		Role (std::string);
 
 		std::string getName () const;
@@ -72,6 +80,7 @@ namespace DL
 		std::vector<Individual*> individuals;
 
 	public:
+		Concept () {};
 		Concept (std::string);
 
 		std::string getName () const;

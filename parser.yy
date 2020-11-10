@@ -1,29 +1,18 @@
 %skeleton "lalr1.cc"
 %require "3.0"
-//%language "c++"
+%language "c++"
 %debug 
-%defines 
-%define api.namespace {MC}
-%define api.value.type variant	// Ignores union
-%define parser_class_name {MC_Parser}
-
-%{
-	#include <iostream>
-	#include <cstdlib>
-	#include <fstream>
-	#include <cstdio>
-	#include <cstring>
-	#include <string>
-	#include "Tree.h"
-%}
+%defines
+%define api.namespace {DL}
+%define parser_class_name {DL_Parser}
 
 %code requires {
-	namespace MC {
-		class MC_Scanner;
+	#include "src/Onthology.hpp"
+	namespace DL {
+		class DL_Driver;
+		class DL_Scanner;
 	}
 	
-	#include "src/Onthology.hpp"
-
 	// The following definitions is missing when %locations isn't used
 	# ifndef YY_NULLPTR
 	#  if defined __cplusplus && 201103L <= __cplusplus
@@ -34,12 +23,25 @@
 	# endif
 }
 
-%parse-param { MC_Scanner  &scanner }
+%parse-param { DL_Scanner &scanner }
+%parse-param { DL_Driver &driver }
 
 %code {
+	#include <iostream>
+	#include <cstdlib>
+	#include <fstream>
+	#include <cstdio>
+	#include <cstring>
+	#include <string>
+	#include "Tree.h"
+	#include "src/dl_driver.hpp"
+
 	#undef yylex
 	#define yylex scanner.yylex
 }
+
+%define api.value.type variant	// Ignores union
+%define parse.assert
 
 /*
 %union {
@@ -51,7 +53,7 @@
 */
 %token <int> BOOLVAL INTVAL
 %token <std::string> NAME STRVAL
-%token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING
+%token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING END
 
 //%type <a> EXP IstanceIndividual
 %type <std::string> name
@@ -60,11 +62,13 @@
 %type <DL::Concept> concept
 
 	/* Precedence levels */
-%right '.'
 %left <int> COMPARISON
 %nonassoc '#'
 %left CONJ DISJ
 %left '!'
+%right '.'
+
+%locations
 
 %%
 /*
@@ -83,15 +87,16 @@ name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
 | NAME { sprintf($$, "%s", $1);}
 ;
 */
-concept:	CONCEPT NAME	{ DL::Onthology.AllConcepts.push_back(new Concept($2)); }
+
+concept:	CONCEPT NAME	{ 	DL::Onthology::getInstance().AllConcepts.push_back(*new DL::Concept($2)); }
 		|	THING
 		|	NOTHING
 ;
 
-role: ROLE NAME	{ DL::Onthology.AllRoles.push_back(new Role($2)); }
+role: ROLE NAME	{ DL::Onthology::getInstance().AllRoles.push_back(*new DL::Role($2)); }
 ;
 
-indv: INDV NAME	{ DL::Onthology.AllIndividuals.push_back(new Individual($2)); }
+indv: INDV NAME	{ DL::Onthology::getInstance().AllIndividuals.push_back(*new DL::Individual($2)); }
 ;
 
 	// CAPIRE SE FUNZIONA
@@ -102,3 +107,10 @@ complex_concept:	concept
 				|	EX role '.' complex_concept
 				|	ALL role '.' complex_concept
 ;
+
+%%
+
+void DL::DL_Parser::error( const location_type &l, const std::string &err_message )
+{
+   std::cerr << "Error: " << err_message << " at " << l << "\n";
+}
