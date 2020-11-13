@@ -1,1 +1,1 @@
-types:	g++ ../src/Individual.hpp ../src/Concept.hpp ../src/Role.hpp ../src/Individual.cpp ../src/Concept.cpp ../src/Role.cpp types.cpp
+types:	g++ ../src/Onthology.hpp ../src/Onthology.cpp types.cpp

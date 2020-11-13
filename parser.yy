@@ -53,7 +53,7 @@
 */
 %token <int> BOOLVAL INTVAL
 %token <std::string> NAME STRVAL
-%token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING END
+%token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING END SECTION
 
 //%type <a> EXP IstanceIndividual
 %type <std::string> name
@@ -62,6 +62,7 @@
 %type <DL::Concept> concept
 
 	/* Precedence levels */
+%nonassoc '?'
 %left <int> COMPARISON
 %nonassoc '#'
 %left CONJ DISJ
@@ -71,6 +72,7 @@
 %locations
 
 %%
+
 /*
 LINGUAGGIO: EXP { eval($1); }
 ;
@@ -88,16 +90,38 @@ name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
 ;
 */
 
-concept:	CONCEPT NAME	{ 	DL::Onthology::getInstance().AllConcepts.push_back(*new DL::Concept($2)); }
-		|	THING
-		|	NOTHING
+program:	names_decl SECTION tbox SECTION abox SECTION queries
+		|	error { error(yyla.location, std::string("Critical failure error")); }
 ;
 
-role: ROLE NAME	{ DL::Onthology::getInstance().AllRoles.push_back(*new DL::Role($2)); }
+names_decl: decl
+		|	names_decl decl
 ;
 
-indv: INDV NAME	{ DL::Onthology::getInstance().AllIndividuals.push_back(*new DL::Individual($2)); }
+decl:	CONCEPT NAME	{ DL::Onthology::getInstance().put_c($2); }
+	|	ROLE NAME		{ DL::Onthology::getInstance().put_r($2); }
+	|	INDV NAME		{ DL::Onthology::getInstance().put_i($2); }
 ;
+
+tbox:	/*t_stmt
+	|	tbox t_stmt*/
+;
+
+t_stmt:	/*concept SUBS concept
+	|	concept SUBS THING*/
+;
+
+concept:
+;
+
+role: 
+;
+
+indv: 
+;
+
+abox:;
+queries:;
 
 	// CAPIRE SE FUNZIONA
 complex_concept:	concept
@@ -112,5 +136,10 @@ complex_concept:	concept
 
 void DL::DL_Parser::error( const location_type &l, const std::string &err_message )
 {
-   std::cerr << "Error: " << err_message << " at " << l << "\n";
+	// Questa funzione si chiama SOLO NEL PARSER con:
+	//	error(yyla.location, std::string("LA STRINGA"));
+	// In caso di try/catch:
+	//	error(yyla.location, std::string(e.what()));
+	std::cerr << "Error: " << err_message << " at " << l << "\n";
+	exit( EXIT_FAILURE );
 }

@@ -1,6 +1,18 @@
-#include <iostream>
-#include <string>
 #include "Onthology.hpp"
+
+bool DL::Onthology::check_name (std::string& s) const
+{
+	auto res = std::find(AllNames.begin(), AllNames.end(), s);
+
+	if (res != AllNames.end())	// Nome già esistente.
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 
 void DL::Onthology::put (DL::Concept c)
 {
@@ -17,22 +29,43 @@ void DL::Onthology::put (DL::Individual c)
 	AllIndividuals.push_back(c);
 }
 
-void DL::Onthology::put_c (std::string s)
+void DL::Onthology::put_c (std::string& s)
 {
-	DL::Concept c(s);
-	AllConcepts.push_back(c);
+	if (check_name(s))	// Nome già esistente.
+	{
+		throw std::logic_error("Name already exists.");
+	}
+	else
+	{
+		AllNames.push_back(s);
+		AllConcepts.push_back(DL::Concept(s));
+	}
 }
 
-void DL::Onthology::put_r (std::string s)
+void DL::Onthology::put_r (std::string& s)
 {
-	DL::Role c(s);
-	AllRoles.push_back(c);
+	if (check_name(s))	// Nome già esistente.
+	{
+		throw std::logic_error("Name already exists.");
+	}
+	else
+	{
+		AllNames.push_back(s);
+		AllRoles.push_back(DL::Role(s));
+	}
 }
 
-void DL::Onthology::put_i (std::string s)
+void DL::Onthology::put_i (std::string& s)
 {
-	DL::Individual c(s);
-	AllIndividuals.push_back(c);
+	if (check_name(s))	// Nome già esistente.
+	{
+		throw std::logic_error("Name already exists.");
+	}
+	else
+	{
+		AllNames.push_back(s);
+		AllIndividuals.push_back(DL::Individual(s));
+	}
 }
 
 DL::Individual::Individual (std::string name)

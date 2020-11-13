@@ -31,7 +31,6 @@
 %s NAMES_DECL
 %s TBOX
 %s ABOX
-%s INT_D
 %s QUERY
 %x COMMENT
 
@@ -47,19 +46,19 @@ SECTION ^[ \t]*%%[ \t]*$
 %}
 
 	/* Changing section with "%%" */
-<NAMES_DECL>{SECTION}	{ BEGIN TBOX; }
-<TBOX>{SECTION}			{ BEGIN ABOX; }
-<ABOX>{SECTION}			{ BEGIN INT_D; }
-<INT_D>{SECTION}		{ BEGIN QUERY; }
+<NAMES_DECL>{SECTION}	{ BEGIN TBOX; return token::SECTION; }
+<TBOX>{SECTION}			{ BEGIN ABOX; return token::SECTION; }
+<ABOX>{SECTION}			{ BEGIN QUERY; return token::SECTION; }
 
 	/* Single character literal tokens */
 	/* DL punctuation */
-"."	/* Used in restrictions. E.g.: EX role . Concept */
+"."		// Used in restrictions. E.g.: EX role . Concept
 ":" |	// Used in assertions. E.g.: indv : Concept
 "," |	// Separator used in role assertions. E.g.: (i1, i2) : role
 ";" |	// End of statenìment.
 "#" |	// Cardinality of a concept. E.g.: #Concept
-"!" |	// Complement of a concept. E.g.: !Concept.
+"!" |	// Complement of a concept. E.g.: !Concept
+"?" |	// Query marker. E.g.: a : C ?
 	/* Brackets */
 "(" |
 ")" |
@@ -78,27 +77,27 @@ SECTION ^[ \t]*%%[ \t]*$
 -?[0-9]+	{ yylval->build<int>(atoi(yytext)); return token::INTVAL; }
 
 	/* Boolean values */
-TRUE	{ yylval->build<int>(1); return token::BOOLVAL; }
-FALSE	{ yylval->build<int>(0); return token::BOOLVAL; }
+TRUE	{ yylval->build<bool>(true); return token::BOOLVAL; }
+FALSE	{ yylval->build<bool>(false); return token::BOOLVAL; }
 
 	/* Strings */
 \"[^"\n]*\"	{ yylval->build<std::string>(yytext); return token::STRVAL; }
 \"[^"\n]*$	{ DL::DL_Scanner::yyerror(std::string("Unterminated string ").append(yytext)); }
 
 	/* Keywords */
-ALL		{ return token::ALL; }
-BOOL	{ return token::BOOL; }
-CONCEPT	{ return token::CONCEPT; }
-CONJ(UNCTION)?	{ return token::CONJ; }
-DISJ(UNCTION)?	{ return token::DISJ; }
-EX(ISTS)?	{ return token::EX; }
-INDIVIDUAL|INDV	{ return token::INDV; }
-INT		{ return token::INT; }
-NOTHING	{ return token::NOTHING; }
-ROLE	{ return token::ROLE; }
-STR(ING)?	{ return token::STR; }
-SUBS(UMPTION)?	{ return token::SUBS; }
-THING	{ return token::THING; }
+<TBOX,QUERY>ALL		{ return token::ALL; }
+BOOL	{ return token::BOOL; } //?
+<NAMES_DECL>CONCEPT	{ return token::CONCEPT; }
+<TBOX,QUERY>CONJ(UNCTION)?	{ return token::CONJ; }
+<TBOX,QUERY>DISJ(UNCTION)?	{ return token::DISJ; }
+<TBOX,QUERY>EX(ISTS)?	{ return token::EX; }
+<NAMES_DECL>(INDIVIDUAL|INDV)	{ return token::INDV; }
+INT		{ return token::INT; } //?
+<QUERY>NOTHING	{ return token::NOTHING; }
+<NAMES_DECL>ROLE	{ return token::ROLE; }
+STR(ING)?	{ return token::STR; } //?
+<TBOX,QUERY>SUBS(UMPTION)?	{ return token::SUBS; }
+<TBOX,ABOX,QUERY>THING	{ return token::THING; }
 
 	/* Unquoted names */
 [a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }

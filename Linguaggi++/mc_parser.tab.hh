@@ -47,14 +47,14 @@
       class MC_Scanner;
    }
 
-// The following definitions is missing when %locations isn't used
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
+	// The following definitions is missing when %locations isn't used
+	# ifndef YY_NULLPTR
+	#  if defined __cplusplus && 201103L <= __cplusplus
+	#   define YY_NULLPTR nullptr
+	#  else
+	#   define YY_NULLPTR 0
+	#  endif
+	# endif
 
 
 #line 61 "mc_parser.tab.hh" // lalr1.cc:377
