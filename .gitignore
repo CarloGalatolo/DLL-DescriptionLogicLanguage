@@ -14,3 +14,23 @@ parser.tab.c
 parser.tab.h
 
 Mario/Mario.txt
+
+*.o
+
+lexer.yy.cc
+
+Linguaggi\+\+/mc_lexer.yy.cc
+
+location.hh
+
+*.out
+
+*.output
+
+parser.tab.cc
+
+parser.tab.hh
+
+position.hh
+
+stack.hh

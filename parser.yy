@@ -1,7 +1,6 @@
 %skeleton "lalr1.cc"
 %require "3.0"
 %language "c++"
-%debug 
 %defines
 %define api.namespace {DL}
 %define parser_class_name {DL_Parser}
@@ -53,7 +52,8 @@
 */
 %token <int> BOOLVAL INTVAL
 %token <std::string> NAME STRVAL
-%token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING END SECTION
+%token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING SECTION
+%token END 0 "end of file"
 
 //%type <a> EXP IstanceIndividual
 %type <std::string> name
@@ -90,25 +90,59 @@ name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
 ;
 */
 
-program:	names_decl SECTION tbox SECTION abox SECTION queries
-		|	error { error(yyla.location, std::string("Critical failure error")); }
+program:
+	END { std::cout << "Empty" << std::endl; } /* test */
+|	names_decl END	/* test */
+|	names_decl SECTION tbox	/* test 
+|	names_decl SECTION tbox SECTION abox
+|	names_decl SECTION tbox SECTION abox SECTION queries*/
 ;
 
-names_decl: decl
-		|	names_decl decl
+	/* FIRST SECTION */
+
+names_decl:
+	decl ';'
+|	names_decl decl ';'
+|	error { error(yyla.location, std::string("In Names Declaration section")); }
 ;
 
-decl:	CONCEPT NAME	{ DL::Onthology::getInstance().put_c($2); }
-	|	ROLE NAME		{ DL::Onthology::getInstance().put_r($2); }
-	|	INDV NAME		{ DL::Onthology::getInstance().put_i($2); }
+decl:
+	concept_decl
+|	role_decl
+|	indv_decl
 ;
 
-tbox:	/*t_stmt
-	|	tbox t_stmt*/
+concept_decl:
+	CONCEPT NAME			{ try DL::Onthology::getInstance().put_c($2);
+							  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+|	concept_decl ',' NAME	{ try DL::Onthology::getInstance().put_c($3);
+							  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
 ;
 
-t_stmt:	/*concept SUBS concept
-	|	concept SUBS THING*/
+role_decl:
+	ROLE NAME			{ try DL::Onthology::getInstance().put_r($2);
+						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+|	role_decl ',' NAME	{ try DL::Onthology::getInstance().put_r($3);
+						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+;
+
+indv_decl:
+	INDV NAME			{ try DL::Onthology::getInstance().put_i($2);
+						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+|	indv_decl ',' NAME	{ try DL::Onthology::getInstance().put_i($3);
+						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+;
+
+	/* SECOND SECTION */
+
+tbox:
+	t_stmt ';'
+|	tbox t_stmt ';'
+|	error { error(yyla.location, std::string("In TBox Section")); }
+;
+
+t_stmt:
+	NAME SUBS NAME 
 ;
 
 concept:

@@ -1,0 +1,3 @@
+CONCEPT Allenatore, Calciatore, Presidente;
+ROLE allena, possiede, giocaCon;
+INDV pirlo, ronaldo, dybala, bonucci, agnelli;

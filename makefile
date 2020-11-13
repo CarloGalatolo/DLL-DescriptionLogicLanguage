@@ -1,7 +1,7 @@
 CC    ?= clang
 CXX   ?= clang++
 
-EXE = dlogic.out
+EXE = names_decl_test.out
 
 CDEBUG = -g -Wall
 
@@ -14,7 +14,7 @@ CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD)
 CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
 
 
-CPPOBJ = main src/dl_driver src/Onthology
+CPPOBJ = test/names_decl src/dl_driver src/Onthology
 SOBJ = parser lexer
 #SLIBS = src/Othology
 

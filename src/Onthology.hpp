@@ -16,35 +16,32 @@ namespace DL
 	class Onthology
 	{
 	public:
-		std::vector<Individual> AllIndividuals;
-		std::vector<Role> AllRoles;
-		std::vector<Concept> AllConcepts;
-		std::vector<std::string> AllNames;
-		
-		std::vector<Concept>& thing = AllConcepts;
-		std::vector<Concept> nothing;
+		std::vector<Individual> allIndividuals;	// Same as THING
+		std::vector<Role> allRoles;
+		std::vector<Concept> allConcepts;
+		std::vector<std::string> allNames;
 
 		static Onthology& getInstance ()
 		{
 			static Onthology instance;
 			return instance;
 		}
-
-		bool check_name (std::string&) const;
+	
 		Concept find_c (std::string) const;
 
-		void put (Concept);
-		void put (Role);
-		void put (Individual);
-		void put_c (std::string&);
-		void put_r (std::string&);
-		void put_i (std::string&);
+		void put (Concept);		// throws exception
+		void put (Role);		// throws exception
+		void put (Individual);	// throws exception
+		void put_c (std::string&);	// throws exception
+		void put_r (std::string&);	// throws exception
+		void put_i (std::string&);	// throws exception
 
 	private:
 		Onthology () {}
 		Onthology (Onthology const&) = delete;
 		~Onthology () {}
 		void operator = (Onthology const&) = delete;
+		bool checkNames (const std::string&) const;
 	};
 
 	class Individual
@@ -70,7 +67,7 @@ namespace DL
 	{
 	private:
 		std::string name;
-		std::map<Individual*, Individual*> pairs;
+		std::multimap<Individual*, Individual*> pairs;
 
 	public:
 		Role () {}
@@ -78,7 +75,7 @@ namespace DL
 		~Role () {}
 
 		std::string getName () const;
-		std::map<Individual*, Individual*> getPairs () const;
+		std::multimap<Individual*, Individual*> getPairs () const;
 		void insert (Individual*, Individual*);
 	};
 
@@ -87,6 +84,8 @@ namespace DL
 	private:
 		std::string name;
 		std::vector<Individual*> individuals;
+		std::vector<Concept*> subsumes; // Concepts that this concept subsumes.
+		std::vector<Concept*> subsumed;	// Concepts that subsume this concept.
 
 	public:
 		Concept () {}
@@ -95,6 +94,13 @@ namespace DL
 
 		std::string getName () const;
 		std::vector<Individual*> getIndividuals () const;
-		void addIndividual (Individual*);
+
+		void addIndividual (Individual*);	// throws exception
+		void addSubsumes (Concept*);	// throws exception
+		void addSubsumed (Concept*);	// throws exception
+
+	private:
+		bool checkIndividuals (const Individual*) const;
+		bool checkSubs (const Concept*, const bool) const;	// bool = true -> subsumes; bool = false -> subsumed.
 	};
 }

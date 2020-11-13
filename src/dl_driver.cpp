@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include "dl_driver.hpp"
+#include "Onthology.hpp"
 
 DL::DL_Driver::~DL_Driver()
 {
@@ -12,8 +13,7 @@ DL::DL_Driver::~DL_Driver()
    parser = nullptr;
 }
 
-void 
-DL::DL_Driver::parse( const char * const filename )
+void DL::DL_Driver::parse( const char* const filename )
 {
    /**
     * Remember, if you want to have checks in release mode
@@ -41,39 +41,34 @@ DL::DL_Driver::parse( std::istream &stream )
    return;
 }
 
-
-void 
-DL::DL_Driver::parse_helper( std::istream &stream )
+void DL::DL_Driver::parse_helper( std::istream &stream )
 {
    delete(scanner);
-
    try
    {
       scanner = new DL::DL_Scanner( &stream );
    }
    catch( std::bad_alloc &ba )
    {
-      std::cerr << "Failed to allocate scanner: (" <<
-         ba.what() << "), exiting!!\n";
+      std::cerr << "Failed to allocate scanner: (" << ba.what() << "), exiting!!\n";
       exit( EXIT_FAILURE );
    }
    
    delete(parser); 
    try
    {
-      parser = new DL::DL_Parser( (*scanner) /* scanner */, 
-                                  (*this) /* driver */ );
+      parser = new DL::DL_Parser( (*scanner) /* scanner */, (*this) /* driver */ );
    }
    catch( std::bad_alloc &ba )
    {
-      std::cerr << "Failed to allocate parser: (" << 
-         ba.what() << "), exiting!!\n";
+      std::cerr << "Failed to allocate parser: (" << ba.what() << "), exiting!!\n";
       exit( EXIT_FAILURE );
    }
-   const int accept( 0 );
+
+   const int accept = 0;
    if( parser->parse() != accept )
    {
-      std::cerr << "Parse failed!!\n";
+      std::cerr << "Parse failed!!" << std::endl;
    }
    return;
 }
@@ -123,6 +118,8 @@ DL::DL_Driver::add_char()
 { 
    chars++; 
 }
+
+
 
 
 std::ostream& 

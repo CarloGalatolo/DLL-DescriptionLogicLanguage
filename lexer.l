@@ -21,19 +21,16 @@
 	int oldstate;
 %}
 
-%option debug
 %option nodefault
 %option yyclass="DL::DL_Scanner"
 %option noyywrap
 %option c++
 
 /* Start states */
-%s NAMES_DECL
 %s TBOX
 %s ABOX
 %s QUERY
 %x COMMENT
-
 
 /* A line containing only "%%" and white spaces. */
 SECTION ^[ \t]*%%[ \t]*$
@@ -42,11 +39,10 @@ SECTION ^[ \t]*%%[ \t]*$
 
 %{  /* Code executed at the beginning of yylex */
 	yylval = lval;
-	BEGIN NAMES_DECL;
 %}
 
 	/* Changing section with "%%" */
-<NAMES_DECL>{SECTION}	{ BEGIN TBOX; return token::SECTION; }
+{SECTION}	{ BEGIN TBOX; return token::SECTION; }
 <TBOX>{SECTION}			{ BEGIN ABOX; return token::SECTION; }
 <ABOX>{SECTION}			{ BEGIN QUERY; return token::SECTION; }
 
@@ -54,7 +50,7 @@ SECTION ^[ \t]*%%[ \t]*$
 	/* DL punctuation */
 "."		// Used in restrictions. E.g.: EX role . Concept
 ":" |	// Used in assertions. E.g.: indv : Concept
-"," |	// Separator used in role assertions. E.g.: (i1, i2) : role
+"," |	// Separator. Used in role assertions. E.g.: (i1, i2) : role
 ";" |	// End of statenìment.
 "#" |	// Cardinality of a concept. E.g.: #Concept
 "!" |	// Complement of a concept. E.g.: !Concept
@@ -87,14 +83,14 @@ FALSE	{ yylval->build<bool>(false); return token::BOOLVAL; }
 	/* Keywords */
 <TBOX,QUERY>ALL		{ return token::ALL; }
 BOOL	{ return token::BOOL; } //?
-<NAMES_DECL>CONCEPT	{ return token::CONCEPT; }
+CONCEPT	{ return token::CONCEPT; }
 <TBOX,QUERY>CONJ(UNCTION)?	{ return token::CONJ; }
 <TBOX,QUERY>DISJ(UNCTION)?	{ return token::DISJ; }
 <TBOX,QUERY>EX(ISTS)?	{ return token::EX; }
-<NAMES_DECL>(INDIVIDUAL|INDV)	{ return token::INDV; }
+(INDIVIDUAL|INDV)	{ return token::INDV; }
 INT		{ return token::INT; } //?
 <QUERY>NOTHING	{ return token::NOTHING; }
-<NAMES_DECL>ROLE	{ return token::ROLE; }
+ROLE	{ return token::ROLE; }
 STR(ING)?	{ return token::STR; } //?
 <TBOX,QUERY>SUBS(UMPTION)?	{ return token::SUBS; }
 <TBOX,ABOX,QUERY>THING	{ return token::THING; }
