@@ -18,7 +18,7 @@
 	/* update location on matching */
 	#define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 
-	int oldstate;
+	int oldstate;	// Usato nei commenti.
 %}
 
 %option nodefault
@@ -27,6 +27,7 @@
 %option c++
 
 /* Start states */
+%s NAMES_DECL
 %s TBOX
 %s ABOX
 %s QUERY
@@ -39,13 +40,18 @@ SECTION ^[ \t]*%%[ \t]*$
 
 %{  /* Code executed at the beginning of yylex */
 	yylval = lval;
+	BEGIN NAMES_DECL;
 %}
 
 	/* Changing section with "%%" */
-{SECTION}	{ BEGIN TBOX; return token::SECTION; }
+<NAMES_DECL>{SECTION}	{ BEGIN TBOX; return token::SECTION; }
 <TBOX>{SECTION}			{ BEGIN ABOX; return token::SECTION; }
 <ABOX>{SECTION}			{ BEGIN QUERY; return token::SECTION; }
-
+ /*
+<NAMES_DECL><<EOF>>	{ DL::DL_Scanner::yyerror("Unfinished names declaration before EOF."); }
+<TBOX><<EOF>>		{ DL::DL_Scanner::yyerror("Unfinished TBox before EOF."); }
+<ABOX><<EOF>>		{ DL::DL_Scanner::yyerror("Unfinished ABox before EOF."); }
+ */
 	/* Single character literal tokens */
 	/* DL punctuation */
 "."		// Used in restrictions. E.g.: EX role . Concept
@@ -83,14 +89,14 @@ FALSE	{ yylval->build<bool>(false); return token::BOOLVAL; }
 	/* Keywords */
 <TBOX,QUERY>ALL		{ return token::ALL; }
 BOOL	{ return token::BOOL; } //?
-CONCEPT	{ return token::CONCEPT; }
+<NAMES_DECL>CONCEPT	{ return token::CONCEPT; }
 <TBOX,QUERY>CONJ(UNCTION)?	{ return token::CONJ; }
 <TBOX,QUERY>DISJ(UNCTION)?	{ return token::DISJ; }
 <TBOX,QUERY>EX(ISTS)?	{ return token::EX; }
-(INDIVIDUAL|INDV)	{ return token::INDV; }
+<NAMES_DECL>(INDIVIDUAL|INDV)	{ return token::INDV; }
 INT		{ return token::INT; } //?
 <QUERY>NOTHING	{ return token::NOTHING; }
-ROLE	{ return token::ROLE; }
+<NAMES_DECL>ROLE	{ return token::ROLE; }
 STR(ING)?	{ return token::STR; } //?
 <TBOX,QUERY>SUBS(UMPTION)?	{ return token::SUBS; }
 <TBOX,ABOX,QUERY>THING	{ return token::THING; }

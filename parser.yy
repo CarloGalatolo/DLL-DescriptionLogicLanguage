@@ -1,7 +1,8 @@
 %skeleton "lalr1.cc"
 %require "3.0"
-%language "c++"
+%language "C++"
 %defines
+%locations
 %define api.namespace {DL}
 %define parser_class_name {DL_Parser}
 
@@ -93,7 +94,7 @@ name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
 program:
 	END { std::cout << "Empty" << std::endl; } /* test */
 |	names_decl END	/* test */
-|	names_decl SECTION tbox	/* test 
+|	names_decl SECTION tbox END	/* test 
 |	names_decl SECTION tbox SECTION abox
 |	names_decl SECTION tbox SECTION abox SECTION queries*/
 ;
@@ -113,24 +114,24 @@ decl:
 ;
 
 concept_decl:
-	CONCEPT NAME			{ try DL::Onthology::getInstance().put_c($2);
-							  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
-|	concept_decl ',' NAME	{ try DL::Onthology::getInstance().put_c($3);
-							  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+	CONCEPT NAME			{ try {DL::Onthology::getInstance().put_c($2);}
+							  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+|	concept_decl ',' NAME	{ try {DL::Onthology::getInstance().put_c($3);}
+							  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
 ;
 
 role_decl:
-	ROLE NAME			{ try DL::Onthology::getInstance().put_r($2);
-						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
-|	role_decl ',' NAME	{ try DL::Onthology::getInstance().put_r($3);
-						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+	ROLE NAME			{ try {DL::Onthology::getInstance().put_r($2);}
+						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+|	role_decl ',' NAME	{ try {DL::Onthology::getInstance().put_r($3);}
+						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
 ;
 
 indv_decl:
-	INDV NAME			{ try DL::Onthology::getInstance().put_i($2);
-						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
-|	indv_decl ',' NAME	{ try DL::Onthology::getInstance().put_i($3);
-						  catch (std::logic_error e) error(yyla.location, std::string(e.what())); }
+	INDV NAME			{ try {DL::Onthology::getInstance().put_i($2);}
+						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+|	indv_decl ',' NAME	{ try {DL::Onthology::getInstance().put_i($3);}
+						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
 ;
 
 	/* SECOND SECTION */
@@ -175,5 +176,5 @@ void DL::DL_Parser::error( const location_type &l, const std::string &err_messag
 	// In caso di try/catch:
 	//	error(yyla.location, std::string(e.what()));
 	std::cerr << "Error: " << err_message << " at " << l << "\n";
-	exit( EXIT_FAILURE );
+	//exit( EXIT_FAILURE );
 }

@@ -20,7 +20,7 @@ void DL::Onthology::put (DL::Concept c)
 {
 	if (checkNames(c.getName()))	// Nome già esistente.
 	{
-		throw std::logic_error("Name already exists.");
+		throw std::logic_error("Name already existing");
 	}
 	else
 	{
