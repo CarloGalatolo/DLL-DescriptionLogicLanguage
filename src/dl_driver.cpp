@@ -73,6 +73,12 @@ void DL::DL_Driver::parse_helper( std::istream &stream )
    return;
 }
 
+void DL::DL_Driver::critical_error (const DL::DL_Parser::location_type& l, const std::string& err_message)
+{
+	std::cerr << "Error: " << err_message << std::endl;
+	exit(EXIT_FAILURE);
+}
+
 void 
 DL::DL_Driver::add_upper()
 { 

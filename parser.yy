@@ -3,6 +3,7 @@
 %language "C++"
 %defines
 %locations
+%error-verbose
 %define api.namespace {DL}
 %define parser_class_name {DL_Parser}
 
@@ -129,9 +130,9 @@ role_decl:
 
 indv_decl:
 	INDV NAME			{ try {DL::Onthology::getInstance().put_i($2);}
-						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+						  catch (std::logic_error e) {error(@$, std::string(e.what()));} }
 |	indv_decl ',' NAME	{ try {DL::Onthology::getInstance().put_i($3);}
-						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+						  catch (std::logic_error e) {error(@$, std::string(e.what()));} }
 ;
 
 	/* SECOND SECTION */
@@ -175,6 +176,5 @@ void DL::DL_Parser::error( const location_type &l, const std::string &err_messag
 	//	error(yyla.location, std::string("LA STRINGA"));
 	// In caso di try/catch:
 	//	error(yyla.location, std::string(e.what()));
-	std::cerr << "Error: " << err_message << " at " << l << "\n";
-	//exit( EXIT_FAILURE );
+	std::cerr << "Error: " << err_message << std::endl;
 }
