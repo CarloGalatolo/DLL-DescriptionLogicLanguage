@@ -116,16 +116,16 @@ decl:
 
 concept_decl:
 	CONCEPT NAME			{ try {DL::Onthology::getInstance().put_c($2);}
-							  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+							  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
 |	concept_decl ',' NAME	{ try {DL::Onthology::getInstance().put_c($3);}
-							  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+							  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
 ;
 
 role_decl:
 	ROLE NAME			{ try {DL::Onthology::getInstance().put_r($2);}
-						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+						  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
 |	role_decl ',' NAME	{ try {DL::Onthology::getInstance().put_r($3);}
-						  catch (std::logic_error e) {error(yyla.location, std::string(e.what()));} }
+						  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
 ;
 
 indv_decl:
