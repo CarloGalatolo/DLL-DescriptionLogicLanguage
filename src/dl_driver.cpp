@@ -73,10 +73,15 @@ void DL::DL_Driver::parse_helper( std::istream &stream )
    return;
 }
 
-void DL::DL_Driver::critical_error (const DL::DL_Parser::location_type& l, const std::string& err_message)
+void DL::DL_Driver::critical_error (/*const DL::DL_Parser::location_type& l, */const std::string& err_message)
 {
-	std::cerr << "Error: " << err_message << std::endl;
+	std::cerr << "Crtical error: " << err_message << std::endl;
 	exit(EXIT_FAILURE);
+}
+
+void DL::DL_Driver::soft_error (const std::string& s)
+{
+	std::cerr << "Noncritical error: " << s << std::endl;
 }
 
 void 

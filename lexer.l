@@ -25,6 +25,7 @@
 %option yyclass="DL::DL_Scanner"
 %option noyywrap
 %option c++
+%option yylineno
 
 /* Start states */
 %s NAMES_DECL

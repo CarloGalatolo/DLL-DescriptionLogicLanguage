@@ -105,7 +105,7 @@ program:
 names_decl:
 	decl ';'
 |	names_decl decl ';'
-|	error { error(yyla.location, std::string("In Names Declaration section")); }
+|	error { error(@$, std::string("In Names Declaration section")); }
 ;
 
 decl:
@@ -116,23 +116,23 @@ decl:
 
 concept_decl:
 	CONCEPT NAME			{ try {DL::Onthology::getInstance().put_c($2);}
-							  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
+							  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
 |	concept_decl ',' NAME	{ try {DL::Onthology::getInstance().put_c($3);}
-							  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
+							  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
 ;
 
 role_decl:
 	ROLE NAME			{ try {DL::Onthology::getInstance().put_r($2);}
-						  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
+						  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
 |	role_decl ',' NAME	{ try {DL::Onthology::getInstance().put_r($3);}
-						  catch (std::logic_error e) {error(yyla.location, std::string(e.what())); exit(EXIT_FAILURE);} }
+						  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
 ;
 
 indv_decl:
 	INDV NAME			{ try {DL::Onthology::getInstance().put_i($2);}
-						  catch (std::logic_error e) {error(@$, std::string(e.what()));} }
+						  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
 |	indv_decl ',' NAME	{ try {DL::Onthology::getInstance().put_i($3);}
-						  catch (std::logic_error e) {error(@$, std::string(e.what()));} }
+						  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
 ;
 
 	/* SECOND SECTION */
@@ -140,11 +140,11 @@ indv_decl:
 tbox:
 	t_stmt ';'
 |	tbox t_stmt ';'
-|	error { error(yyla.location, std::string("In TBox Section")); }
+|	error { error(@$, std::string("In TBox Section")); }
 ;
 
 t_stmt:
-	NAME SUBS NAME 
+	NAME SUBS NAME	{  }
 ;
 
 concept:
@@ -177,4 +177,5 @@ void DL::DL_Parser::error( const location_type &l, const std::string &err_messag
 	// In caso di try/catch:
 	//	error(yyla.location, std::string(e.what()));
 	std::cerr << "Error: " << err_message << std::endl;
+	exit(EXIT_FAILURE);
 }

@@ -7,7 +7,7 @@
 
 #include "dl_scanner.hpp"
 #include "../parser.tab.hh"
-#include "location.hh"
+#include "../location.hh"
 
 namespace DL{
 
@@ -28,7 +28,8 @@ public:
     */
    void parse( std::istream &iss );
 
-   void critical_error (const DL::DL_Parser::location_type&, const std::string&);
+   void critical_error (/*const DL::DL_Parser::location_type&,*/const std::string&);
+   void soft_error (const std::string&);
 
    void add_upper();
    void add_lower();

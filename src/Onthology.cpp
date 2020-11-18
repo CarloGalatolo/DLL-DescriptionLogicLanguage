@@ -2,20 +2,6 @@
 
 // === CLASS ONTHOLOGY ===
 
-bool DL::Onthology::checkNames (const std::string& s) const
-{
-	auto res = std::find(allNames.begin(), allNames.end(), s);
-
-	if (res != allNames.end())	// Nome già esistente.
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
 void DL::Onthology::put (DL::Concept c)
 {
 	if (checkNames(c.getName()))	// Nome già esistente.
@@ -91,6 +77,70 @@ void DL::Onthology::put_i (std::string& s)
 	{
 		allNames.push_back(s);
 		allIndividuals.push_back(DL::Individual(s));
+	}
+}
+
+void DL::Onthology::subsumption (DL::Concept* a, DL::Concept* b) // a subsumed by b
+{
+	if (!checkConcepts(a->getName())) throw std::logic_error("First name is not a concept");
+	if (!checkConcepts(b->getName())) throw std::logic_error("Second name is not a concept");
+
+	a->addSubsumed(b);
+}
+
+bool DL::Onthology::checkNames (const std::string& s) const
+{
+	auto res = std::find(allNames.begin(), allNames.end(), s);
+
+	if (res != allNames.end())	// Nome già esistente.
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool DL::Onthology::checkConcepts (const std::string& s) const
+{
+	auto res = std::find(allConcepts.begin(), allConcepts.end(), s);
+
+	if (res != allConcepts.end())	// Nome già esistente.
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool DL::Onthology::checkRoles (const std::string& s) const
+{
+	auto res = std::find(allRoles.begin(), allRoles.end(), s);
+
+	if (res != allRoles.end())	// Nome già esistente.
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool DL::Onthology::checkIndividuals (const std::string& s) const
+{
+	auto res = std::find(allIndividuals.begin(), allIndividuals.end(), s);
+
+	if (res != allIndividuals.end())	// Nome già esistente.
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -174,7 +224,9 @@ void DL::Concept::addIndividual (DL::Individual* i)
 	else
 	{
 		individuals.push_back(i);
-		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++){
+		i->addConcept(this);
+		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++)
+		{
 			(*it)->addIndividual(i);
 		}
 	}
@@ -189,10 +241,12 @@ void DL::Concept::addSubsumes (DL::Concept* c)
 	if (!this->checkSubs(c, true))
 	{
 		this->subsumes.push_back(c);
+		c->subsumed.push_back(this);
 
 		for (auto i = this->subsumed.begin(); i != this->subsumed.end(); i++)
 		{
 			(*i)->addSubsumes(c);
+			c->addSubsumed(*i);
 		}
 	}
 }
@@ -206,10 +260,12 @@ void DL::Concept::addSubsumed (DL::Concept* c)
 	if (!this->checkSubs(c, false))
 	{
 		this->subsumed.push_back(c);
+		c->subsumes.push_back(this);
 
 		for (auto i = this->subsumes.begin(); i != this->subsumes.end(); i++)
 		{
 			(*i)->addSubsumed(c);
+			c->addSubsumes(*i);
 		}
 	}
 }

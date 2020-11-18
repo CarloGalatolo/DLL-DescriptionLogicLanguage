@@ -4,6 +4,8 @@
 #include <map>
 #include <algorithm>
 #include <exception>
+#define SUBSUMES true
+#define SUBSUMED false
 
 namespace DL
 {
@@ -35,6 +37,7 @@ namespace DL
 		void put_c (std::string&);	// throws exception
 		void put_r (std::string&);	// throws exception
 		void put_i (std::string&);	// throws exception
+		void subsumption (Concept*, Concept*);	// throws exception
 
 	private:
 		Onthology () {}
@@ -42,6 +45,9 @@ namespace DL
 		~Onthology () {}
 		void operator = (Onthology const&) = delete;
 		bool checkNames (const std::string&) const;
+		bool checkConcepts (const std::string&) const;
+		bool checkRoles (const std::string&) const;
+		bool checkIndividuals (const std::string&) const;
 	};
 
 	class Individual
