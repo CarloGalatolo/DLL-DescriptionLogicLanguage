@@ -34,3 +34,5 @@ parser.tab.hh
 position.hh
 
 stack.hh
+
+.vscode/settings.json
