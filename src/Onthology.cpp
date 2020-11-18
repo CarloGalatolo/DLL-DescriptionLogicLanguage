@@ -174,6 +174,9 @@ void DL::Concept::addIndividual (DL::Individual* i)
 	else
 	{
 		individuals.push_back(i);
+		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++){
+			(*it)->addIndividual(i);
+		}
 	}
 }
 
