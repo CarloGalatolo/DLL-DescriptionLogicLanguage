@@ -45,6 +45,8 @@ namespace DL
 		~Onthology () {}
 		void operator = (Onthology const&) = delete;
 		bool checkNames (const std::string&) const;
+		template<class InputIterator, class T>
+  		InputIterator myFind (InputIterator first, InputIterator last, const T& val) const;
 		bool checkConcepts (const std::string&) const;
 		bool checkRoles (const std::string&) const;
 		bool checkIndividuals (const std::string&) const;
@@ -95,11 +97,14 @@ namespace DL
 
 	public:
 		Concept () {}
-		Concept (std::string);
+		Concept (std::string&);
+		Concept (const Concept&);
 		~Concept () {}
 
 		std::string getName () const;
 		std::vector<Individual*> getIndividuals () const;
+		std::vector<Concept*>* getSubsumes();
+		std::vector<Concept*>* getSubsumed();
 
 		void addIndividual (Individual*);	// throws exception
 		void addSubsumes (Concept*);	// throws exception

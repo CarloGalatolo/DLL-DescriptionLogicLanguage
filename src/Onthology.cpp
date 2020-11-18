@@ -102,9 +102,19 @@ bool DL::Onthology::checkNames (const std::string& s) const
 	}
 }
 
+template<class InputIterator, class T>
+InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, const T& val) const
+{
+  while (first!=last) {
+    if ((*first).getName()==val) return first;
+    ++first;
+  }
+  return last;
+}
+
 bool DL::Onthology::checkConcepts (const std::string& s) const
 {
-	auto res = std::find(allConcepts.begin(), allConcepts.end(), s);
+	auto res = myFind(allConcepts.begin(), allConcepts.end(), s);
 
 	if (res != allConcepts.end())	// Nome già esistente.
 	{
@@ -118,7 +128,7 @@ bool DL::Onthology::checkConcepts (const std::string& s) const
 
 bool DL::Onthology::checkRoles (const std::string& s) const
 {
-	auto res = std::find(allRoles.begin(), allRoles.end(), s);
+	auto res = myFind(allRoles.begin(), allRoles.end(), s);
 
 	if (res != allRoles.end())	// Nome già esistente.
 	{
@@ -132,7 +142,7 @@ bool DL::Onthology::checkRoles (const std::string& s) const
 
 bool DL::Onthology::checkIndividuals (const std::string& s) const
 {
-	auto res = std::find(allIndividuals.begin(), allIndividuals.end(), s);
+	auto res = myFind(allIndividuals.begin(), allIndividuals.end(), s);
 
 	if (res != allIndividuals.end())	// Nome già esistente.
 	{
@@ -200,9 +210,14 @@ inline void DL::Role::insert (DL::Individual* first, DL::Individual* second)
 
 // === CLASS CONCEPT ===
 
-DL::Concept::Concept (std::string name)
+DL::Concept::Concept (std::string& name)
 {
 	this->name = name;
+}
+
+DL::Concept::Concept (const Concept& c)
+{
+	*this = c;
 }
 
 inline std::string DL::Concept::getName () const
@@ -210,9 +225,19 @@ inline std::string DL::Concept::getName () const
 	return this->name;
 }
 
-inline std::vector<DL::Individual*> DL::Concept::getIndividuals () const
+std::vector<DL::Individual*> DL::Concept::getIndividuals () const
 {
 	return this->individuals;
+}
+
+std::vector<DL::Concept*>* DL::Concept::getSubsumes ()
+{
+	return &(*this).subsumes;
+}
+
+std::vector<DL::Concept*>* DL::Concept::getSubsumed ()
+{
+	return &(*this).subsumes;
 }
 
 void DL::Concept::addIndividual (DL::Individual* i)

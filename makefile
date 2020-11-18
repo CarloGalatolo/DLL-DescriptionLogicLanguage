@@ -14,7 +14,7 @@ CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD)
 CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
 
 
-CPPOBJ = test/names_decl src/dl_driver src/Onthology
+CPPOBJ = test/types src/dl_driver src/Onthology
 SOBJ = parser lexer
 #SLIBS = src/Othology
 
