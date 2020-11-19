@@ -103,8 +103,8 @@ namespace DL
 
 		std::string getName () const;
 		std::vector<Individual*> getIndividuals () const;
-		std::vector<Concept*>* getSubsumes();
-		std::vector<Concept*>* getSubsumed();
+		std::vector<Concept*> getSubsumes() const;
+		std::vector<Concept*> getSubsumed() const;
 
 		void addIndividual (Individual*);	// throws exception
 		void addSubsumes (Concept*);	// throws exception

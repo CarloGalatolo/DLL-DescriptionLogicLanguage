@@ -230,14 +230,16 @@ std::vector<DL::Individual*> DL::Concept::getIndividuals () const
 	return this->individuals;
 }
 
-std::vector<DL::Concept*>* DL::Concept::getSubsumes ()
+std::vector<DL::Concept*> DL::Concept::getSubsumes () const
 {
-	return &(*this).subsumes;
+	/*ATTENZIONE NON USARE CON GLI ITERATORI*/
+	return (*this).subsumes;
 }
 
-std::vector<DL::Concept*>* DL::Concept::getSubsumed ()
+std::vector<DL::Concept*> DL::Concept::getSubsumed () const
 {
-	return &(*this).subsumes;
+	/*ATTENZIONE NON USARE CON GLI ITERATORI*/
+	return (*this).subsumed;
 }
 
 void DL::Concept::addIndividual (DL::Individual* i)
