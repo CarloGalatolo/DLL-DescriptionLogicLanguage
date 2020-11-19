@@ -136,13 +136,28 @@ DL::Individual& DL::Onthology::get_i (std::string& s)
 
 void DL::Onthology::subsumption (std::string& a, std::string& b) // a subsumed by b
 {
-	Concept* c1 = get_c(a), c2 = get_c(b);
+	Concept& c1 = get_c(a), c2 = get_c(b);
 	c1.addSubsumed(&c2);
 }
 
-DL::Concept DL::Onthology::disjunction (std::string& s1, std::string s2) // s1 DISJ s2
+DL::Concept DL::Onthology::disjunction (std::string& s1, std::string& s2) // s1 DISJ s2
 {
+	Concept& c1 = get_c(s1), c2 = get_c(s2);
+	std::string name = s1 + "CONJ" + s2;
+	Concept res(name);
+	try
+	{
+		for(int i = 0; i < c1.getIndividuals().size(); i++){
+			res.addIndividual(c1.getIndividuals().at(i));
+		}
 
+		for(int i = 0; i < c2.getIndividuals().size(); i++){
+			res.addIndividual(c2.getIndividuals().at(i));
+		}
+		return res;
+	}
+	catch(const std::exception& e)
+	{	}
 }
 
 bool DL::Onthology::checkNames (const std::string& s) const

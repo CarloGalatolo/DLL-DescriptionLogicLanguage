@@ -40,7 +40,7 @@ namespace DL
 		Role& 	   get_r (std::string&);
 		Individual& get_i (std::string&);
 		void subsumption (std::string&, std::string&);
-		Concept disjunction (std::string&, std::string&) const;
+		Concept disjunction (std::string&, std::string&);
 
 	private:
 		Onthology () {}
