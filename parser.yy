@@ -41,27 +41,16 @@
 	#define yylex scanner.yylex
 }
 
-%define api.value.type variant	// Ignores union
-%define parse.assert
-
-/*
-%union {
-	int intval;
-	char* strval;
-	int subtok;
-	struct ast *a;
-}
-*/
 %token <int> BOOLVAL INTVAL
 %token <std::string> NAME STRVAL
 %token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING SECTION
 %token END 0 "end of file"
 
 //%type <a> EXP IstanceIndividual
-%type <std::string> name
+%type <std::string> name complex_concept
 %type <DL::Individual> indv
 %type <DL::Role> role
-%type <DL::Concept> complex_concept
+//%type <DL::Concept> 
 
 	/* Precedence levels */
 %nonassoc '?'
@@ -70,8 +59,6 @@
 %nonassoc CONJ DISJ
 %left '!'
 %nonassoc '.'
-
-%locations
 
 %%
 
@@ -145,12 +132,14 @@ tbox:
 
 t_stmt:
 	NAME SUBS NAME	{ DL::Onthology::subsumption($1, $3); }
-	complex_concept SUBS NAME { DL::Onthology::subsumption($1.getName(), $3); }
+|	NAME SUBS THING
+|	complex_concept SUBS NAME { DL::Onthology::subsumption($1, $3); }
+|	complex_concept SUBS THING
 ;
 	// CAPIRE SE FUNZIONA
 complex_concept:
-	NAME CONJ NAME {  }
-	NAME DISJ NAME {  }
+	NAME CONJ NAME { DL::Onthology::conjunction($1, $3); }
+|	NAME DISJ NAME { DL::Onthology::disjunction($1, $3); }
 /*	complex_concept CONJ concept
 |	complex_concept DISJ concept
 |	'!' complex_concept

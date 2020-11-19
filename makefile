@@ -1,10 +1,9 @@
 CC    ?= clang
 CXX   ?= clang++
 
-EXE = names_decl_test.out
+EXE = test/tbox_test.out
 
 CDEBUG = -g -Wall
-
 CXXDEBUG = -g -Wall
 
 CSTD = -std=c99
@@ -13,16 +12,12 @@ CXXSTD = -std=c++11
 CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
 CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
 
-
-CPPOBJ = test/types src/dl_driver src/Onthology
+CPPOBJ = test/tbox_test src/dl_driver src/Onthology
 SOBJ = parser lexer
-#SLIBS = src/Othology
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
 
 OBJS  = $(addsuffix .o, $(CPPOBJ))
-
-#LIBS = $(addsuffix .hpp, $(SLIBS))
 
 CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 				parser.tab.cc parser.tab.hh \
@@ -31,9 +26,9 @@ CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 				lexer.o lexer.yy.cc $(EXE)\
 
 .PHONY: all
-all: wc
+all: dl
 
-wc: $(FILES)
+dl: $(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)

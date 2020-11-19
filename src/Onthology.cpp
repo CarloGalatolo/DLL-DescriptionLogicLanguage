@@ -140,24 +140,64 @@ void DL::Onthology::subsumption (std::string& a, std::string& b) // a subsumed b
 	c1.addSubsumed(&c2);
 }
 
-DL::Concept DL::Onthology::disjunction (std::string& s1, std::string& s2) // s1 DISJ s2
+std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Unione
+{
+	Concept& c1 = get_c(s1), c2 = get_c(s2);
+	std::string name = s1 + "DISJ" + s2;
+	Concept res(name);
+
+	for(auto i = c1.getIndividuals().begin(); i != c1.getIndividuals().end(); i++){
+		try
+		{
+			res.addIndividual((*i));
+		}
+		catch (std::exception e)
+		{
+			// No problem.
+		}
+	}
+
+	for(auto i = c2.getIndividuals().begin(); i != c2.getIndividuals().end(); i++){
+		try
+		{
+			res.addIndividual((*i));
+		}
+		catch (std::exception e)
+		{
+			// No problem.
+		}
+	}
+
+	put(res);
+	return name;
+}
+
+std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Intersezione
 {
 	Concept& c1 = get_c(s1), c2 = get_c(s2);
 	std::string name = s1 + "CONJ" + s2;
 	Concept res(name);
-	try
-	{
-		for(auto i = c1.getIndividuals().begin(); i != c1.getIndividuals().end(); i++){
-			res.addIndividual((*i));
-		}
 
-		for(auto i = c2.getIndividuals().begin(); i != c2.getIndividuals().end(); i++){
-			res.addIndividual((*i));
+	for (int i = 0; i != c1.getIndividuals().size(); i++)
+	{
+		for (int j = 0; j != c2.getIndividuals().size(); j++)
+		{
+			if (c1.getIndividuals().at(i)->getName() == c2.getIndividuals().at(j)->getName())
+			{
+				try
+				{
+					res.addIndividual(c1.getIndividuals().at(i));
+				}
+				catch(const std::exception& e)
+				{
+					// No problem.
+				}
+			}
 		}
-		return res;
 	}
-	catch(const std::exception& e)
-	{	}
+
+	put(res);
+	return name;
 }
 
 bool DL::Onthology::checkNames (const std::string& s) const

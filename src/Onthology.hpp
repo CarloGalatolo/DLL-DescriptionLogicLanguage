@@ -39,8 +39,9 @@ namespace DL
 		Concept&    get_c (std::string&);
 		Role& 	   get_r (std::string&);
 		Individual& get_i (std::string&);
-		void subsumption (std::string&, std::string&);
-		Concept disjunction (std::string&, std::string&);
+		void 		subsumption (std::string&, std::string&);
+		std::string disjunction (std::string&, std::string&);
+		std::string conjunction (std::string&, std::string&);
 
 	private:
 		Onthology () {}
