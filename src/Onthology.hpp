@@ -36,11 +36,11 @@ namespace DL
 		void put_c (std::string&);	// throws exception
 		void put_r (std::string&);	// throws exception
 		void put_i (std::string&);	// throws exception
-		Concept    get_c (std::string&) const;
-		Role 	   get_r (std::string&) const;
-		Individual get_i (std::string&) const;
+		Concept&    get_c (std::string&);
+		Role& 	   get_r (std::string&);
+		Individual& get_i (std::string&);
 		void subsumption (std::string&, std::string&);
-		Concept disjunction (std::string&, std::string&)
+		Concept disjunction (std::string&, std::string&) const;
 
 	private:
 		Onthology () {}

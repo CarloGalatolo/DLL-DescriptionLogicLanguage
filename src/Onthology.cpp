@@ -80,7 +80,7 @@ void DL::Onthology::put_i (std::string& s)
 	}
 }
 
-DL::Concept DL::Onthology::get_c (std::string& s) const
+DL::Concept& DL::Onthology::get_c (std::string& s)
 {
 	auto res = myFind(allConcepts.begin(), allConcepts.end(), s);
 
@@ -94,10 +94,11 @@ DL::Concept DL::Onthology::get_c (std::string& s) const
 		exit(EXIT_FAILURE);
 	}
 	
-	return *res;
+	Concept& r = *res;
+	return r;
 }
 
-DL::Role DL::Onthology::get_r (std::string& s) const
+DL::Role& DL::Onthology::get_r (std::string& s)
 {
 	auto res = myFind(allRoles.begin(), allRoles.end(), s);
 	
@@ -111,10 +112,11 @@ DL::Role DL::Onthology::get_r (std::string& s) const
 		exit(EXIT_FAILURE);
 	}
 	
-	return *res;
+	Role& r = *res;
+	return r;
 }
 
-DL::Individual DL::Onthology::get_i (std::string& s) const
+DL::Individual& DL::Onthology::get_i (std::string& s)
 {
 	auto res = myFind(allIndividuals.begin(), allIndividuals.end(), s);
 	
@@ -128,13 +130,19 @@ DL::Individual DL::Onthology::get_i (std::string& s) const
 		exit(EXIT_FAILURE);
 	}
 	
-	return *res;
+	Individual& r = *res;
+	return r;
 }
 
 void DL::Onthology::subsumption (std::string& a, std::string& b) // a subsumed by b
 {
-	Concept c1 = get_c(a), c2 = get_c(b);
+	Concept* c1 = get_c(a), c2 = get_c(b);
 	c1.addSubsumed(&c2);
+}
+
+DL::Concept DL::Onthology::disjunction (std::string& s1, std::string s2) // s1 DISJ s2
+{
+
 }
 
 bool DL::Onthology::checkNames (const std::string& s) const
