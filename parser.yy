@@ -61,15 +61,15 @@
 %type <std::string> name
 %type <DL::Individual> indv
 %type <DL::Role> role
-%type <DL::Concept> concept
+%type <DL::Concept> complex_concept
 
 	/* Precedence levels */
 %nonassoc '?'
 %left <int> COMPARISON
 %nonassoc '#'
-%left CONJ DISJ
+%nonassoc CONJ DISJ
 %left '!'
-%right '.'
+%nonassoc '.'
 
 %locations
 
@@ -144,7 +144,18 @@ tbox:
 ;
 
 t_stmt:
-	NAME SUBS NAME	{  }
+	NAME SUBS NAME	{ DL::Onthology::subsumption($1, $3); }
+	complex_concept SUBS NAME { DL::Onthology::subsumption($1.getName(), $3); }
+;
+	// CAPIRE SE FUNZIONA
+complex_concept:
+	NAME CONJ NAME {  }
+	NAME DISJ NAME {  }
+/*	complex_concept CONJ concept
+|	complex_concept DISJ concept
+|	'!' complex_concept
+|	EX role '.' complex_concept
+|	ALL role '.' complex_concept */
 ;
 
 concept:
@@ -159,14 +170,7 @@ indv:
 abox:;
 queries:;
 
-	// CAPIRE SE FUNZIONA
-complex_concept:	concept
-				|	complex_concept CONJ concept
-				|	complex_concept DISJ concept
-				|	'!' complex_concept
-				|	EX role '.' complex_concept
-				|	ALL role '.' complex_concept
-;
+
 
 %%
 

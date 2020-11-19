@@ -80,12 +80,61 @@ void DL::Onthology::put_i (std::string& s)
 	}
 }
 
-void DL::Onthology::subsumption (DL::Concept* a, DL::Concept* b) // a subsumed by b
+DL::Concept DL::Onthology::get_c (std::string& s) const
 {
-	if (!checkConcepts(a->getName())) throw std::logic_error("First name is not a concept");
-	if (!checkConcepts(b->getName())) throw std::logic_error("Second name is not a concept");
+	auto res = myFind(allConcepts.begin(), allConcepts.end(), s);
 
-	a->addSubsumed(b);
+	try
+	{
+		if (res == allConcepts.end()) throw std::runtime_error("Concept doesn't exixt");
+	}
+	catch (std::runtime_error e)
+	{
+		std::cerr << "Error in getting a concept: " << e.what() << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	return *res;
+}
+
+DL::Role DL::Onthology::get_r (std::string& s) const
+{
+	auto res = myFind(allRoles.begin(), allRoles.end(), s);
+	
+	try
+	{
+		if (res == allRoles.end()) throw std::runtime_error("Concept doesn't exixt");
+	}
+	catch (std::runtime_error e)
+	{
+		std::cerr << e.what() << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	return *res;
+}
+
+DL::Individual DL::Onthology::get_i (std::string& s) const
+{
+	auto res = myFind(allIndividuals.begin(), allIndividuals.end(), s);
+	
+	try
+	{
+		if (res == allIndividuals.end()) throw std::runtime_error("Concept doesn't exixt");
+	}
+	catch (std::runtime_error e)
+	{
+		std::cerr << e.what() << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	return *res;
+}
+
+void DL::Onthology::subsumption (std::string& a, std::string& b) // a subsumed by b
+{
+	Concept c1 = get_c(a), c2 = get_c(b);
+	c1.addSubsumed(&c2);
 }
 
 bool DL::Onthology::checkNames (const std::string& s) const
@@ -114,9 +163,7 @@ InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, co
 
 bool DL::Onthology::checkConcepts (const std::string& s) const
 {
-	auto res = myFind(allConcepts.begin(), allConcepts.end(), s);
-
-	if (res != allConcepts.end())	// Nome già esistente.
+	if (myFind(allConcepts.begin(), allConcepts.end(), s) != allConcepts.end())	// Nome già esistente.
 	{
 		return true;
 	}
@@ -128,9 +175,7 @@ bool DL::Onthology::checkConcepts (const std::string& s) const
 
 bool DL::Onthology::checkRoles (const std::string& s) const
 {
-	auto res = myFind(allRoles.begin(), allRoles.end(), s);
-
-	if (res != allRoles.end())	// Nome già esistente.
+	if (myFind(allRoles.begin(), allRoles.end(), s) != allRoles.end())	// Nome già esistente.
 	{
 		return true;
 	}
@@ -142,9 +187,7 @@ bool DL::Onthology::checkRoles (const std::string& s) const
 
 bool DL::Onthology::checkIndividuals (const std::string& s) const
 {
-	auto res = myFind(allIndividuals.begin(), allIndividuals.end(), s);
-
-	if (res != allIndividuals.end())	// Nome già esistente.
+	if (myFind(allIndividuals.begin(), allIndividuals.end(), s) != allIndividuals.end())	// Nome già esistente.
 	{
 		return true;
 	}

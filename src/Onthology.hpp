@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
@@ -29,15 +30,17 @@ namespace DL
 			return instance;
 		}
 	
-		Concept find_c (std::string) const;
-
 		void put (Concept);		// throws exception
 		void put (Role);		// throws exception
 		void put (Individual);	// throws exception
 		void put_c (std::string&);	// throws exception
 		void put_r (std::string&);	// throws exception
 		void put_i (std::string&);	// throws exception
-		void subsumption (Concept*, Concept*);	// throws exception
+		Concept    get_c (std::string&) const;
+		Role 	   get_r (std::string&) const;
+		Individual get_i (std::string&) const;
+		void subsumption (std::string&, std::string&);
+		Concept disjunction (std::string&, std::string&)
 
 	private:
 		Onthology () {}
