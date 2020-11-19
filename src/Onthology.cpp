@@ -2,7 +2,7 @@
 
 // === CLASS ONTHOLOGY ===
 
-void DL::Onthology::put (DL::Concept c)
+void DL::Onthology::put (DL::Concept& c)
 {
 	if (checkNames(c.getName()))	// Nome già esistente.
 	{
@@ -86,11 +86,11 @@ DL::Concept& DL::Onthology::get_c (std::string& s)
 
 	try
 	{
-		if (res == allConcepts.end()) throw std::runtime_error("Concept doesn't exixt");
+		if (res == allConcepts.end()) throw std::runtime_error("Concept doesn't exixt: ");
 	}
 	catch (std::runtime_error e)
 	{
-		std::cerr << "Error in getting a concept: " << e.what() << std::endl;
+		std::cerr << "Error in getting a concept: " << e.what() << s << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	
@@ -108,7 +108,7 @@ DL::Role& DL::Onthology::get_r (std::string& s)
 	}
 	catch (std::runtime_error e)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cerr << "Error in getting a role: " << e.what() << s << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	
@@ -126,7 +126,7 @@ DL::Individual& DL::Onthology::get_i (std::string& s)
 	}
 	catch (std::runtime_error e)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cerr << "Error in getting an individual: " << e.what() << s << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	
@@ -145,7 +145,7 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 	Concept& c1 = get_c(s1), c2 = get_c(s2);
 	std::string name = s1 + "DISJ" + s2;
 	Concept res(name);
-
+/*
 	for(auto i = c1.getIndividuals().begin(); i != c1.getIndividuals().end(); i++){
 		try
 		{
@@ -167,8 +167,11 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 			// No problem.
 		}
 	}
-
+*/
+	std::cout << " subs " << std::endl;
 	put(res);
+	c1.addSubsumed(&get_c(name));
+	c2.addSubsumed(&get_c(name));
 	return name;
 }
 
@@ -177,10 +180,10 @@ std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Int
 	Concept& c1 = get_c(s1), c2 = get_c(s2);
 	std::string name = s1 + "CONJ" + s2;
 	Concept res(name);
-
-	for (int i = 0; i != c1.getIndividuals().size(); i++)
+/*
+	for (size_t i = 0; i != c1.getIndividuals().size(); i++)
 	{
-		for (int j = 0; j != c2.getIndividuals().size(); j++)
+		for (size_t j = 0; j != c2.getIndividuals().size(); j++)
 		{
 			if (c1.getIndividuals().at(i)->getName() == c2.getIndividuals().at(j)->getName())
 			{
@@ -195,7 +198,7 @@ std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Int
 			}
 		}
 	}
-
+*/
 	put(res);
 	return name;
 }
@@ -321,11 +324,6 @@ DL::Concept::Concept (std::string& name)
 	this->name = name;
 }
 
-DL::Concept::Concept (const Concept& c)
-{
-	*this = c;
-}
-
 inline std::string DL::Concept::getName () const
 {
 	return this->name;
@@ -370,7 +368,7 @@ void DL::Concept::addSubsumes (DL::Concept* c)
 	/**
 	 * Aggiunge un puntatore al vettore dei concetti contenuti da questo concetto.
 	 */
-
+	std::cout << " subsumes " << std::endl;
 	if (!this->checkSubs(c, true))
 	{
 		this->subsumes.push_back(c);
@@ -389,7 +387,7 @@ void DL::Concept::addSubsumed (DL::Concept* c)
 	/**
 	 * Aggiunge un puntatore al vettore dei concetti che contengono questo concetto.
 	 */
-
+	std::cout << " subsumed " << std::endl;
 	if (!this->checkSubs(c, false))
 	{
 		this->subsumed.push_back(c);

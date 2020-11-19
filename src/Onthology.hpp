@@ -30,7 +30,7 @@ namespace DL
 			return instance;
 		}
 	
-		void put (Concept);		// throws exception
+		void put (Concept&);		// throws exception
 		void put (Role);		// throws exception
 		void put (Individual);	// throws exception
 		void put_c (std::string&);	// throws exception
@@ -102,7 +102,6 @@ namespace DL
 	public:
 		Concept () {}
 		Concept (std::string&);
-		Concept (const Concept&);
 		~Concept () {}
 
 		std::string getName () const;

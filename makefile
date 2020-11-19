@@ -25,10 +25,7 @@ CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 			    stack.hh parser.output parser.o \
 				lexer.o lexer.yy.cc $(EXE)\
 
-.PHONY: all
-all: dl
-
-dl: $(FILES)
+all:$(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)

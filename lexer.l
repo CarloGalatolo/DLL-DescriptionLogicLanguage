@@ -28,10 +28,10 @@
 %option yylineno
 
 /* Start states */
-%s NAMES_DECL
-%s TBOX
-%s ABOX
-%s QUERY
+/* %s NAMES_DECL */
+/* %s TBOX */
+/* %s ABOX */
+/* %s QUERY */
 %x COMMENT
 
 /* A line containing only "%%" and white spaces. */
@@ -41,10 +41,12 @@ SECTION ^[ \t]*%%[ \t]*$
 
 %{  /* Code executed at the beginning of yylex */
 	yylval = lval;
-	BEGIN NAMES_DECL;
+	// BEGIN NAMES_DECL;
 %}
 
 	/* Changing section with "%%" */
+{SECTION} { return token::SECTION; }
+ /*
 <NAMES_DECL>{SECTION}	{ BEGIN TBOX; return token::SECTION; }
 <TBOX>{SECTION}			{ BEGIN ABOX; return token::SECTION; }
 <ABOX>{SECTION}			{ BEGIN QUERY; return token::SECTION; }
@@ -88,19 +90,19 @@ FALSE	{ yylval->build<bool>(false); return token::BOOLVAL; }
 \"[^"\n]*$	{ DL::DL_Scanner::yyerror(std::string("Unterminated string ").append(yytext)); }
 
 	/* Keywords */
-<TBOX,QUERY>ALL		{ return token::ALL; }
+ALL		{ return token::ALL; }
 BOOL	{ return token::BOOL; } //?
-<NAMES_DECL>CONCEPT	{ return token::CONCEPT; }
-<TBOX,QUERY>CONJ(UNCTION)?	{ return token::CONJ; }
-<TBOX,QUERY>DISJ(UNCTION)?	{ return token::DISJ; }
-<TBOX,QUERY>EX(ISTS)?	{ return token::EX; }
-<NAMES_DECL>(INDIVIDUAL|INDV)	{ return token::INDV; }
+CONCEPT	{ return token::CONCEPT; }
+CONJ(UNCTION)?	{ return token::CONJ; }
+DISJ(UNCTION)?	{ return token::DISJ; }
+EX(ISTS)?	{ return token::EX; }
+(INDIVIDUAL|INDV)	{ return token::INDV; }
 INT		{ return token::INT; } //?
-<QUERY>NOTHING	{ return token::NOTHING; }
-<NAMES_DECL>ROLE	{ return token::ROLE; }
+NOTHING	{ return token::NOTHING; }
+ROLE	{ return token::ROLE; }
 STR(ING)?	{ return token::STR; } //?
-<TBOX,QUERY>SUBS(UMPTION)?	{ return token::SUBS; }
-<TBOX,ABOX,QUERY>THING	{ return token::THING; }
+SUBS(UMPTION)?	{ return token::SUBS; }
+THING	{ return token::THING; }
 
 	/* Unquoted names */
 [a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
@@ -116,12 +118,3 @@ STR(ING)?	{ return token::STR; } //?
 "//".*  ;	// C++-style comment.
 
 %%
-/*
-main (int argc, char **argv) {
-	yyparse();	
-}
-
-void yyerror (char *s, ...) {
-	fprintf (stderr, "%s\n", s);
-}
-*/
