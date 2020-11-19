@@ -147,12 +147,12 @@ DL::Concept DL::Onthology::disjunction (std::string& s1, std::string& s2) // s1 
 	Concept res(name);
 	try
 	{
-		for(int i = 0; i < c1.getIndividuals().size(); i++){
-			res.addIndividual(c1.getIndividuals().at(i));
+		for(auto i = c1.getIndividuals().begin(); i != c1.getIndividuals().end(); i++){
+			res.addIndividual((*i));
 		}
 
-		for(int i = 0; i < c2.getIndividuals().size(); i++){
-			res.addIndividual(c2.getIndividuals().at(i));
+		for(auto i = c2.getIndividuals().begin(); i != c2.getIndividuals().end(); i++){
+			res.addIndividual((*i));
 		}
 		return res;
 	}
