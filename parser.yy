@@ -2,7 +2,6 @@
 %require "3.0"
 %language "C++"
 %defines
-%locations
 %error-verbose
 %define api.namespace {DL}
 %define parser_class_name {DL_Parser}
@@ -34,12 +33,14 @@
 	#include <cstdio>
 	#include <cstring>
 	#include <string>
-	#include "Tree.h"
 	#include "src/dl_driver.hpp"
 
 	#undef yylex
 	#define yylex scanner.yylex
 }
+
+%define api.value.type variant	// Ignores union
+%define parse.assert
 
 %token <int> BOOLVAL INTVAL
 %token <std::string> NAME STRVAL
@@ -59,6 +60,8 @@
 %nonassoc CONJ DISJ
 %left '!'
 %nonassoc '.'
+
+%locations
 
 %%
 
@@ -131,15 +134,15 @@ tbox:
 ;
 
 t_stmt:
-	NAME SUBS NAME	{ DL::Onthology::subsumption($1, $3); }
+	NAME SUBS NAME	{ DL::Onthology::getInstance().subsumption($1, $3); }
 |	NAME SUBS THING
-|	complex_concept SUBS NAME { DL::Onthology::subsumption($1, $3); }
+|	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept SUBS THING
 ;
 	// CAPIRE SE FUNZIONA
 complex_concept:
-	NAME CONJ NAME { DL::Onthology::conjunction($1, $3); }
-|	NAME DISJ NAME { DL::Onthology::disjunction($1, $3); }
+	NAME CONJ NAME { DL::Onthology::getInstance().conjunction($1, $3); }
+|	NAME DISJ NAME { DL::Onthology::getInstance().disjunction($1, $3); }
 /*	complex_concept CONJ concept
 |	complex_concept DISJ concept
 |	'!' complex_concept
