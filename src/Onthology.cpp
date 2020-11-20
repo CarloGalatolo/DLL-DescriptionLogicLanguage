@@ -1,4 +1,16 @@
 #include "Onthology.hpp"
+using std::string;
+
+template<class K, class V>
+typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>& map, const std::pair<K, V>& pair)
+{
+    typedef multimap<K, V>::const_iterator it;
+    std::pair<it,it> range = map.equal_range(pair.first);
+    for (it p = range.first; p != range.second; ++p)
+        if (p->second == pair.second)
+            return p;
+    return map.end();
+}
 
 // === CLASS ONTHOLOGY ===
 
@@ -15,7 +27,7 @@ void DL::Onthology::put (DL::Concept& c)
 	}
 }
 
-void DL::Onthology::put (DL::Role r)
+void DL::Onthology::put (DL::Role& r)
 {
 	if (checkNames(r.getName()))	// Nome già esistente.
 	{
@@ -28,7 +40,7 @@ void DL::Onthology::put (DL::Role r)
 	}
 }
 
-void DL::Onthology::put (DL::Individual i)
+void DL::Onthology::put (DL::Individual& i)
 {
 	if (checkNames(i.getName()))	// Nome già esistente.
 	{
@@ -88,7 +100,7 @@ DL::Concept& DL::Onthology::get_c (std::string& s)
 	{
 		if (res == allConcepts.end()) throw std::runtime_error("Concept doesn't exixt: ");
 	}
-	catch (std::runtime_error e)
+	catch (std::runtime_error e) // Critical error
 	{
 		std::cerr << "Error in getting a concept: " << e.what() << s << std::endl;
 		exit(EXIT_FAILURE);
@@ -124,7 +136,7 @@ DL::Individual& DL::Onthology::get_i (std::string& s)
 	{
 		if (res == allIndividuals.end()) throw std::runtime_error("Concept doesn't exixt");
 	}
-	catch (std::runtime_error e)
+	catch (std::runtime_error e) // Critical error
 	{
 		std::cerr << "Error in getting an individual: " << e.what() << s << std::endl;
 		exit(EXIT_FAILURE);
@@ -312,9 +324,24 @@ inline std::multimap<DL::Individual*, DL::Individual*> DL::Role::getPairs () con
 	return this->pairs;
 }
 
-inline void DL::Role::insert (DL::Individual* first, DL::Individual* second)
+inline void DL::Role::insert (string& s1, string& s2)
 {
-	pairs.insert(std::pair<DL::Individual*, DL::Individual*>(first, second));
+	DL::Individual i1 = DL::Onthology::getInstance().get_i(s1);
+	DL::Individual i2 = DL::Onthology::getInstance().get_i(s2);
+
+	DL::Individual* first = &i1;
+	DL::Individual* second = &i2;
+
+	std::pair<DL::Individual*, DL::Individual*> p = std::make_pair(first, second);
+
+	if (find_pair(pairs, p) != pairs.end())
+	{
+		pairs.insert(p);
+	}
+	else
+	{
+		throw std::logic_error("In role assertion: already existing.");
+	}
 }
 
 // === CLASS CONCEPT ===
@@ -363,11 +390,32 @@ void DL::Concept::addIndividual (DL::Individual* i)
 	}
 }
 
+void DL::Concept::addIndividual (string& s)
+{
+	DL::Individual in = DL::Onthology::getInstance().get_i(s);
+	DL::Individual* i = &in;
+	
+	if (this->checkIndividuals(i))
+	{
+		throw std::logic_error(" Adding Individual: already exists ");
+	}
+	else
+	{
+		individuals.push_back(i);
+		i->addConcept(this);
+		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++)
+		{
+			(*it)->addIndividual(i);
+		}
+	}
+}
+
+/*
 void DL::Concept::addSubsumes (DL::Concept* c)
 {
 	/**
 	 * Aggiunge un puntatore al vettore dei concetti contenuti da questo concetto.
-	 */
+	 *
 	std::cout << " subsumes " << std::endl;
 	if (!this->checkSubs(c, true))
 	{
@@ -386,7 +434,7 @@ void DL::Concept::addSubsumed (DL::Concept* c)
 {
 	/**
 	 * Aggiunge un puntatore al vettore dei concetti che contengono questo concetto.
-	 */
+	 *
 	std::cout << " subsumed " << std::endl;
 	if (!this->checkSubs(c, false))
 	{
@@ -400,7 +448,7 @@ void DL::Concept::addSubsumed (DL::Concept* c)
 		}
 	}
 }
-
+*/
 bool DL::Concept::checkIndividuals (const DL::Individual* indv) const
 {
 	auto res = std::find(this->individuals.begin(), this->individuals.end(), indv);

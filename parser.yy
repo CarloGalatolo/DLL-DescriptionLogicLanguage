@@ -48,7 +48,7 @@
 %token END 0 "end of file"
 
 //%type <a> EXP IstanceIndividual
-%type <std::string> name complex_concept
+%type <std::string> name complex_concept indv_assert role_assert
 %type <DL::Individual> indv
 %type <DL::Role> role
 //%type <DL::Concept> 
@@ -85,7 +85,7 @@ name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
 program:
 	END { std::cout << "Empty" << std::endl; } /* test */
 |	names_decl END	/* test */
-|	names_decl SECTION tbox END	/* test 
+|	names_decl SECTION abox END	/* test 
 |	names_decl SECTION tbox SECTION abox
 |	names_decl SECTION tbox SECTION abox SECTION queries*/
 ;
@@ -127,6 +127,35 @@ indv_decl:
 
 	/* SECOND SECTION */
 
+abox:
+	a_stmt ';'
+|	abox a_stmt ';'
+|	error { error(@$, std::string("In ABox Section")); }
+;
+
+a_stmt:
+	indv_assert
+|	role_assert
+;
+
+indv_assert:
+	NAME ':' NAME		 { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
+							catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
+							$$ = $3; }
+|	NAME ',' indv_assert { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
+							catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
+							$$ = $3; }
+;
+
+role_assert:
+	'(' NAME ',' NAME ')' ':' NAME			{ try {DL::Onthology::getInstance().get_r($7).insert($2, $4);}
+												catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
+												$$ = $7; }
+|	'(' NAME ',' NAME ')' ',' role_assert	{ try {DL::Onthology::getInstance().get_r($7).insert($2, $4);}
+												catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
+												$$ = $7; }
+
+/*
 tbox:
 	t_stmt ';'
 |	tbox t_stmt ';'
@@ -142,25 +171,16 @@ t_stmt:
 ;
 	// CAPIRE SE FUNZIONA
 complex_concept:
-	NAME CONJ NAME { DL::Onthology::getInstance().conjunction($1, $3);  }
+	NAME CONJ NAME { DL::Onthology::getInstance().conjunction($1, $3); }
 |	NAME DISJ NAME { DL::Onthology::getInstance().disjunction($1, $3); }
 /*	complex_concept CONJ concept
 |	complex_concept DISJ concept
 |	'!' complex_concept
 |	EX role '.' complex_concept
-|	ALL role '.' complex_concept */
+|	ALL role '.' complex_concept 
 ;
+*/
 
-concept:
-;
-
-role: 
-;
-
-indv: 
-;
-
-abox:;
 queries:;
 
 
