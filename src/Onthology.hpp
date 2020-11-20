@@ -7,6 +7,7 @@
 #include <exception>
 #define SUBSUMES true
 #define SUBSUMED false
+using std::string;
 
 namespace DL
 {
@@ -24,20 +25,23 @@ namespace DL
 		std::vector<Concept> allConcepts;
 		std::vector<std::string> allNames;
 
+		std::multimap<Concept*, Concept*> subsGraph; // Grafo delle sussunzioni
+		std::map<Concept*, Concept*> negateGrahp;	 // Grafo delle negazioni
+
 		static Onthology& getInstance ()
 		{
 			static Onthology instance;
 			return instance;
 		}
 	
-		void put (Concept&);		// throws exception
-		void put (Role);		// throws exception
-		void put (Individual);	// throws exception
+		void put (Concept&);	// throws exception
+		void put (Role&);		// throws exception
+		void put (Individual&);	// throws exception
 		void put_c (std::string&);	// throws exception
 		void put_r (std::string&);	// throws exception
 		void put_i (std::string&);	// throws exception
 		Concept&    get_c (std::string&);
-		Role& 	   get_r (std::string&);
+		Role& 	    get_r (std::string&);
 		Individual& get_i (std::string&);
 		void 		subsumption (std::string&, std::string&);
 		std::string disjunction (std::string&, std::string&);
@@ -50,7 +54,7 @@ namespace DL
 		void operator = (Onthology const&) = delete;
 		bool checkNames (const std::string&) const;
 		template<class InputIterator, class T>
-  		InputIterator myFind (InputIterator first, InputIterator last, const T& val) const;
+  			InputIterator myFind (InputIterator first, InputIterator last, const T& val) const;
 		bool checkConcepts (const std::string&) const;
 		bool checkRoles (const std::string&) const;
 		bool checkIndividuals (const std::string&) const;
@@ -88,7 +92,7 @@ namespace DL
 
 		std::string getName () const;
 		std::multimap<Individual*, Individual*> getPairs () const;
-		void insert (Individual*, Individual*);
+		void insert (string&, string&); // throws exception
 	};
 
 	class Concept
@@ -106,12 +110,13 @@ namespace DL
 
 		std::string getName () const;
 		std::vector<Individual*> getIndividuals () const;
-		std::vector<Concept*> getSubsumes() const;
-		std::vector<Concept*> getSubsumed() const;
+		std::vector<Concept*>    getSubsumes () const;
+		std::vector<Concept*>    getSubsumed () const;
 
 		void addIndividual (Individual*);	// throws exception
-		void addSubsumes (Concept*);	// throws exception
-		void addSubsumed (Concept*);	// throws exception
+		void addIndividual (string&);		// throws exception
+		//void addSubsumes (Concept*);	// throws exception
+		//void addSubsumed (Concept*);	// throws exception
 
 	private:
 		bool checkIndividuals (const Individual*) const;
