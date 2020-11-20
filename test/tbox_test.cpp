@@ -35,6 +35,25 @@ std::ostream& print( std::ostream &stream )
 	return(stream);
 }
 
+void print_subs (DL::Concept &c)
+{
+	std::cout << "I concetti contenuti da " << c.getName() << std::endl;
+
+
+	if(!c.getSubsumes().empty()){
+		for(int i = 0; i < c.getSubsumes().size(); i++){
+			std::cout << c.getSubsumes().at(i)->getName() << std::endl;
+		}
+	}
+
+	std::cout << "I concetti che contengono " << c.getName() << std::endl;
+	if(!c.getSubsumed().empty()){
+		for(int i = 0; i < c.getSubsumed().size(); i++){
+			std::cout << c.getSubsumed().at(i)->getName() << std::endl;
+		}
+	}
+}
+
 int main ( const int argc, const char **argv )
 {
 	if (argc == 2)
@@ -42,6 +61,12 @@ int main ( const int argc, const char **argv )
 		DL::DL_Driver driver;
 		driver.parse( argv[1] );
 		print( std::cout ) << std::endl;
+
+		for (auto it = DL::Onthology::getInstance().allConcepts.begin(); it != DL::Onthology::getInstance().allConcepts.end(); it++)
+		{
+			print_subs(*it);
+		}
+
 		return (EXIT_SUCCESS);
 	}
 	else

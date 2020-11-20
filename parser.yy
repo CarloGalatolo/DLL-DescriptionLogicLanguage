@@ -138,10 +138,11 @@ t_stmt:
 |	NAME SUBS THING
 |	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept SUBS THING
+|	complex_concept
 ;
 	// CAPIRE SE FUNZIONA
 complex_concept:
-	NAME CONJ NAME { DL::Onthology::getInstance().conjunction($1, $3); }
+	NAME CONJ NAME { DL::Onthology::getInstance().conjunction($1, $3);  }
 |	NAME DISJ NAME { DL::Onthology::getInstance().disjunction($1, $3); }
 /*	complex_concept CONJ concept
 |	complex_concept DISJ concept
@@ -172,6 +173,6 @@ void DL::DL_Parser::error( const location_type &l, const std::string &err_messag
 	//	error(yyla.location, std::string("LA STRINGA"));
 	// In caso di try/catch:
 	//	error(yyla.location, std::string(e.what()));
-	std::cerr << "Error: " << err_message << std::endl;
+	std::cerr << "Error: " << err_message << " at " << l << std::endl;
 	exit(EXIT_FAILURE);
 }
