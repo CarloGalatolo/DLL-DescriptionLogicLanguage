@@ -140,20 +140,20 @@ a_stmt:
 
 indv_assert:
 	NAME ':' NAME		 { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
-							catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
+							catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
 							$$ = $3; }
 |	NAME ',' indv_assert { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
-							catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
+							catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
 							$$ = $3; }
 ;
 
 role_assert:
 	'(' NAME ',' NAME ')' ':' NAME			{ try {DL::Onthology::getInstance().get_r($7).insert($2, $4);}
-												catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
-												$$ = $7; }
+											  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
+											  $$ = $7; }
 |	'(' NAME ',' NAME ')' ',' role_assert	{ try {DL::Onthology::getInstance().get_r($7).insert($2, $4);}
-												catch (std::exception e) {DL::DL_Driver::soft_error(e.what());}
-												$$ = $7; }
+											  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
+											  $$ = $7; }
 
 /*
 tbox:
