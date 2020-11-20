@@ -1,7 +1,7 @@
 CONCEPT Allenatore, Calciatore;
 INDV pirlo, ronaldo, dybala, bonucci, agnelli, kompany;
-
 %%
+Allenatore CONJ Calciatore;
 
 Allenatore SUBS THING;
 Calciatore SUBS THING;

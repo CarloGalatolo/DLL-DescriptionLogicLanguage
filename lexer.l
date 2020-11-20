@@ -92,11 +92,11 @@ FALSE	{ yylval->build<bool>(false); return token::BOOLVAL; }
 	/* Keywords */
 ALL		{ return token::ALL; }
 BOOL	{ return token::BOOL; } //?
-CONCEPT	{ return token::CONCEPT; }
+<NAMES_DECL>CONCEPT	{ return token::CONCEPT; }
 CONJ(UNCTION)?	{ return token::CONJ; }
 DISJ(UNCTION)?	{ return token::DISJ; }
-EX(ISTS)?	{ return token::EX; }
-(INDIVIDUAL|INDV)	{ return token::INDV; }
+<TBOX,QUERY>EX(ISTS)?	{ return token::EX; }
+<NAMES_DECL>(INDIVIDUAL|INDV)	{ return token::INDV; }
 INT		{ return token::INT; } //?
 NOTHING	{ return token::NOTHING; }
 ROLE	{ return token::ROLE; }
@@ -105,7 +105,7 @@ SUBS(UMPTION)?	{ return token::SUBS; }
 THING	{ return token::THING; }
 
 	/* Unquoted names */
-[a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
+[a-zA-Z_][a-zA-Z0-9_]* {printf("%s",yytext); yylval->build<std::string>(yytext); return token::NAME; }
 
 	/* C-style comments */
 "/*"			 { oldstate = YY_START; BEGIN COMMENT; }
@@ -118,3 +118,12 @@ THING	{ return token::THING; }
 "//".*  ;	// C++-style comment.
 
 %%
+/*
+main (int argc, char **argv) {
+	yyparse();	
+}
+
+void yyerror (char *s, ...) {
+	fprintf (stderr, "%s\n", s);
+}
+*/
