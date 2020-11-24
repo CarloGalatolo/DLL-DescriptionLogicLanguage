@@ -26,13 +26,16 @@ int main ()
 	std::string str_1("PC");
 	std::string str_2("Componente");
 	std::string str_3("Transistor");
+	std::string str_4("GPU");
 	Onthology::getInstance().put_c(str_1);
 	Onthology::getInstance().put_c(str_2);
 	Onthology::getInstance().put_c(str_3);
+	Onthology::getInstance().put_i(str_4);
+
 	try 
 	{
-		Onthology::getInstance().subsumption(&Onthology::getInstance().allConcepts.at(2), &Onthology::getInstance().allConcepts.at(1));
-		Onthology::getInstance().subsumption(&Onthology::getInstance().allConcepts.at(1), &Onthology::getInstance().allConcepts.at(0));
+		//Onthology::getInstance().subsumption(&Onthology::getInstance().allConcepts.at(2), &Onthology::getInstance().allConcepts.at(1));
+		//Onthology::getInstance().subsumption(&Onthology::getInstance().allConcepts.at(1), &Onthology::getInstance().allConcepts.at(0));
 
 		/*print_subs(Onthology::getInstance().allConcepts.at(0));*/
 
@@ -42,9 +45,14 @@ int main ()
 			std::cout << Onthology::getInstance().allConcepts.at(0).getSubsumes().at(i)->getName() << std::endl;
 		}*/
 
-		for(auto i = Onthology::getInstance().allConcepts.begin(); i!= Onthology::getInstance().allConcepts.end(); i++){
+		/*for(auto i = Onthology::getInstance().allConcepts.begin(); i!= Onthology::getInstance().allConcepts.end(); i++){
 			print_subs((*i));
-		}
+		}*/
+		Concept c = Onthology::getInstance().get_c(str_2);
+		Individual i = Onthology::getInstance().get_i(str_4);
+		c.addIndividual(&i);
+
+		std::cout << c.getIndividuals().at(0)->name << std::endl;
 	}
 	catch (logic_error e)
 	{

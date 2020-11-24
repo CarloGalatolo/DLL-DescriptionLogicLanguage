@@ -4,7 +4,7 @@ using std::string;
 template<class K, class V>
 typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>& map, const std::pair<K, V>& pair)
 {
-    typedef multimap<K, V>::const_iterator it;
+    typedef typename std::multimap<K, V>::const_iterator it;
     std::pair<it,it> range = map.equal_range(pair.first);
     for (it p = range.first; p != range.second; ++p)
         if (p->second == pair.second)
@@ -149,7 +149,7 @@ DL::Individual& DL::Onthology::get_i (std::string& s)
 void DL::Onthology::subsumption (std::string& a, std::string& b) // a subsumed by b
 {
 	Concept& c1 = get_c(a), c2 = get_c(b);
-	c1.addSubsumed(&c2);
+	//c1.addSubsumed(&c2);
 }
 
 std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Unione
@@ -182,8 +182,8 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 */
 	std::cout << " subs " << std::endl;
 	put(res);
-	c1.addSubsumed(&get_c(name));
-	c2.addSubsumed(&get_c(name));
+	//c1.addSubsumed(&get_c(name));
+	//c2.addSubsumed(&get_c(name));
 	return name;
 }
 
@@ -282,27 +282,27 @@ DL::Individual::Individual (std::string name)
 	this->name = name;
 }
 
-inline void DL::Individual::addConcept (DL::Concept* con)
+void DL::Individual::addConcept (DL::Concept* con)
 {
 	concepts.push_back(con);
 }
 
-inline void DL::Individual::addRole (DL::Role* role)
+void DL::Individual::addRole (DL::Role* role)
 {
 	roles.push_back(role);
 }
 
-inline std::string DL::Individual::getName () const
+std::string DL::Individual::getName () const
 {
 	return this->name;
 }
 
-inline std::vector<DL::Concept*> DL::Individual::getConcepts () const
+std::vector<DL::Concept*> DL::Individual::getConcepts () const
 {
 	return this->concepts;
 }
 
-inline std::vector<DL::Role*> DL::Individual::getRoles () const
+std::vector<DL::Role*> DL::Individual::getRoles () const
 {
 	return this->roles;
 }
@@ -314,17 +314,17 @@ DL::Role::Role (std::string name)
 	this->name = name;
 }
 
-inline std::string DL::Role::getName () const
+std::string DL::Role::getName () const
 {
 	return this->name;
 }
 
-inline std::multimap<DL::Individual*, DL::Individual*> DL::Role::getPairs () const
+std::multimap<DL::Individual*, DL::Individual*> DL::Role::getPairs () const
 {
 	return this->pairs;
 }
 
-inline void DL::Role::insert (string& s1, string& s2)
+void DL::Role::insert (string& s1, string& s2)
 {
 	DL::Individual i1 = DL::Onthology::getInstance().get_i(s1);
 	DL::Individual i2 = DL::Onthology::getInstance().get_i(s2);
@@ -334,7 +334,7 @@ inline void DL::Role::insert (string& s1, string& s2)
 
 	std::pair<DL::Individual*, DL::Individual*> p = std::make_pair(first, second);
 
-	if (find_pair(pairs, p) != pairs.end())
+	if (find_pair(pairs, p) == pairs.end())
 	{
 		pairs.insert(p);
 	}
@@ -351,7 +351,7 @@ DL::Concept::Concept (std::string& name)
 	this->name = name;
 }
 
-inline std::string DL::Concept::getName () const
+std::string DL::Concept::getName () const
 {
 	return this->name;
 }
@@ -375,13 +375,15 @@ std::vector<DL::Concept*> DL::Concept::getSubsumed () const
 
 void DL::Concept::addIndividual (DL::Individual* i)
 {
+	std::cout << "Controllo se posso inserire l'individuo: " << i->getName() << std::endl;
 	if (this->checkIndividuals(i))
 	{
 		throw std::logic_error("Individual already exists.");
 	}
 	else
 	{
-		individuals.push_back(i);
+		std::cout << "Sto per inserire l'individuo: " << i->getName() << std::endl;
+		this->individuals.push_back(i);
 		i->addConcept(this);
 		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++)
 		{
@@ -390,8 +392,9 @@ void DL::Concept::addIndividual (DL::Individual* i)
 	}
 }
 
-void DL::Concept::addIndividual (string& s)
+void DL::Concept::addIndividual (string s)
 {
+	std::cout << "Controllo se posso inserire l'individuo: " << s << std::endl;
 	DL::Individual in = DL::Onthology::getInstance().get_i(s);
 	DL::Individual* i = &in;
 	
@@ -401,12 +404,15 @@ void DL::Concept::addIndividual (string& s)
 	}
 	else
 	{
+		std::cout << "Sto per inserire l'individuo: " << s << std::endl;
 		individuals.push_back(i);
 		i->addConcept(this);
 		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++)
 		{
 			(*it)->addIndividual(i);
 		}
+		std::cout << "Ho inserito l'individuo: " << s << std::endl;
+		std::cout << this->individuals.at(0)->getName() << std::endl;
 	}
 }
 

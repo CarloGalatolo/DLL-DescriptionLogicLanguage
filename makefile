@@ -12,7 +12,7 @@ CXXSTD = -std=c++11
 CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
 CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
 
-CPPOBJ = test/tbox_test src/dl_driver src/Onthology
+CPPOBJ = test/abox_test src/dl_driver src/Onthology
 SOBJ = parser lexer
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
