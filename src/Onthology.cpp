@@ -275,6 +275,26 @@ bool DL::Onthology::checkIndividuals (const std::string& s) const
 	}
 }
 
+void DL::Onthology::addSubs (std::string& c_1, std::string& c_2)
+{
+	/**
+	 * Aggiunge un puntatore al vettore dei concetti contenuti da questo concetto.
+	 *
+	*/
+
+	DL::Concept* subsumed = &DL::Onthology::getInstance().get_c(c_1);
+	DL::Concept* subsumes = &DL::Onthology::getInstance().get_c(c_2);
+
+	std::pair<DL::Concept*, DL::Concept*> p = std::make_pair(subsumed, subsumes);
+	if (find_pair(this->subsGraph, p) == this->subsGraph.end())
+	{
+		this->subsGraph.insert(p);
+	}
+	else{
+		throw std::logic_error(" Subsuming: pair already exists ");
+	}
+}
+
 // === CLASS INDIVIDUAL ===
 
 DL::Individual::Individual (std::string& name)
@@ -390,22 +410,26 @@ void DL::Concept::addIndividual (DL::Individual* i)
 
 	if (this->checkIndividuals(i))
 	{
-		throw std::logic_error("Individual already exists.");
+		throw std::logic_error(" Adding Individual: already exists ");
 	}
 	else
 	{
-		this->individuals.push_back(i);
+		individuals.push_back(i);
 		i->addConcept(this);
-		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++)
+		for(auto it = Onthology::getInstance().subsGraph.begin(); it != Onthology::getInstance().subsGraph.end(); it++)
 		{
-			(*it)->addIndividual(i);
+			//(*it)->addIndividual(i);
+
+			if(it->first->name.compare(this->name) == 0){
+				it->second->addIndividual(i);
+			}
+
 		}
 	}
 }
 
 void DL::Concept::addIndividual (string& s)
 {
-	std::cout << "Controllo se posso inserire l'individuo: " << s << std::endl;
 	DL::Individual* i = &DL::Onthology::getInstance().get_i(s);
 	
 	if (i == nullptr)
@@ -420,57 +444,20 @@ void DL::Concept::addIndividual (string& s)
 	}
 	else
 	{
-		std::cout << "Sto per inserire l'individuo: " << s << std::endl;
 		individuals.push_back(i);
 		i->addConcept(this);
-		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++)
+		for(auto it = Onthology::getInstance().subsGraph.begin(); it != Onthology::getInstance().subsGraph.end(); it++)
 		{
-			(*it)->addIndividual(i);
-		}
-		std::cout << "Ho inserito l'individuo: " << s << std::endl;
-		std::cout << this->getIndividuals().at(0)->getName() << std::endl;
-	}
-}
+			//(*it)->addIndividual(i);
 
-/*
-void DL::Concept::addSubsumes (DL::Concept* c)
-{
-	/**
-	 * Aggiunge un puntatore al vettore dei concetti contenuti da questo concetto.
-	 *
-	std::cout << " subsumes " << std::endl;
-	if (!this->checkSubs(c, true))
-	{
-		this->subsumes.push_back(c);
-		c->subsumed.push_back(this);
+			if(it->first->name.compare(this->name) == 0){
+				it->second->addIndividual(s);
+			}
 
-		for (auto i = this->subsumed.begin(); i != this->subsumed.end(); i++)
-		{
-			(*i)->addSubsumes(c);
-			c->addSubsumed(*i);
 		}
 	}
 }
 
-void DL::Concept::addSubsumed (DL::Concept* c)
-{
-	/**
-	 * Aggiunge un puntatore al vettore dei concetti che contengono questo concetto.
-	 *
-	std::cout << " subsumed " << std::endl;
-	if (!this->checkSubs(c, false))
-	{
-		this->subsumed.push_back(c);
-		c->subsumes.push_back(this);
-
-		for (auto i = this->subsumes.begin(); i != this->subsumes.end(); i++)
-		{
-			(*i)->addSubsumed(c);
-			c->addSubsumes(*i);
-		}
-	}
-}
-*/
 bool DL::Concept::checkIndividuals (const DL::Individual* indv) const
 {
 	if (indv == nullptr)

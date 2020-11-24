@@ -49,6 +49,7 @@ namespace DL
 		void 		subsumption (std::string&, std::string&);
 		std::string disjunction (std::string&, std::string&);
 		std::string conjunction (std::string&, std::string&);
+		void addSubs (std::string&, std::string&);	// throws exception
 
 	private:
 		Onthology () {}
@@ -118,8 +119,6 @@ namespace DL
 
 		void addIndividual (Individual*);	// throws exception
 		void addIndividual (string&);		// throws exception
-		//void addSubsumes (Concept*);	// throws exception
-		//void addSubsumed (Concept*);	// throws exception
 
 	private:
 		bool checkIndividuals (const Individual*) const;
