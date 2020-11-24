@@ -62,12 +62,12 @@ namespace DL
 
 	class Individual
 	{
-	public:
+	private:
 		std::string name;
 		std::vector<Concept*> concepts;
 		std::vector<Role*> roles;
 
-	
+	public:
 		Individual () {}
 		Individual (std::string);
 		~Individual () {}
@@ -81,10 +81,11 @@ namespace DL
 
 	class Role
 	{
-	public:
+	private:
 		std::string name;
 		std::multimap<Individual*, Individual*> pairs;
 
+	public:
 		Role () {}
 		Role (std::string);
 		~Role () {}
@@ -96,12 +97,13 @@ namespace DL
 
 	class Concept
 	{
-	public:
+	private:
 		std::string name;
 		std::vector<Individual*> individuals;
 		std::vector<Concept*> subsumes; // Concepts that this concept subsumes.
 		std::vector<Concept*> subsumed;	// Concepts that subsume this concept.
 
+	public:
 		Concept () {}
 		Concept (std::string&);
 		~Concept () {}
@@ -112,7 +114,7 @@ namespace DL
 		std::vector<Concept*>    getSubsumed () const;
 
 		void addIndividual (Individual*);	// throws exception
-		void addIndividual (string);		// throws exception
+		void addIndividual (string&);		// throws exception
 		//void addSubsumes (Concept*);	// throws exception
 		//void addSubsumed (Concept*);	// throws exception
 

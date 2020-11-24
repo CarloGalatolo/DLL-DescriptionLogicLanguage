@@ -392,11 +392,10 @@ void DL::Concept::addIndividual (DL::Individual* i)
 	}
 }
 
-void DL::Concept::addIndividual (string s)
+void DL::Concept::addIndividual (string& s)
 {
 	std::cout << "Controllo se posso inserire l'individuo: " << s << std::endl;
-	DL::Individual in = DL::Onthology::getInstance().get_i(s);
-	DL::Individual* i = &in;
+	DL::Individual* i = &DL::Onthology::getInstance().get_i(s);
 	
 	if (this->checkIndividuals(i))
 	{
@@ -412,7 +411,7 @@ void DL::Concept::addIndividual (string s)
 			(*it)->addIndividual(i);
 		}
 		std::cout << "Ho inserito l'individuo: " << s << std::endl;
-		std::cout << this->individuals.at(0)->getName() << std::endl;
+		std::cout << this->getIndividuals().at(0)->getName() << std::endl;
 	}
 }
 

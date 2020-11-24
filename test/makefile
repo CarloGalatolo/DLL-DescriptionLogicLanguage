@@ -1,1 +1,0 @@
-types:	g++ ../src/Onthology.hpp ../src/Onthology.cpp types.cpp
