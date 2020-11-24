@@ -2,15 +2,13 @@ CC    ?= clang
 CXX   ?= clang++
 
 EXE = test/tbox_test.out
-
-CDEBUG = -g -Wall
-CXXDEBUG = -g -Wall
+DEBUG = -g -Wall
 
 CSTD = -std=c99
 CXXSTD = -std=c++11
 
-CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
-CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
+CFLAGS = -Wno-deprecated-register -O0  $(DEBUG) $(CSTD) 
+CXXFLAGS = -Wno-deprecated-register -O0  $(DEBUG) $(CXXSTD)
 
 CPPOBJ = test/abox_test src/dl_driver src/Onthology
 SOBJ = parser lexer

@@ -11,6 +11,9 @@ using std::string;
 
 namespace DL
 {
+	template<class K, class V>
+		typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>& map, const std::pair<K, V>& pair);
+
 	class Onthology;
 	class Individual;
 	class Role;
@@ -69,7 +72,7 @@ namespace DL
 
 	public:
 		Individual () {}
-		Individual (std::string);
+		Individual (std::string&);
 		~Individual () {}
 
 		void addConcept (Concept*);
@@ -87,7 +90,7 @@ namespace DL
 
 	public:
 		Role () {}
-		Role (std::string);
+		Role (std::string&);
 		~Role () {}
 
 		std::string getName () const;
