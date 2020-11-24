@@ -9,10 +9,12 @@
 #define SUBSUMED false
 using std::string;
 
+template<class K, class V>
+	typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>& map, const std::pair<K, V>& pair);
+
 namespace DL
 {
-	template<class K, class V>
-		typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>& map, const std::pair<K, V>& pair);
+	
 
 	class Onthology;
 	class Individual;
@@ -29,7 +31,7 @@ namespace DL
 		std::vector<std::string> allNames;
 
 		std::multimap<Concept*, Concept*> subsGraph; // Grafo delle sussunzioni
-		std::map<Concept*, Concept*> negateGrahp;	 // Grafo delle negazioni
+		std::map<Concept*, Concept*> negateGraph;	 // Grafo delle negazioni
 
 		static Onthology& getInstance ()
 		{
@@ -47,8 +49,8 @@ namespace DL
 		Role& 	    get_r (std::string&);
 		Individual& get_i (std::string&);
 		void 		subsumption (std::string&, std::string&);
-		std::string disjunction (std::string&, std::string&);
 		std::string conjunction (std::string&, std::string&);
+		std::string disjunction (std::string&, std::string&);
 		void addSubs (std::string&, std::string&);	// throws exception
 
 	private:
@@ -119,6 +121,7 @@ namespace DL
 
 		void addIndividual (Individual*);	// throws exception
 		void addIndividual (string&);		// throws exception
+		void negateConcept (string&);
 
 	private:
 		bool checkIndividuals (const Individual*) const;
