@@ -49,10 +49,10 @@ int main ()
 			print_subs((*i));
 		}*/
 		Concept c = Onthology::getInstance().get_c(str_2);
-		Individual i = Onthology::getInstance().get_i(str_4);
-		c.addIndividual(&i);
+		//Individual i = Onthology::getInstance().get_i(str_4);
+		c.addIndividual(str_4);
 
-		std::cout << c.getIndividuals().at(0)->name << std::endl;
+		std::cout << c.getIndividuals().at(0)->getName() << std::endl;
 	}
 	catch (logic_error e)
 	{

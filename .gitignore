@@ -36,3 +36,5 @@ position.hh
 stack.hh
 
 .vscode/settings.json
+
+*.gch

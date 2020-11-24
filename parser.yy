@@ -7,7 +7,6 @@
 %define parser_class_name {DL_Parser}
 
 %code requires {
-	#include "src/Onthology.hpp"
 	namespace DL {
 		class DL_Driver;
 		class DL_Scanner;
@@ -34,6 +33,7 @@
 	#include <cstring>
 	#include <string>
 	#include "src/dl_driver.hpp"
+	#include "src/Onthology.hpp"
 
 	#undef yylex
 	#define yylex scanner.yylex

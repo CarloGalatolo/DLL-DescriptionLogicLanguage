@@ -84,33 +84,33 @@ int main ( const int argc, const char **argv )
 	{
 		DL::DL_Driver driver;
 		driver.parse( argv[1] );
-		// print( std::cout ) << std::endl;
+		print( std::cout ) << std::endl;
 
 		/*for (auto it = DL::Onthology::getInstance().allConcepts.begin(); it != DL::Onthology::getInstance().allConcepts.end(); it++)
 		{
 			print_subs(*it);
 		}*/
 
-		/*for (auto it = DL::Onthology::getInstance().allConcepts.begin(); it != DL::Onthology::getInstance().allConcepts.end(); it++)
+		for (auto it = DL::Onthology::getInstance().allConcepts.begin(); it != DL::Onthology::getInstance().allConcepts.end(); it++)
 		{
 			print_indv(*it);
 		}
 
-		for (auto it = DL::Onthology::getInstance().allRoles.begin(); it != DL::Onthology::getInstance().allRoles.end(); it++)
+		/*for (auto it = DL::Onthology::getInstance().allRoles.begin(); it != DL::Onthology::getInstance().allRoles.end(); it++)
 		{
 			print_pair(*it);
 		}*/
+/*
+		DL::Concept* c = &DL::Onthology::getInstance().allConcepts.at(0);
 
-		DL::Concept c = DL::Onthology::getInstance().allConcepts.at(0);
+		std::cout << "Gli individui istanziati nel concetto: " << c->getName() << std::endl;
+		for(size_t i = 0; i < c->getIndividuals().size(); i++){
+			std::cout << c->getIndividuals().at(i)->getName() << std::endl;
+		}
+*/
+		//DL::Individual i = *(c.getIndividuals().at(0));
 
-		std::cout << "Gli individui istanziati nel concetto: " << c.getName() << std::endl;
-		/*for(size_t i = 0; i < c.getIndividuals().size(); i++){
-			std::cout << c.getIndividuals().at(i)->getName() << std::endl;
-		}*/
-
-		DL::Individual i = *(c.individuals.at(0));
-
-		std::cout <<  << std::endl;
+		std::cout << " ciao " << std::endl;
 
 
 		return (EXIT_SUCCESS);
