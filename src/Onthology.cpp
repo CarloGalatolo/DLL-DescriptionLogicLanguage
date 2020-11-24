@@ -277,18 +277,28 @@ bool DL::Onthology::checkIndividuals (const std::string& s) const
 
 // === CLASS INDIVIDUAL ===
 
-DL::Individual::Individual (std::string name)
+DL::Individual::Individual (std::string& name)
 {
 	this->name = name;
 }
 
 void DL::Individual::addConcept (DL::Concept* con)
 {
+	if (con == nullptr)
+	{
+		std::cerr << " In Individual::addConcept(): argument is a null pointer. " << std::endl;
+		return;
+	}
 	concepts.push_back(con);
 }
 
 void DL::Individual::addRole (DL::Role* role)
 {
+	if (role == nullptr)
+	{
+		std::cerr << " In Individual::addRole(): argument is a null pointer. " << std::endl;
+		return;
+	}
 	roles.push_back(role);
 }
 
@@ -307,9 +317,9 @@ std::vector<DL::Role*> DL::Individual::getRoles () const
 	return this->roles;
 }
 
-// === CLASS ROLE ===
+// ===== CLASS ROLE =====
 
-DL::Role::Role (std::string name)
+DL::Role::Role (std::string& name)
 {
 	this->name = name;
 }
@@ -326,11 +336,8 @@ std::multimap<DL::Individual*, DL::Individual*> DL::Role::getPairs () const
 
 void DL::Role::insert (string& s1, string& s2)
 {
-	DL::Individual i1 = DL::Onthology::getInstance().get_i(s1);
-	DL::Individual i2 = DL::Onthology::getInstance().get_i(s2);
-
-	DL::Individual* first = &i1;
-	DL::Individual* second = &i2;
+	DL::Individual* first = &DL::Onthology::getInstance().get_i(s1);
+	DL::Individual* second = &DL::Onthology::getInstance().get_i(s2);
 
 	std::pair<DL::Individual*, DL::Individual*> p = std::make_pair(first, second);
 
@@ -375,14 +382,18 @@ std::vector<DL::Concept*> DL::Concept::getSubsumed () const
 
 void DL::Concept::addIndividual (DL::Individual* i)
 {
-	std::cout << "Controllo se posso inserire l'individuo: " << i->getName() << std::endl;
+	if (i == nullptr)
+	{
+		std::cerr << " In Concept::addIndividual(Individual*): argument is a null pointer. " << std::endl;
+		return;
+	}
+
 	if (this->checkIndividuals(i))
 	{
 		throw std::logic_error("Individual already exists.");
 	}
 	else
 	{
-		std::cout << "Sto per inserire l'individuo: " << i->getName() << std::endl;
 		this->individuals.push_back(i);
 		i->addConcept(this);
 		for(auto it = this->subsumes.begin(); it != this->subsumes.end(); it++)
@@ -397,6 +408,12 @@ void DL::Concept::addIndividual (string& s)
 	std::cout << "Controllo se posso inserire l'individuo: " << s << std::endl;
 	DL::Individual* i = &DL::Onthology::getInstance().get_i(s);
 	
+	if (i == nullptr)
+	{
+		std::cerr << " In Concept::addIndividual(std::string&): get_i() returned a null pointer. " << std::endl;
+		return;
+	}
+
 	if (this->checkIndividuals(i))
 	{
 		throw std::logic_error(" Adding Individual: already exists ");
@@ -456,6 +473,12 @@ void DL::Concept::addSubsumed (DL::Concept* c)
 */
 bool DL::Concept::checkIndividuals (const DL::Individual* indv) const
 {
+	if (indv == nullptr)
+	{
+		std::cerr << " In Concept::checkIndividuals(Individual*): argument is a null pointer. " << std::endl;
+		return;
+	}
+
 	auto res = std::find(this->individuals.begin(), this->individuals.end(), indv);
 
 	if (res != this->individuals.end())	// Individuo già presente.
@@ -471,6 +494,12 @@ bool DL::Concept::checkIndividuals (const DL::Individual* indv) const
 // subsume = true -> subsumeS; subsume = false -> subsumeD.
 bool DL::Concept::checkSubs (const DL::Concept* c, const bool subsume) const
 {
+	if (c == nullptr)
+	{
+		std::cerr << " In Concept::checkSubs(): argument is a null pointer. " << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
 	// subsume = true -> subsumeS; subsume = false -> subsumeD.
 	if (subsume)
 	{
