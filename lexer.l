@@ -27,11 +27,6 @@
 %option c++
 %option yylineno
 
-/* Start states */
-/* %s NAMES_DECL */
-/* %s TBOX */
-/* %s ABOX */
-/* %s QUERY */
 %x COMMENT
 
 /* A line containing only "%%" and white spaces. */
@@ -92,11 +87,11 @@ FALSE	{ yylval->build<bool>(false); return token::BOOLVAL; }
 	/* Keywords */
 ALL		{ return token::ALL; }
 BOOL	{ return token::BOOL; } //?
-<NAMES_DECL>CONCEPT	{ return token::CONCEPT; }
+CONCEPT	{ return token::CONCEPT; }
 CONJ(UNCTION)?	{ return token::CONJ; }
 DISJ(UNCTION)?	{ return token::DISJ; }
-<TBOX,QUERY>EX(ISTS)?	{ return token::EX; }
-<NAMES_DECL>(INDIVIDUAL|INDV)	{ return token::INDV; }
+EX(ISTS)?	{ return token::EX; }
+(INDIVIDUAL|INDV)	{ return token::INDV; }
 INT		{ return token::INT; } //?
 NOTHING	{ return token::NOTHING; }
 ROLE	{ return token::ROLE; }

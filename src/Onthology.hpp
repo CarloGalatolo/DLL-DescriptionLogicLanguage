@@ -5,8 +5,6 @@
 #include <map>
 #include <algorithm>
 #include <exception>
-#define SUBSUMES true
-#define SUBSUMED false
 using std::string;
 
 template<class K, class V>

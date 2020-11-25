@@ -168,13 +168,14 @@ t_stmt:
 |	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept
 ;
-	// CAPIRE SE FUNZIONA
+
 complex_concept:
 	NAME CONJ NAME { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
 |	NAME DISJ NAME { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
 |	'!' NAME { $$ = DL::Onthology::getInstance().negation($2); }
-/*|	'!' complex_concept	{ $$ = DL::Onthology::getInstance().negation($2); }
-|	complex_concept CONJ concept
+//|	'(' '!' NAME ')'	{ $$ = DL::Onthology::getInstance().negation($3); }
+|	'!' complex_concept	{ $$ = DL::Onthology::getInstance().negation($2); }
+/*|	complex_concept CONJ concept
 |	complex_concept DISJ concept
 |	EX role '.' complex_concept
 |	ALL role '.' complex_concept 

@@ -1,8 +1,7 @@
 #include <iostream>
 #include "../src/Onthology.hpp"
-using namespace std;
-using namespace DL;
 
+/*
 void print_subs(Concept &c){
 	std::cout << "I concetti contenuti da " << c.getName() << std::endl;
 
@@ -20,17 +19,17 @@ void print_subs(Concept &c){
 		}
 	}
 }
-
+*/
 int main ()
 {
 	std::string str_1("PC");
 	std::string str_2("Componente");
 	std::string str_3("Transistor");
 	std::string str_4("GPU");
-	Onthology::getInstance().put_c(str_1);
-	Onthology::getInstance().put_c(str_2);
-	Onthology::getInstance().put_c(str_3);
-	Onthology::getInstance().put_i(str_4);
+	DL::Onthology::getInstance().put_c(str_1);
+	DL::Onthology::getInstance().put_c(str_3);
+	DL::Onthology::getInstance().put_c(str_2);
+	DL::Onthology::getInstance().put_i(str_4);
 
 	try 
 	{
@@ -48,15 +47,15 @@ int main ()
 		/*for(auto i = Onthology::getInstance().allConcepts.begin(); i!= Onthology::getInstance().allConcepts.end(); i++){
 			print_subs((*i));
 		}*/
-		Concept c = Onthology::getInstance().get_c(str_2);
+		DL::Concept c = DL::Onthology::getInstance().get_c(str_2);
 		//Individual i = Onthology::getInstance().get_i(str_4);
 		c.addIndividual(str_4);
 
 		std::cout << c.getIndividuals().at(0)->getName() << std::endl;
 	}
-	catch (logic_error e)
+	catch (std::logic_error e)
 	{
-		cerr << e.what();
+		std::cerr << e.what();
 		exit(EXIT_FAILURE);
 	}
 }

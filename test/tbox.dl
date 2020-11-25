@@ -4,18 +4,16 @@ INDV pirlo, ronaldo, dybala, bonucci, agnelli, kompany;
 
 %%
 
-(ronaldo, dybala) : giocacon;
-pirlo : Allenatore;
-ronaldo : Calciatore;
+pirlo, kompany : Allenatore;
+ronaldo, dybala : Calciatore;
+(ronaldo, dybala), (bonucci, dybala) : giocacon;
 
 %%
 
-!Calciatore;
-!Allenatore;
-Allenatore CONJ notCalciatore;
-Allenatore DISJ Calciatore;
+//!Calciatore;
+//!!!!!!!Allenatore;
+//Allenatore CONJ notCalciatore;
+Allenatore DISJ Calciatore;	// Negazione globale
+//(!Allenatore) CONJ Calciatore;	// Negazione locale
 
-/*Allenatore SUBS THING;
-Calciatore SUBS THING;
-Allenatore DISJ Calciatore SUBS THING;
-Allenatore CONJ Calciatore SUBS AllenatoreDISJCalciatore;*/
+/*Allenatore CONJ Calciatore SUBS AllenatoreDISJCalciatore;*/
