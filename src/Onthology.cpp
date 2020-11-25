@@ -233,6 +233,41 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 	return name;
 }
 
+string DL::Onthology::negation (string& s)
+{
+	auto& ont = DL::Onthology::getInstance();
+
+	DL::Concept *c = &ont.get_c(s);        
+	string neg = "not" + c->getName();
+	int check = 0;
+	DL::Concept notC(neg);
+	ont.put_c(neg);
+	
+	if (ont.negateGraph.find(c) == ont.negateGraph.end())
+	{
+		std::pair<DL::Concept*,DL::Concept*> negPair = std::make_pair(c, &ont.get_c(neg));
+		ont.negateGraph.insert(negPair);
+	}
+	
+	for(auto itAll = ont.allIndividuals.begin(); itAll != ont.allIndividuals.end(); itAll++)
+	{
+		for(auto itList = c->getIndividuals().begin(); itList != c->getIndividuals().end() || check != 0; itList++)
+		{
+			if((*itList)->getName().compare(itAll->getName()) == 0)
+			{
+				check++;
+			}
+		}
+
+		if (check == 0)
+		{            
+			ont.get_c(neg).addIndividual(&(*itAll));
+		}
+		check = 0;
+	}
+
+	return neg;
+}
 
 bool DL::Onthology::checkNames (const std::string& s) const
 {
@@ -452,39 +487,6 @@ void DL::Concept::addIndividual (string& s)
 			}
 
 		}
-	}
-}
-
-void DL::Concept::negateConcept (string& s ){
-	auto& ont = DL::Onthology::getInstance();
-
-	DL::Concept *c = &ont.get_c(s);        
-	string neg = "not" + c->getName();
-	int check = 0;
-	DL::Concept notC(neg);
-	ont.put_c(neg);
-	
-	if (ont.negateGraph.find(c) == ont.negateGraph.end())
-	{
-		std::pair<DL::Concept*,DL::Concept*> negPair = std::make_pair(c, &ont.get_c(neg));
-		ont.negateGraph.insert(negPair);
-	}
-	
-	for(auto itAll = ont.allIndividuals.begin(); itAll != ont.allIndividuals.end(); itAll++)
-	{
-		for(auto itList = c->getIndividuals().begin(); itList != c->getIndividuals().end() || check != 0; itList++)
-		{
-			if((*itList)->getName().compare(itAll->getName()) == 0)
-			{
-				check++;
-			}
-		}
-
-		if (check == 0)
-		{            
-			ont.get_c(neg).addIndividual(&(*itAll));
-		}
-		check = 0;
 	}
 }
 

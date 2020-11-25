@@ -14,8 +14,6 @@ template<class K, class V>
 
 namespace DL
 {
-	
-
 	class Onthology;
 	class Individual;
 	class Role;
@@ -48,9 +46,10 @@ namespace DL
 		Concept&    get_c (std::string&);
 		Role& 	    get_r (std::string&);
 		Individual& get_i (std::string&);
-		void 		subsumption (std::string&, std::string&);
-		std::string conjunction (std::string&, std::string&);
-		std::string disjunction (std::string&, std::string&);
+		void   subsumption (std::string&, std::string&);
+		string conjunction (std::string&, std::string&);
+		string disjunction (std::string&, std::string&);
+		string negation (string&);
 		void addSubs (std::string&, std::string&);	// throws exception
 
 	private:
@@ -121,7 +120,6 @@ namespace DL
 
 		void addIndividual (Individual*);	// throws exception
 		void addIndividual (string&);		// throws exception
-		void negateConcept (string&);
 
 	private:
 		bool checkIndividuals (const Individual*) const;
