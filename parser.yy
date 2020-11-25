@@ -48,7 +48,7 @@
 %token END 0 "end of file"
 
 //%type <a> EXP IstanceIndividual
-%type <std::string> name complex_concept indv_assert role_assert
+%type <std::string> complex_concept indv_assert role_assert
 %type <DL::Individual> indv
 %type <DL::Role> role
 //%type <DL::Concept> 
@@ -83,10 +83,10 @@ name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
 */
 
 program:
-	END { std::cout << "Empty" << std::endl; } /* test */
-|	names_decl END	/* test */
-|	names_decl SECTION abox END	/* test 
-|	names_decl SECTION tbox SECTION abox
+	END { std::cout << "Input file empty." << std::endl; }
+|	names_decl END	/* debug */
+|	names_decl SECTION abox END	/* debug */ 
+|	names_decl SECTION abox SECTION tbox END /* debug
 |	names_decl SECTION tbox SECTION abox SECTION queries*/
 ;
 
@@ -155,7 +155,8 @@ role_assert:
 											  catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
 											  $$ = $7; }
 
-/*
+	/* THIRD SECTION */
+
 tbox:
 	t_stmt ';'
 |	tbox t_stmt ';'
@@ -171,13 +172,14 @@ t_stmt:
 complex_concept:
 	NAME CONJ NAME { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
 |	NAME DISJ NAME { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
-|	'!' complex_concept	{ $$ = DL::Onthology::getInstance().negation($2); }
-/*	complex_concept CONJ concept
+|	'!' NAME { $$ = DL::Onthology::getInstance().negation($2); }
+/*|	'!' complex_concept	{ $$ = DL::Onthology::getInstance().negation($2); }
+|	complex_concept CONJ concept
 |	complex_concept DISJ concept
 |	EX role '.' complex_concept
 |	ALL role '.' complex_concept 
-;
 */
+;
 
 queries:;
 

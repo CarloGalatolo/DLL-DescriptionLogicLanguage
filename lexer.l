@@ -105,7 +105,7 @@ SUBS(UMPTION)?	{ return token::SUBS; }
 THING	{ return token::THING; }
 
 	/* Unquoted names */
-[a-zA-Z_][a-zA-Z0-9_]* {printf("%s",yytext); yylval->build<std::string>(yytext); return token::NAME; }
+[a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
 
 	/* C-style comments */
 "/*"			 { oldstate = YY_START; BEGIN COMMENT; }

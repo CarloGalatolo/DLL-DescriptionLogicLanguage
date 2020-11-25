@@ -150,85 +150,101 @@ void DL::Onthology::subsumption (std::string& c_1, std::string& c_2) // a subsum
 {
 	DL::Concept* subsumed = &DL::Onthology::getInstance().get_c(c_1);
 	DL::Concept* subsumes = &DL::Onthology::getInstance().get_c(c_2);
+	auto subsumedIndvs = subsumed->getIndividuals();
 
 	std::pair<DL::Concept*, DL::Concept*> p = std::make_pair(subsumed, subsumes);
 	if (find_pair(this->subsGraph, p) == this->subsGraph.end())
 	{
 		this->subsGraph.insert(p);
-		for (auto it = subsumed->getIndividuals().begin(); it != subsumed->getIndividuals().end(); it++)
+		// All the individuals of the subsumed concept are put into the subsuming concept as well.
+		for (Individual* it : subsumedIndvs)
 		{
-			subsumes->addIndividual(*it);
+			subsumes->addIndividual(it);
 		}
 	}
-	else{
+	else
+	{
 		throw std::logic_error(" Subsuming: pair already exists ");
 	}
 }
 
 std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Intersezione
 {
-	Concept& c1 = get_c(s1), c2 = get_c(s2);
 	std::string name = s1 + "CONJ" + s2;
 	Concept res(name);
 	put(res);
-	Concept& c = get_c(name);
+	Concept &c1 = get_c(s1), &c2 = get_c(s2), &c = get_c(name);
+	auto c1Indvs = c1.getIndividuals(), c2Indvs = c2.getIndividuals();
 
 	subsumption(name, s1);
 	subsumption(name, s2);
 
-	for (size_t i = 0; i != c1.getIndividuals().size(); i++)
+	if (!(c1Indvs.empty() || c2Indvs.empty()))
 	{
-		for (size_t j = 0; j != c2.getIndividuals().size(); j++)
+		for (DL::Individual* i1 : c1Indvs)
 		{
-			if (c1.getIndividuals().at(i)->getName() == c2.getIndividuals().at(j)->getName())
+			for (DL::Individual* i2 : c2Indvs)
 			{
-				try
+				if (!(i1 == nullptr || i2 == nullptr))
 				{
-					c.addIndividual(c1.getIndividuals().at(i));
-				}
-				catch(const std::exception& e)
-				{
-					// No problem.
+					if (i1->getName().compare(i2->getName()) == 0)
+					{
+						try
+						{
+							c.addIndividual(i1);
+							std::cout << c.getIndividuals().at(0)->getName() << std::endl;
+						}
+						catch(const std::exception& e)
+						{
+							// Not a problem.
+						}
+					}					
 				}
 			}
-		}
+		}		
 	}
+	// else the conjunction is an empty concept.
 
 	return name;
 }
 
 std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Unione
 {
-	Concept& c1 = get_c(s1), c2 = get_c(s2);
 	std::string name = s1 + "DISJ" + s2;
 	Concept res(name);
 	put(res);
-	Concept& c = get_c(name);
+	Concept &c1 = get_c(s1), &c2 = get_c(s2), &c = get_c(name);
+	auto c1Indvs = c1.getIndividuals(), c2Indvs = c2.getIndividuals();
 
 	subsumption(s1, name);
 	subsumption(s2, name);
 
-	for(auto i = c1.getIndividuals().begin(); i != c1.getIndividuals().end(); i++){
-		try
+	if (!(c1Indvs.empty() || c2Indvs.empty()))
+	{
+		for(DL::Individual* i1 : c1Indvs)
 		{
-			c.addIndividual((*i));
+			try
+			{
+				c.addIndividual(i1); // Checks for nullptr.
+			}
+			catch (std::exception e)
+			{
+				// No problem.
+			}
 		}
-		catch (std::exception e)
-		{
-			// No problem.
-		}
-	}
 
-	for(auto i = c2.getIndividuals().begin(); i != c2.getIndividuals().end(); i++){
-		try
-		{
-			c.addIndividual((*i));
-		}
-		catch (std::exception e)
-		{
-			// No problem.
-		}
+		for(Individual* i2 : c2Indvs){
+			try
+			{
+				c.addIndividual(i2); // Checks for nullptr.
+			}
+			catch (std::exception e)
+			{
+				// No problem.
+			}
+		}	
 	}
+	// else the disjunction is an empty concept.
 
 	return name;
 }
@@ -237,10 +253,10 @@ string DL::Onthology::negation (string& s)
 {
 	auto& ont = DL::Onthology::getInstance();
 
-	DL::Concept *c = &ont.get_c(s);        
+	DL::Concept *c = &ont.get_c(s);
 	string neg = "not" + c->getName();
-	int check = 0;
-	DL::Concept notC(neg);
+	auto cIndvs = c->getIndividuals();
+	bool check = false;
 	ont.put_c(neg);
 	
 	if (ont.negateGraph.find(c) == ont.negateGraph.end())
@@ -249,22 +265,35 @@ string DL::Onthology::negation (string& s)
 		ont.negateGraph.insert(negPair);
 	}
 	
-	for(auto itAll = ont.allIndividuals.begin(); itAll != ont.allIndividuals.end(); itAll++)
+	if (cIndvs.empty())
 	{
-		for(auto itList = c->getIndividuals().begin(); itList != c->getIndividuals().end() || check != 0; itList++)
+		for (DL::Individual& indv : ont.allIndividuals)
 		{
-			if((*itList)->getName().compare(itAll->getName()) == 0)
-			{
-				check++;
-			}
+			ont.get_c(neg).addIndividual(&indv);
 		}
-
-		if (check == 0)
-		{            
-			ont.get_c(neg).addIndividual(&(*itAll));
-		}
-		check = 0;
 	}
+	else
+	{
+		for (DL::Individual& indv : ont.allIndividuals)
+		{
+			for (DL::Individual* idual : cIndvs)
+			{
+				if (idual->getName().compare(indv.getName()) == 0)
+				{
+					check = true;
+					break;
+				}
+			}
+
+			if (!check)
+			{
+				ont.get_c(neg).addIndividual(&indv);
+			}
+
+			check = false;
+		}		
+	}
+
 
 	return neg;
 }
@@ -452,12 +481,9 @@ void DL::Concept::addIndividual (DL::Individual* i)
 		i->addConcept(this);
 		for(auto it = Onthology::getInstance().subsGraph.begin(); it != Onthology::getInstance().subsGraph.end(); it++)
 		{
-			//(*it)->addIndividual(i);
-
 			if(it->first->name.compare(this->name) == 0){
 				it->second->addIndividual(i);
 			}
-
 		}
 	}
 }
