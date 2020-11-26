@@ -298,6 +298,53 @@ string DL::Onthology::negation (string& s)
 	return neg;
 }
 
+string DL::Onthology::universal(std::string& r, std::string& c){
+	DL::Onthology& ont = DL::Onthology::getInstance();
+	std::string name = "UNIV" + r + "." + c;
+	DL::Concept res(name);
+	ont.put(res);
+	bool exit = false;
+	bool found = false;
+
+	for(DL::Individual ind : ont.allIndividuals){
+		if(!ind.getRoles().empty()){
+			if((ind.getRoles().at(0)->getName().compare(r) != 0) || (ind.getRoles().size() != 1)){
+				break;
+				found = false;
+			}
+			else{
+				std::multimap<DL::Individual *, DL::Individual *> pairList = ind.getRoles().at(0)->getPairs();
+				if(!pairList.empty()){
+					for(auto p : pairList){
+						auto concList = p.second->getConcepts();
+						if(!concList.empty()){
+							for(DL::Concept* conc : concList){
+								if(conc->getName().compare(c) != 0){
+									break;
+									exit = true;
+								}
+							}							
+						}
+						if(exit){
+							found = false;
+							break;
+						}
+						found = true;
+					}
+				}
+				if(found){
+					ont.get_c(name).addIndividual(&ind);
+					found = false;
+				}
+			}
+
+		}
+	}
+
+
+	return name;
+}
+
 bool DL::Onthology::checkNames (const std::string& s) const
 {
 	auto res = std::find(allNames.begin(), allNames.end(), s);
