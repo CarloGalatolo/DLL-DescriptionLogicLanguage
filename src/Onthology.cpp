@@ -57,7 +57,7 @@ void DL::Onthology::put_c (std::string& s)
 {
 	if (checkNames(s))	// Nome già esistente.
 	{
-		throw std::logic_error("Name already exists.");
+		throw std::logic_error(string("Concept " + s + " already exists."));
 	}
 	else
 	{
@@ -170,7 +170,7 @@ void DL::Onthology::subsumption (std::string& c_1, std::string& c_2) // a subsum
 
 std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Intersezione
 {
-	std::string name = s1 + "CONJ" + s2;
+	std::string name = s1 + "CON" + s2;
 	Concept res(name);
 	put(res);
 	Concept &c1 = get_c(s1), &c2 = get_c(s2), &c = get_c(name);
@@ -210,7 +210,7 @@ std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Int
 
 std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Unione
 {
-	std::string name = s1 + "DISJ" + s2;
+	std::string name = s1 + "DIS" + s2;
 	Concept res(name);
 	put(res);
 	Concept &c1 = get_c(s1), &c2 = get_c(s2), &c = get_c(name);
@@ -219,7 +219,7 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 	subsumption(s1, name);
 	subsumption(s2, name);
 
-	if (!(c1Indvs.empty() || c2Indvs.empty()))
+	if (!c1Indvs.empty())
 	{
 		for(DL::Individual* i1 : c1Indvs)
 		{
@@ -232,7 +232,11 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 				// No problem.
 			}
 		}
+	}
+	// else the disjunction has no individuals from the first concept.
 
+	if (!c2Indvs.empty())
+	{
 		for(Individual* i2 : c2Indvs){
 			try
 			{
@@ -244,20 +248,46 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 			}
 		}	
 	}
-	// else the disjunction is an empty concept.
+	// else the disjunction has no individuals from the second concept.
 
 	return name;
 }
 
 string DL::Onthology::negation (string& s)
 {
+	/**
+	 * Funzione che genera il negato del conetto il cui nome è passato a parametro,
+	 * lo inserisce nell'Ontologia, poi inserisce una pair nella mappa dei negati.
+	 * Se il concetto parametro ha già un negato nell'Ontologia, la funzione ritorna
+	 * quel concetto invece di crearne un duplicato.
+	 */
+
 	auto& ont = DL::Onthology::getInstance();
 
-	DL::Concept *c = &ont.get_c(s);
-	string neg = "not" + c->getName();
+	DL::Concept* c = &ont.get_c(s);		// Recupera il concetto il cui nome è passato a parametro.
+
+	// Ciclo della mappa dei negati per controllare se il negato esiste già.
+	for (auto p : ont.negateGraph)
+	{
+		if (p.first->getName() == s)	
+		{
+			// Se il parametro ha già un negato, ritorna il suo negato.
+			return p.second->getName();	
+		}
+		else if (p.second->getName() == s)
+		{
+			// Se il parametro è il negato di un concetto esistente, ritorna il concetto originale.
+			return p.first->getName();
+		}
+	}
+
+	// Se non è stato trovata una coppia nella mappa dei negati, viene generato il negato.
+
+	string neg = "NOT" + c->getName();
 	auto cIndvs = c->getIndividuals();
-	bool check = false;
 	ont.put_c(neg);
+	
+	bool check = false;
 	
 	if (ont.negateGraph.find(c) == ont.negateGraph.end())
 	{
@@ -293,7 +323,6 @@ string DL::Onthology::negation (string& s)
 			check = false;
 		}		
 	}
-
 
 	return neg;
 }
@@ -343,6 +372,44 @@ string DL::Onthology::universal(std::string& r, std::string& c){
 
 
 	return name;
+}
+
+string DL::Onthology::existential (string& role, string& concept)
+{    
+    auto& ont = DL::Onthology::getInstance();
+    DL::Role* r = &ont.get_r(role);	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
+    string exist = "EXIST" +role+"_"+concept;
+    
+    try
+    {
+        ont.put_c(exist);
+    }
+    catch(std::logic_error x)
+    {
+		std::cerr << x.what() << std::endl;
+        return exist;
+    }
+    
+	if (!r->getPairs().empty())
+	{
+		for (DL::Individual ind : ont.allIndividuals)
+		{
+			for (auto p : r->getPairs())
+			{
+				std::vector<DL::Concept*> pCons = p.second->getConcepts();
+				if (!pCons.empty())
+				{
+					if (myFind(pCons.begin(), pCons.end(), concept) != pCons.end())	// Se lo trova
+					{
+						ont.get_c(exist).addIndividual(&ind);
+						break;
+					}					
+				}
+			}
+		}
+	}
+	
+	return exist;
 }
 
 bool DL::Onthology::checkNames (const std::string& s) const
@@ -473,6 +540,7 @@ void DL::Role::insert (string& s1, string& s2)
 
 	if (find_pair(pairs, p) == pairs.end())
 	{
+		first->addRole(this);
 		pairs.insert(p);
 	}
 	else

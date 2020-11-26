@@ -32,8 +32,8 @@
 	#include <cstdio>
 	#include <cstring>
 	#include <string>
-	#include "src/dl_driver.hpp"
-	#include "src/Onthology.hpp"
+	#include "../src/dl_driver.hpp"
+	#include "../src/Onthology.hpp"
 
 	#undef yylex
 	#define yylex scanner.yylex
@@ -49,8 +49,6 @@
 
 //%type <a> EXP IstanceIndividual
 %type <std::string> complex_concept indv_assert role_assert
-%type <DL::Individual> indv
-%type <DL::Role> role
 //%type <DL::Concept> 
 
 	/* Precedence levels */
@@ -65,23 +63,6 @@
 
 %%
 
-/*
-LINGUAGGIO: EXP { eval($1); }
-;
-
-EXP: EXP IstanceIndividual { $$=newast('H',$1,$2);}
-|IstanceIndividual {$$=$1;}
-;
-
-IstanceIndividual: IND name SEMIC { printf("%s",$2);
-								$$=newnum($2);}
-;
-
-name: name COMMA NAME {sprintf($$, "%s|%s", $1,$3);}
-| NAME { sprintf($$, "%s", $1);}
-;
-*/
-
 program:
 	END { std::cout << "Input file empty." << std::endl; }
 |	names_decl END	/* debug */
@@ -95,7 +76,7 @@ program:
 names_decl:
 	decl ';'
 |	names_decl decl ';'
-|	error { error(@$, std::string("In Names Declaration section")); }
+|	names_decl error { error(@$, std::string("In Names Declaration section")); }
 ;
 
 decl:
@@ -130,7 +111,7 @@ indv_decl:
 abox:
 	a_stmt ';'
 |	abox a_stmt ';'
-|	error { error(@$, std::string("In ABox Section")); }
+|	abox error { error(@$, std::string("In ABox Section")); }
 ;
 
 a_stmt:
@@ -160,11 +141,11 @@ role_assert:
 tbox:
 	t_stmt ';'
 |	tbox t_stmt ';'
-|	error { error(@$, std::string("In TBox Section")); }
+|	tbox error { error(@$, std::string("In TBox Section")); }
 ;
 
 t_stmt:
-	NAME SUBS NAME	{ DL::Onthology::getInstance().subsumption($1, $3); }
+	NAME SUBS NAME			  { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept
 ;
@@ -173,7 +154,6 @@ complex_concept:
 	NAME CONJ NAME { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
 |	NAME DISJ NAME { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
 |	'!' NAME { $$ = DL::Onthology::getInstance().negation($2); }
-//|	'(' '!' NAME ')'	{ $$ = DL::Onthology::getInstance().negation($3); }
 |	'!' complex_concept	{ $$ = DL::Onthology::getInstance().negation($2); }
 /*|	complex_concept CONJ concept
 |	complex_concept DISJ concept
@@ -183,8 +163,6 @@ complex_concept:
 ;
 
 queries:;
-
-
 
 %%
 

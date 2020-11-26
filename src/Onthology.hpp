@@ -49,6 +49,7 @@ namespace DL
 		string disjunction (std::string&, std::string&);
 		string negation (string&);
 		string universal (std::string&, std::string&);
+		string existential (string&, string&);
 		void addSubs (std::string&, std::string&);	// throws exception
 
 	private:

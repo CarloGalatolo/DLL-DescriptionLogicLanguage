@@ -11,11 +11,12 @@ CFLAGS = -Wno-deprecated-register -O0  $(DEBUG) $(CSTD)
 CXXFLAGS = -Wno-deprecated-register -O0  $(DEBUG) $(CXXSTD)
 
 CPPOBJ = test/tbox_test src/dl_driver src/Onthology
-SOBJ = parser lexer
+SOBJ = build/parser build/lexer
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
 
 OBJS  = $(addsuffix .o, $(CPPOBJ))
+SOBJS = $(addsuffix .o, $(OBJS))
 
 CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 				parser.tab.cc parser.tab.hh \
@@ -26,12 +27,12 @@ CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 all:$(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) $(SOBJS)
 
 
-parser: parser.yy
-	bison -d -v parser.yy
-	$(CXX) $(CXXFLAGS) -c -o parser.o parser.tab.cc
+parser: build/parser.yy
+	bison -d -v build/parser.yy
+	$(CXX) $(CXXFLAGS) -c -o build/parser.o build/parser.tab.cc
 
 lexer: lexer.l
 	flex --outfile=lexer.yy.cc  $<
