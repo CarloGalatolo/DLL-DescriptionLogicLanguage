@@ -2,7 +2,7 @@
 	#include <string>
 
 	/* Implementation of yyFlexScanner */ 
-	#include "../src/dl_scanner.hpp"
+	#include "src/dl_scanner.hpp"
 	#undef  YY_DECL
 	#define YY_DECL int DL::DL_Scanner::yylex( DL::DL_Parser::semantic_type * const lval, DL::DL_Parser::location_type *location )
 

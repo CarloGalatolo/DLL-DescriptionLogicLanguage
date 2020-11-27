@@ -60,6 +60,8 @@ namespace DL
 		bool checkNames (const std::string&) const;
 		template<class InputIterator, class T>
   			InputIterator myFind (InputIterator first, InputIterator last, const T& val) const;
+		template<class InputIterator, class T>
+  			InputIterator myFindPtr (InputIterator first, InputIterator last, const T& val) const;
 		bool checkConcepts (const std::string&) const;
 		bool checkRoles (const std::string&) const;
 		bool checkIndividuals (const std::string&) const;

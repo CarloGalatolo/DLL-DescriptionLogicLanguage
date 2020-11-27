@@ -6,8 +6,8 @@
 #endif
 
 #include <string>
-#include "../build/parser.tab.hh"
-#include "../build/location.hh"
+#include "../parser.tab.hh"
+#include "../location.hh"
 
 namespace DL{
 

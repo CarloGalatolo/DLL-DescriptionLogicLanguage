@@ -32,8 +32,8 @@
 	#include <cstdio>
 	#include <cstring>
 	#include <string>
-	#include "../src/dl_driver.hpp"
-	#include "../src/Onthology.hpp"
+	#include "src/dl_driver.hpp"
+	#include "src/Onthology.hpp"
 
 	#undef yylex
 	#define yylex scanner.yylex
@@ -64,8 +64,7 @@
 %%
 
 program:
-	END { std::cout << "Input file empty." << std::endl; }
-|	names_decl END	/* debug */
+	names_decl END	/* debug */
 |	names_decl SECTION abox END	/* debug */ 
 |	names_decl SECTION abox SECTION tbox END /* debug
 |	names_decl SECTION tbox SECTION abox SECTION queries*/
@@ -74,7 +73,7 @@ program:
 	/* FIRST SECTION */
 
 names_decl:
-	/* empty */
+	/* empty */ { std::cout << "Input file empty." << std::endl; }
 |	names_decl decl ';'
 |	names_decl error { error(@$, std::string("In Names Declaration section")); }
 ;
@@ -152,9 +151,9 @@ t_stmt:
 
 complex_concept:
 	NAME CONJ NAME 			     { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
-|	complex_concept CONJ NAME    { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
+|	'(' complex_concept ')' CONJ NAME    { $$ = DL::Onthology::getInstance().conjunction($2, $5); }
 |	NAME DISJ NAME 			     { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
-|	complex_concept DISJ NAME    { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
+|	'(' complex_concept ')' DISJ NAME    { $$ = DL::Onthology::getInstance().disjunction($2, $5); }
 |	'!' NAME 					 { $$ = DL::Onthology::getInstance().negation($2); }
 |	'!' complex_concept			 { $$ = DL::Onthology::getInstance().negation($2); }
 |	EX  NAME '.' NAME 			 { $$ = DL::Onthology::getInstance().existential($2, $4); }

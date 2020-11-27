@@ -6,8 +6,8 @@
 #include <istream>
 
 #include "dl_scanner.hpp"
-#include "../build/parser.tab.hh"
-#include "../build/location.hh"
+#include "../parser.tab.hh"
+#include "../location.hh"
 
 namespace DL{
 

@@ -432,7 +432,7 @@ string DL::Onthology::existential (string& role, string& concept)
 				std::vector<DL::Concept*> pCons = p.second->getConcepts();
 				if (!pCons.empty())
 				{
-					if (myFind(pCons.begin(), pCons.end(), concept) != pCons.end())	// Se lo trova
+					if (myFindPtr(pCons.begin(), pCons.end(), concept) != pCons.end())	// Se lo trova
 					{
 						ont.get_c(exist).addIndividual(&ind);
 						break;
@@ -464,6 +464,16 @@ InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, co
 {
 	while (first!=last) {
 		if ((*first).getName()==val) return first;
+		++first;
+	}
+	return last;
+}
+
+template<class InputIterator, class T>
+InputIterator DL::Onthology::myFindPtr (InputIterator first, InputIterator last, const T& val) const
+{
+	while (first!=last) {
+		if ((*first)->getName()==val) return first;
 		++first;
 	}
 	return last;
