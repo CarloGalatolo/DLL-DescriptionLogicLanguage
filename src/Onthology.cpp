@@ -12,7 +12,9 @@ typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>
     return map.end();
 }
 
-// === CLASS ONTHOLOGY ===
+/**
+ * ========== CLASS ONTHOLOGY ==========
+ */
 
 void DL::Onthology::put (DL::Concept& c)
 {
@@ -53,8 +55,9 @@ void DL::Onthology::put (DL::Individual& i)
 	}
 }
 
-void DL::Onthology::put_c (std::string& s)
+void DL::Onthology::put_c (std::string& t)
 {
+	string s = correctDoubleNot(t);
 	if (checkNames(s))	// Nome già esistente.
 	{
 		throw std::logic_error(string("Concept " + s + " already exists."));
@@ -265,6 +268,29 @@ string DL::Onthology::negation (string& s)
 	auto& ont = DL::Onthology::getInstance();
 
 	DL::Concept* c = &ont.get_c(s);		// Recupera il concetto il cui nome è passato a parametro.
+	string neg = "NOT_" + c->getName();
+	
+	try 
+	{
+		ont.put_c(neg);
+	}
+	catch (std::logic_error e)
+	{
+		for (auto p : ont.negateGraph)
+		{
+			if (p.first->getName() == s)	
+			{
+				return p.second->getName();	
+			}
+			else if (p.second->getName() == s)
+			{
+				return p.first->getName();
+			}
+		}
+
+		DL::Concept* n = &ont.get_c(s.erase(0, 4));
+		ont.negateGraph.insert(std::make_pair(n, c));
+	}
 
 	// Ciclo della mappa dei negati per controllare se il negato esiste già.
 	for (auto p : ont.negateGraph)
@@ -283,9 +309,7 @@ string DL::Onthology::negation (string& s)
 
 	// Se non è stato trovata una coppia nella mappa dei negati, viene generato il negato.
 
-	string neg = "NOT" + c->getName();
 	auto cIndvs = c->getIndividuals();
-	ont.put_c(neg);
 	
 	bool check = false;
 	
@@ -327,11 +351,21 @@ string DL::Onthology::negation (string& s)
 	return neg;
 }
 
-string DL::Onthology::universal(std::string& r, std::string& c){
+string DL::Onthology::universal (std::string& r, std::string& c)
+{
 	DL::Onthology& ont = DL::Onthology::getInstance();
-	std::string name = "UNIV" + r + "." + c;
-	DL::Concept res(name);
-	ont.put(res);
+	std::string name = "UNIV" + r + "_" + c;
+	
+	try
+    {
+        ont.put_c(name);
+    }
+    catch(std::logic_error x)
+    {
+		std::cerr << x.what() << std::endl;
+        return name;
+    }
+
 	bool exit = false;
 	bool found = false;
 
@@ -369,7 +403,6 @@ string DL::Onthology::universal(std::string& r, std::string& c){
 
 		}
 	}
-
 
 	return name;
 }
@@ -472,7 +505,20 @@ bool DL::Onthology::checkIndividuals (const std::string& s) const
 	}
 }
 
-// ===== CLASS INDIVIDUAL =====
+string DL::Onthology::correctDoubleNot (string& s)
+{
+	if (s.substr(0, 8) == "NOT_NOT_")
+	{
+		s.erase(0, 8);
+		correctDoubleNot(s);
+		std::cerr << "WARNING: concept name with double NOT is very unsafe; concept: " << s << std::endl;
+	}
+	return s;
+}
+
+/**
+ *  ========== CLASS INDIVIDUAL ==========
+ */
 
 DL::Individual::Individual (std::string& name)
 {

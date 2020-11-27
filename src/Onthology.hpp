@@ -63,6 +63,7 @@ namespace DL
 		bool checkConcepts (const std::string&) const;
 		bool checkRoles (const std::string&) const;
 		bool checkIndividuals (const std::string&) const;
+		string correctDoubleNot (string&);
 	};
 
 	class Individual

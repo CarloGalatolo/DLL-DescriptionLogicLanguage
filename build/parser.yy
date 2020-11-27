@@ -74,7 +74,7 @@ program:
 	/* FIRST SECTION */
 
 names_decl:
-	decl ';'
+	/* empty */
 |	names_decl decl ';'
 |	names_decl error { error(@$, std::string("In Names Declaration section")); }
 ;
@@ -109,7 +109,7 @@ indv_decl:
 	/* SECOND SECTION */
 
 abox:
-	a_stmt ';'
+	/* empty */
 |	abox a_stmt ';'
 |	abox error { error(@$, std::string("In ABox Section")); }
 ;
@@ -139,7 +139,7 @@ role_assert:
 	/* THIRD SECTION */
 
 tbox:
-	t_stmt ';'
+	/* empty */
 |	tbox t_stmt ';'
 |	tbox error { error(@$, std::string("In TBox Section")); }
 ;
@@ -151,15 +151,16 @@ t_stmt:
 ;
 
 complex_concept:
-	NAME CONJ NAME { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
-|	NAME DISJ NAME { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
-|	'!' NAME { $$ = DL::Onthology::getInstance().negation($2); }
-|	'!' complex_concept	{ $$ = DL::Onthology::getInstance().negation($2); }
-/*|	complex_concept CONJ concept
-|	complex_concept DISJ concept
-|	EX role '.' complex_concept
-|	ALL role '.' complex_concept 
-*/
+	NAME CONJ NAME 			     { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
+|	complex_concept CONJ NAME    { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
+|	NAME DISJ NAME 			     { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
+|	complex_concept DISJ NAME    { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
+|	'!' NAME 					 { $$ = DL::Onthology::getInstance().negation($2); }
+|	'!' complex_concept			 { $$ = DL::Onthology::getInstance().negation($2); }
+|	EX  NAME '.' NAME 			 { $$ = DL::Onthology::getInstance().existential($2, $4); }
+|	EX  NAME '.' complex_concept { $$ = DL::Onthology::getInstance().existential($2, $4); }
+|	ALL NAME '.' NAME 			 { $$ = DL::Onthology::getInstance().universal($2, $4); }
+|	ALL NAME '.' complex_concept { $$ = DL::Onthology::getInstance().universal($2, $4); }
 ;
 
 queries:;
