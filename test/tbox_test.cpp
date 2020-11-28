@@ -40,6 +40,16 @@ void print_subs ()
 	}
 }
 
+void print_negate ()
+{
+	Onthology& o = Onthology::getInstance();
+	std::cout << "La dimensione della mappa dei negati e' " << o.negateGraph.size() << std::endl;
+	for(/*std::pair<Concept*, Concept*> p : o.negateGraph*/ auto it = o.negateGraph.begin(); it != o.negateGraph.end(); it++){
+		//cout << p.first->getName() << " e' il negato di " << p.second->getName() << std::endl;
+		cout << it->first->getName() << " e' il negato di " << it->second->getName() << std::endl;
+	}	
+}
+
 void print_indv (DL::Concept &c)
 {
 	std::cout << "Gli individui istanziati nel concetto: " << c.getName() << std::endl;
@@ -83,6 +93,8 @@ int main ( const int argc, const char **argv )
 		{
 			print_pair(*it);
 		}
+
+		print_negate();
 /*
 		DL::Concept* c = &DL::Onthology::getInstance().allConcepts.at(0);
 

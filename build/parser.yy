@@ -43,7 +43,7 @@
 %define parse.assert
 
 %token <int> BOOLVAL INTVAL
-%token <std::string> NAME STRVAL
+%token <std::string> NAME STRVAL DOT
 %token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING SECTION
 %token END 0 "end of file"
 
@@ -73,7 +73,7 @@ program:
 	/* FIRST SECTION */
 
 names_decl:
-	/* empty */ { std::cout << "Input file empty." << std::endl; }
+	/* empty */
 |	names_decl decl ';'
 |	names_decl error { error(@$, std::string("In Names Declaration section")); }
 ;
@@ -156,10 +156,10 @@ complex_concept:
 |	'(' complex_concept ')' DISJ NAME    { $$ = DL::Onthology::getInstance().disjunction($2, $5); }
 |	'!' NAME 					 { $$ = DL::Onthology::getInstance().negation($2); }
 |	'!' complex_concept			 { $$ = DL::Onthology::getInstance().negation($2); }
-|	EX  NAME '.' NAME 			 { $$ = DL::Onthology::getInstance().existential($2, $4); }
-|	EX  NAME '.' complex_concept { $$ = DL::Onthology::getInstance().existential($2, $4); }
-|	ALL NAME '.' NAME 			 { $$ = DL::Onthology::getInstance().universal($2, $4); }
-|	ALL NAME '.' complex_concept { $$ = DL::Onthology::getInstance().universal($2, $4); }
+|	EX  NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().existential($2, $4); }
+|	EX  NAME DOT complex_concept { $$ = DL::Onthology::getInstance().existential($2, $4); }
+|	ALL NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().universal($2, $4); }
+|	ALL NAME DOT complex_concept { $$ = DL::Onthology::getInstance().universal($2, $4); }
 ;
 
 queries:;

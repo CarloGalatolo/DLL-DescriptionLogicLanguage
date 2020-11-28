@@ -60,8 +60,14 @@ void print_indv (DL::Concept &c)
 
 
 	if(!c.getIndividuals().empty()){
-		for(size_t i = 0; i < c.getIndividuals().size(); i++){
-			std::cout << c.getIndividuals().at(i)->getName() << std::endl;
+		for(DL::Individual* ind : c.getIndividuals()){
+			if(ind == nullptr){
+				std::cout << "Sono vuoto" << std::endl;
+			}
+			else{
+				std::cout << ind->getName()<< std::endl;
+			}
+
 		}
 	}
 }

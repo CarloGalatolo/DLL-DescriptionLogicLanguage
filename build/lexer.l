@@ -52,7 +52,7 @@ SECTION ^[ \t]*%%[ \t]*$
  */
 	/* Single character literal tokens */
 	/* DL punctuation */
-"."		// Used in restrictions. E.g.: EX role . Concept
+"."		{ yylval->build<std::string>(yytext); return token::DOT;}// Used in restrictions. E.g.: EX role . Concept
 ":" |	// Used in assertions. E.g.: indv : Concept
 "," |	// Separator. Used in role assertions. E.g.: (i1, i2) : role
 ";" |	// End of statenìment.
