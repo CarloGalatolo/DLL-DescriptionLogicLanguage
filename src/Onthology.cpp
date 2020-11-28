@@ -385,7 +385,19 @@ string DL::Onthology::negation (string& s)
 
 string DL::Onthology::universal (std::string& r, std::string& c)
 {
+	/**
+	 * Quantificatore universale.
+	 * Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità
+	 * di ruoli di cui sono soggetti sono ruoli di tipo "r" e verso individui
+	 * appartenenti al concetto "c". Gli individui trovati vanno a formare un nuovo concetto.
+	 */
+	
 	DL::Onthology& ont = DL::Onthology::getInstance();
+	
+	// Controllo sulla presenza dei parametri nell'ontologia. Se fallisce, viene lanciato un errore critico.
+	ont.get_c(c);
+	ont.get_r(r);
+	
 	std::string name = "UNIV" + r + "_" + c;
 	
 	try
@@ -401,24 +413,37 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 	bool exit = false;
 	bool found = false;
 
-	for(DL::Individual& ind : ont.allIndividuals){
-		if(!ind.getRoles().empty()){
-			if(ind.getRoles().size() != 1){
-				continue;
+	for (DL::Individual& ind : ont.allIndividuals)
+	{
+		if ( !ind.getRoles().empty() ) // "ind" è sogetto di almeno un ruolo.
+		{
+			if ( ind.getRoles().size() != 1 ) // "ind" non può essere soggetto di ruoli diversi.
+			{
 				found = false;
-			}
-			if((ind.getRoles().at(0)->getName().compare(r) != 0)){
 				continue;
-				found = false;				
 			}
-			else{
+			
+			if ( ind.getRoles().at(0)->getName().compare(r) != 0 ) // L'unico ruolo in cui "ind" è soggetto non è quello cercato.
+			{
+				found = false;
+				continue;				
+			}
+			else // "ind" è soggetto solo del ruolo di tipo cercato.
+			{
 				std::multimap<DL::Individual *, DL::Individual *> pairList = ind.getRoles().at(0)->getPairs();
-				if(!pairList.empty()){
-					for(std::pair<Individual*, Individual*> p : pairList){
-						if(ind.getName().compare(p.first->getName()) == 0){
+				
+				if ( !pairList.empty() )
+				{
+					for ( std::pair<Individual*, Individual*> p : pairList )
+					{
+						if ( ind.getName().compare(p.first->getName()) == 0 )
+						{
 							std::vector<DL::Concept*> concList = p.second->getConcepts();
-							if(!concList.empty()){
-								for(DL::Concept* conc : concList){
+							
+							if ( !concList.empty() )
+							{
+								for ( DL::Concept* conc : concList )
+								{
 									if(conc->getName().compare(c) != 0){
 										break;
 										exit = true;
@@ -450,8 +475,16 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 }
 
 string DL::Onthology::existential (string& role, string& concept)
-{    
+{
+	/**
+	 * Quantificatore esistenziale.
+	 * Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di
+	 * almeno un ruolo "role" con individui appartenenti al concetto "concept".
+	 * Gli individui così trovati vanno a formare un nuovo concetto.
+	 */
+	
     auto& ont = DL::Onthology::getInstance();
+    ont.get_c(concept); // Controlla se il ruolo esiste. Se no, causa un errore critico. Non viene usata una reference al concetto effettivo.
     DL::Role* r = &ont.get_r(role);	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
     string exist = "EXIST" +role+"_"+concept;
 
@@ -465,7 +498,7 @@ string DL::Onthology::existential (string& role, string& concept)
         return exist;
     }
     
-	if (!r->getPairs().empty())
+	if ( !r->getPairs().empty() )
 	{
 		for (DL::Individual& ind : ont.allIndividuals)
 		{
@@ -474,8 +507,10 @@ string DL::Onthology::existential (string& role, string& concept)
 				if(p.first == nullptr){
 					std::cout << "Sono vuoto" << std::endl;
 				}
-				else{
-					if(ind.getName().compare(p.first->getName()) == 0){
+				else
+				{
+					if ( ind.getName().compare(p.first->getName()) == 0 )
+					{
 						std::vector<DL::Concept*> pCons = p.second->getConcepts();
 						if (!pCons.empty())
 						{
