@@ -1,7 +1,9 @@
 CC    ?= clang
 CXX   ?= clang++
 
-EXE = test/tbox_test.out
+MAIN = test/tbox_test
+
+EXE = $(addsuffix .out, $(MAIN))
 DEBUG = -g -Wall
 
 CSTD = -std=c99
@@ -10,13 +12,12 @@ CXXSTD = -std=c++11
 CFLAGS = -Wno-deprecated-register -O0  $(DEBUG) $(CSTD) 
 CXXFLAGS = -Wno-deprecated-register -O0  $(DEBUG) $(CXXSTD)
 
-CPPOBJ = test/tbox_test src/dl_driver src/Onthology
-SOBJ = parser lexer
+CPPOBJ = $(MAIN) src/dl_driver src/Onthology
+SOBJ = parser lexer	#Riferimenti a regole, non file.
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
 
 OBJS  = $(addsuffix .o, $(CPPOBJ))
-SOBJS = $(addsuffix .o, $(OBJS))
 
 CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 				parser.tab.cc parser.tab.hh \
@@ -24,11 +25,11 @@ CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 			    stack.hh parser.output parser.o \
 				lexer.o lexer.yy.cc $(EXE)\
 
+.PHONY: all
 all:$(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) lexer.o parser.o
-
+	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o
 
 parser: build/parser.yy
 	bison -d -v build/parser.yy
@@ -37,10 +38,6 @@ parser: build/parser.yy
 lexer: build/lexer.l
 	flex --outfile=lexer.yy.cc  $<
 	$(CXX)  $(CXXFLAGS) -c lexer.yy.cc -o lexer.o
-
-.PHONY: test
-test:
-	cd test && ./test0.pl
 
 .PHONY: clean
 clean:

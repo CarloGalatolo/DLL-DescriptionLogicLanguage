@@ -720,7 +720,7 @@ namespace MC {
 
   case 9:
 #line 63 "mc_parser.yy" // lalr1.cc:859
-    { driver.add_newline(); error(yyla.location, std::string("ciao")); }
+    { driver.add_newline(); }
 #line 725 "mc_parser.tab.cc" // lalr1.cc:859
     break;
 

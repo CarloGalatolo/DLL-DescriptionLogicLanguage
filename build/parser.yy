@@ -43,8 +43,8 @@
 %define parse.assert
 
 %token <int> BOOLVAL INTVAL
-%token <std::string> NAME STRVAL DOT
-%token INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING SECTION
+%token <std::string> NAME STRVAL
+%token DOT INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING SECTION
 %token END 0 "end of file"
 
 //%type <a> EXP IstanceIndividual
@@ -55,8 +55,8 @@
 %nonassoc '?'
 %left <int> COMPARISON
 %nonassoc '#'
-%nonassoc CONJ DISJ
-%left '!'
+%left CONJ DISJ
+%right '!'
 %nonassoc '.'
 
 %locations
@@ -75,7 +75,7 @@ program:
 names_decl:
 	/* empty */
 |	names_decl decl ';'
-|	names_decl error { error(@$, std::string("In Names Declaration section")); }
+|	names_decl error { error(@1, std::string("In Names Declaration section")); }
 ;
 
 decl:
@@ -108,9 +108,9 @@ indv_decl:
 	/* SECOND SECTION */
 
 abox:
-	/* empty */
+	/* empty */	
 |	abox a_stmt ';'
-|	abox error { error(@$, std::string("In ABox Section")); }
+|	abox error { error(@1, std::string("In ABox Section")); }
 ;
 
 a_stmt:
@@ -140,13 +140,15 @@ role_assert:
 tbox:
 	/* empty */
 |	tbox t_stmt ';'
-|	tbox error { error(@$, std::string("In TBox Section")); }
+|	tbox error { error(@1, std::string("In TBox Section")); }
 ;
 
 t_stmt:
 	NAME SUBS NAME			  { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
-|	complex_concept
+|	NAME '=' NAME	/* implementare */
+|	complex_concept '=' NAME	/* implementare */
+|	complex_concept /* for testing purposes */
 ;
 
 complex_concept:
@@ -168,10 +170,12 @@ queries:;
 
 void DL::DL_Parser::error( const location_type &l, const std::string &err_message )
 {
-	// Questa funzione si chiama SOLO NEL PARSER con:
-	//	error(yyla.location, std::string("LA STRINGA"));
-	// In caso di try/catch:
-	//	error(yyla.location, std::string(e.what()));
+	/**
+	 * Funzione errore del parser. Va chiamata così:
+	 * 		error(@N, std::string("qualcosa"));
+	 * In caso di try/catch:
+	 *		error(@N, std::string(e.what()));
+	 */
 	std::cerr << "Error: " << err_message << " at " << l << std::endl;
 	exit(EXIT_FAILURE);
 }

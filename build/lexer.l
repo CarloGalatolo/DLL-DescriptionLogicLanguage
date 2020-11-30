@@ -41,21 +41,14 @@ SECTION ^[ \t]*%%[ \t]*$
 
 	/* Changing section with "%%" */
 {SECTION} { return token::SECTION; }
- /*
-<NAMES_DECL>{SECTION}	{ BEGIN TBOX; return token::SECTION; }
-<TBOX>{SECTION}			{ BEGIN ABOX; return token::SECTION; }
-<ABOX>{SECTION}			{ BEGIN QUERY; return token::SECTION; }
- /*
-<NAMES_DECL><<EOF>>	{ DL::DL_Scanner::yyerror("Unfinished names declaration before EOF."); }
-<TBOX><<EOF>>		{ DL::DL_Scanner::yyerror("Unfinished TBox before EOF."); }
-<ABOX><<EOF>>		{ DL::DL_Scanner::yyerror("Unfinished ABox before EOF."); }
- */
-	/* Single character literal tokens */
+
+ /* Single character literal tokens */
 	/* DL punctuation */
-"."		{ yylval->build<std::string>(yytext); return token::DOT;}// Used in restrictions. E.g.: EX role . Concept
+"."		{ return token::DOT; } // Used in restrictions. E.g.: EX role . Concept
 ":" |	// Used in assertions. E.g.: indv : Concept
 "," |	// Separator. Used in role assertions. E.g.: (i1, i2) : role
 ";" |	// End of statenìment.
+"=" |	// Coincidence operator.
 "#" |	// Cardinality of a concept. E.g.: #Concept
 "!" |	// Complement of a concept. E.g.: !Concept
 "?" |	// Query marker. E.g.: a : C ?

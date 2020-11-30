@@ -27,7 +27,8 @@ namespace DL
 		std::vector<std::string> allNames;
 
 		std::multimap<Concept*, Concept*> subsGraph; // Grafo delle sussunzioni
-		std::map<Concept*, Concept*> negateGraph;	 // Grafo delle negazioni
+		std::map<Concept*, Concept*> coincidenceMap; // Mappa delle coincidenze
+		std::map<Concept*, Concept*> negateMap;	 // Mappa delle negazioni
 
 		static Onthology& getInstance ()
 		{

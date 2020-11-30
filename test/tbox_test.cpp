@@ -43,8 +43,8 @@ void print_subs ()
 void print_negate ()
 {
 	Onthology& o = Onthology::getInstance();
-	std::cout << "La dimensione della mappa dei negati e' " << o.negateGraph.size() << std::endl;
-	for(/*std::pair<Concept*, Concept*> p : o.negateGraph*/ auto it = o.negateGraph.begin(); it != o.negateGraph.end(); it++){
+	std::cout << "La dimensione della mappa dei negati e' " << o.negateMap.size() << std::endl;
+	for(/*std::pair<Concept*, Concept*> p : o.negateGraph*/ auto it = o.negateMap.begin(); it != o.negateMap.end(); it++){
 		//cout << p.first->getName() << " e' il negato di " << p.second->getName() << std::endl;
 		cout << it->first->getName() << " e' il negato di " << it->second->getName() << std::endl;
 	}	
@@ -80,7 +80,7 @@ int main ( const int argc, const char **argv )
 	{
 		DL::DL_Driver driver;
 		driver.parse( argv[1] );
-		print( std::cout ) << std::endl;
+		//print( std::cout ) << std::endl;
 
 		print_subs();
 

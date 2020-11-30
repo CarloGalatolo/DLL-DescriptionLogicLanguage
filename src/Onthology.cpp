@@ -280,7 +280,7 @@ string DL::Onthology::negation (string& s)
 	{
 		//std::cout << "Sono dentro la catch" << std::endl;
 
-		for (std::pair<DL::Concept *, DL::Concept *> p : ont.negateGraph)
+		for (std::pair<DL::Concept *, DL::Concept *> p : ont.negateMap)
 		{
 			std::cout << "Sto ciclando per cercare il negato misterioso" << std::endl;
 
@@ -301,17 +301,16 @@ string DL::Onthology::negation (string& s)
 					return p.first->getName();
 				}
 			}
-
 		}
 
 		//std::cout << "Esco dal for" << std::endl;
 
 		DL::Concept* n = &ont.get_c(s.erase(0, 4));
-		ont.negateGraph.insert(std::make_pair(n, c));
+		ont.negateMap.insert(std::make_pair(n, c));
 	}
 
 	// Ciclo della mappa dei negati per controllare se il negato esiste già.
-	for (std::pair<DL::Concept *, DL::Concept *> p : ont.negateGraph)
+	for (std::pair<DL::Concept *, DL::Concept *> p : ont.negateMap)
 	{
 		//std::cout << "Sto ciclando per evitare i NOT_NOT_etc..." << std::endl;
 
@@ -334,11 +333,11 @@ string DL::Onthology::negation (string& s)
 	bool check = false;
 	DL::Concept* c_2 = &ont.get_c(neg);
 	
-	if (ont.negateGraph.find(c) == ont.negateGraph.end())
+	if (ont.negateMap.find(c) == ont.negateMap.end())
 	{
 		std::cout << "Sto per inserire nella mappa dei negati " << c->getName() << " e " << c_2->getName() << std::endl;
 		std::pair<DL::Concept*,DL::Concept*> negPair = std::make_pair(c, c_2);
-		ont.negateGraph.insert(negPair);
+		ont.negateMap.insert(negPair);
 	}
 	
 	if (cIndvs.empty())
@@ -390,6 +389,14 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 	 * Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità
 	 * di ruoli di cui sono soggetti sono ruoli di tipo "r" e verso individui
 	 * appartenenti al concetto "c". Gli individui trovati vanno a formare un nuovo concetto.
+	 * 
+	 * Questa funzione esclude il seguente caso, che nella teoria è corretto
+	 * ma è scomodo nelle applicazioni pratiche:
+	 * 		Se un individuo non è soggetto di nessun ruolo, va considerato.
+	 * 		Dimostrazione:
+	 * 			∀r.C == ¬∃r.¬C
+	 * 		Cioè l'individuo non è soggetto di ruoli verso ¬C,
+	 * 		che è vero perché non è soggetto di nessun ruolo.
 	 */
 	
 	DL::Onthology& ont = DL::Onthology::getInstance();
@@ -413,61 +420,59 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 	bool exit = false;
 	bool found = false;
 
-	for (DL::Individual& ind : ont.allIndividuals)
+	for (DL::Individual& ind : ont.allIndividuals) // Itera ogni individuo del dominio.
 	{
-		if ( !ind.getRoles().empty() ) // "ind" è sogetto di almeno un ruolo.
+		if ( ind.getRoles().size() != 1 ) // "ind" non può essere soggetto di ruoli diversi o di nessun ruolo (v. sopra).
 		{
-			if ( ind.getRoles().size() != 1 ) // "ind" non può essere soggetto di ruoli diversi.
-			{
-				found = false;
-				continue;
-			}
+			found = false;
+			continue;
+		}
+		
+		if ( ind.getRoles().at(0)->getName() != r ) // L'unico ruolo in cui "ind" è soggetto non è quello cercato.
+		{
+			found = false;
+			continue;				
+		}
+		else // "ind" è soggetto soltanto del ruolo cercato.
+		{
+			// Lista delle coppie di individui facenti parte del ruolo cercato.
+			std::multimap<DL::Individual *, DL::Individual *> pairList = ind.getRoles().at(0)->getPairs();
 			
-			if ( ind.getRoles().at(0)->getName().compare(r) != 0 ) // L'unico ruolo in cui "ind" è soggetto non è quello cercato.
+			if ( !pairList.empty() )
 			{
-				found = false;
-				continue;				
-			}
-			else // "ind" è soggetto solo del ruolo di tipo cercato.
-			{
-				std::multimap<DL::Individual *, DL::Individual *> pairList = ind.getRoles().at(0)->getPairs();
-				
-				if ( !pairList.empty() )
+				for ( std::pair<Individual*, Individual*> p : pairList )
 				{
-					for ( std::pair<Individual*, Individual*> p : pairList )
+					if ( ind.getName() == p.first->getName() )
 					{
-						if ( ind.getName().compare(p.first->getName()) == 0 )
+						std::vector<DL::Concept*> concList = p.second->getConcepts();
+						
+						if ( !concList.empty() )
 						{
-							std::vector<DL::Concept*> concList = p.second->getConcepts();
-							
-							if ( !concList.empty() )
+							for ( DL::Concept* conc : concList )
 							{
-								for ( DL::Concept* conc : concList )
+								if (conc->getName() != c)
 								{
-									if(conc->getName().compare(c) != 0){
-										break;
-										exit = true;
-									}
-								}							
-							}
-							if(exit){
-								found = false;
-								break;
-							}
-							found = true;
+									found = false;
+									exit = true;
+									break;
+								}
+							}							
 						}
 
+						if (exit)
+						{
+							break;
+						}
+						
+						found = true;
 					}
-				}
-				if(found){
-					ont.get_c(name).addIndividual(&ind);
-					found = false;
 				}
 			}
 
-		}
-		else{
-			ont.get_c(name).addIndividual(&ind);
+			if(found){
+				ont.get_c(name).addIndividual(&ind);
+				found = false;
+			}
 		}
 	}
 
@@ -504,22 +509,16 @@ string DL::Onthology::existential (string& role, string& concept)
 		{
 			for (std::pair<DL::Individual *, DL::Individual *> p : r->getPairs())
 			{
-				if(p.first == nullptr){
-					std::cout << "Sono vuoto" << std::endl;
-				}
-				else
+				if ( ind.getName() == p.first->getName() )
 				{
-					if ( ind.getName().compare(p.first->getName()) == 0 )
+					std::vector<DL::Concept*> pCons = p.second->getConcepts();
+					if (!pCons.empty())
 					{
-						std::vector<DL::Concept*> pCons = p.second->getConcepts();
-						if (!pCons.empty())
+						if (myFindPtr(pCons.begin(), pCons.end(), concept) != pCons.end())	// Se lo trova
 						{
-							if (myFindPtr(pCons.begin(), pCons.end(), concept) != pCons.end())	// Se lo trova
-							{
-								ont.get_c(exist).addIndividual(&ind);
-								break;
-							}					
-						}
+							ont.get_c(exist).addIndividual(&ind);
+							break;
+						}					
 					}
 				}
 			}
