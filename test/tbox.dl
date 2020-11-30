@@ -20,5 +20,4 @@ ronaldo, dybala, bonucci, kompany : Calciatore;
 
 //ALL giocacon . Calciatore;
 EX allena . Calciatore;
-
 /*Allenatore CONJ Calciatore SUBS AllenatoreDISJCalciatore;*/

@@ -147,6 +147,7 @@ DL::Individual& DL::Onthology::get_i (std::string& s)
 	
 	Individual& r = *res;
 	return r;
+	
 }
 
 void DL::Onthology::subsumption (std::string& c_1, std::string& c_2) // a subsumed by b
