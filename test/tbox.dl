@@ -12,14 +12,11 @@ ronaldo, dybala, bonucci : Calciatore;
 
 %%
 
-//!Calciatore;
+!(Calciatore CONJ Allenatore);
 //!Allenatore;
-Allenatore CONJ Calciatore;
-Allenatore DISJ Calciatore;
+//Allenatore CONJ Calciatore;
+//Allenatore DISJ Calciatore;
+//Allenatore SUBS Calciatore;
 
-<<<<<<< HEAD
-/*Allenatore CONJ Calciatore SUBS AllenatoreDISJCalciatore;*/
-=======
-ALL giocacon . Calciatore;
 //EX allena . Calciatore;
->>>>>>> master
+//ALL giocacon . Calciatore;

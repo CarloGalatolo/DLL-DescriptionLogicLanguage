@@ -149,25 +149,27 @@ DL::Individual& DL::Onthology::get_i (std::string& s)
 	return r;
 }
 
-void DL::Onthology::subsumption (std::string& c_1, std::string& c_2) // a subsumed by b
+void DL::Onthology::subsumption (std::string& s1, std::string& s2) // a subsumed by b
 {
-	DL::Concept* subsumed = &DL::Onthology::getInstance().get_c(c_1);
-	DL::Concept* subsumes = &DL::Onthology::getInstance().get_c(c_2);
-	auto subsumedIndvs = subsumed->getIndividuals();
+	Onthology& ont = Onthology::getInstance();
+	Concept& subsumed = ont.get_c(s1);
+	Concept& subsumes = ont.get_c(s2);
+	std::vector<string> individualsInTheSubsumedConcept = subsumed.getIndividuals();
 
-	std::pair<DL::Concept*, DL::Concept*> p = std::make_pair(subsumed, subsumes);
-	if (find_pair(this->subsGraph, p) == this->subsGraph.end())
+	std::pair<string, string> pair = std::make_pair(s1, s2);
+
+	if (find_pair(subsGraph, pair) == subsGraph.end()) // Not there.
 	{
-		this->subsGraph.insert(p);
+		this->subsGraph.insert(pair);
 		// All the individuals of the subsumed concept are put into the subsuming concept as well.
-		for (Individual* it : subsumedIndvs)
+		for (string ind : individualsInTheSubsumedConcept)
 		{
-			subsumes->addIndividual(it);
+			subsumes.addIndividual(ind);
 		}
 	}
 	else
 	{
-		throw std::logic_error(" Subsuming: pair already exists ");
+		throw std::logic_error(" Subsuming: pair already exists. ");
 	}
 }
 
@@ -178,17 +180,17 @@ std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Int
 	put(res);
 	Concept &c1 = get_c(s1), &c2 = get_c(s2), &c = get_c(name);
 	auto c1Indvs = c1.getIndividuals(), c2Indvs = c2.getIndividuals();
-/*
+
 	subsumption(name, s1);
 	subsumption(name, s2);
-*/
+
 	if (!(c1Indvs.empty() || c2Indvs.empty()))
 	{
 		for (string i1 : c1Indvs)
 		{
 			for (string i2 : c2Indvs)
 			{
-				if (!(i1 == nullptr || i2 == nullptr))
+				//if (!(i1 == nullptr || i2 == nullptr))
 				{
 					if (i1.compare(i2) == 0)
 					{
@@ -259,144 +261,152 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 string DL::Onthology::negation (string& s)
 {
 	/**
-	 * Funzione che genera il negato del conetto il cui nome è passato a parametro,
-	 * lo inserisce nell'Ontologia, poi inserisce una pair nella mappa dei negati.
-	 * Se il concetto parametro ha già un negato nell'Ontologia, la funzione ritorna
-	 * quel concetto invece di crearne un duplicato.
+	 * Genera il negato del conetto il cui nome è "s" e lo inserisce nell'Ontologia,
+	 * poi inserisce una pair nella mappa dei negati. Se "s" ha già un negato nell'Ontologia,
+	 * la funzione ritorna il nome quel concetto invece di crearne un duplicato.
 	 */
+	std::cout << "Negazione" << std::endl;
+	Onthology& ont = Onthology::getInstance();
 
-	auto& ont = DL::Onthology::getInstance();
-
-	DL::Concept* c = &ont.get_c(s);		// Recupera il concetto il cui nome è passato a parametro.
-	string neg = "NOT_" + c->getName();
+	Concept& c = ont.get_c(s);		// Recupera il concetto il cui nome è passato a parametro.
+	string name = "NOT_" + s;
 	
-	//std::cout << "Sono prima del try" << std::endl;
-
+	std::cout << "Sono prima del try" << std::endl;
 	try 
 	{
-		ont.put_c(neg);
+		ont.put_c(name);
+		std::cout << ont.get_c(name).getName() << " messo" << std::endl;
 	}
-	catch (std::logic_error e)
+	catch (std::logic_error e) // Negated concept already there.
 	{
-		//std::cout << "Sono dentro la catch" << std::endl;
+		std::cout << "Sono dentro la catch" << std::endl;
 
-		for (std::pair<DL::Concept *, DL::Concept *> p : ont.negateMap)
+		for (std::pair<string, string> pair : ont.negateMap)
 		{
 			std::cout << "Sto ciclando per cercare il negato misterioso" << std::endl;
 
-			if(p.first == nullptr || p.second == nullptr){
-				std::cout << "Sono nullo" << std::endl;
-				std::cout << p.first->getName() << " " << p.second->getName() << std::endl;
+			std::cout << pair.first << " " << pair.second << std::endl;
+			if (pair.first.compare(s) == 0)	
+			{
+				std::cout << "IF" << std::endl;
+				return pair.second;	
 			}
-			else{
-				std::cout << p.first->getName() << " " << p.second->getName() << std::endl;
-				if (p.first->getName().compare(s) == 0)	
-				{
-					std::cout << "IF" << std::endl;
-					return p.second->getName();	
-				}
-				else if (p.second->getName().compare(s) == 0)
-				{
-					std::cout << "ELSEIF" << std::endl;
-					return p.first->getName();
-				}
+			else if (pair.second.compare(s) == 0)
+			{
+				std::cout << "ELSEIF" << std::endl;
+				return pair.first;
 			}
+
 
 		}
 
-		//std::cout << "Esco dal for" << std::endl;
+		std::cout << "Esco dal for" << std::endl;
 
-		DL::Concept* n = &ont.get_c(s.erase(0, 4));
-		ont.negateMap.insert(std::make_pair(n, c));
+		Concept& n = ont.get_c(s.erase(0, 4));
+		ont.negateMap.insert(std::make_pair(n.getName(), s));
 	}
 
-	// Ciclo della mappa dei negati per controllare se il negato esiste già.
-	for (std::pair<DL::Concept *, DL::Concept *> p : ont.negateMap)
+	std::cout << "Sto per esplodere." << std::endl;
+
+	if (!ont.negateMap.empty())
 	{
-		//std::cout << "Sto ciclando per evitare i NOT_NOT_etc..." << std::endl;
+		// Ciclo della mappa dei negati per controllare se il negato esiste già.
+		for (std::pair<string, string> pair : ont.negateMap)
+		{
+			std::cout << "Sto ciclando per evitare i NOT_NOT_etc..." << std::endl;
 
-		if (p.first->getName() == s)	
-		{
-			// Se il parametro ha già un negato, ritorna il suo negato.
-			return p.second->getName();	
-		}
-		else if (p.second->getName() == s)
-		{
-			// Se il parametro è il negato di un concetto esistente, ritorna il concetto originale.
-			return p.first->getName();
-		}
+			if (pair.first == s)	
+			{
+				// Se il parametro ha già un negato, ritorna il suo negato.
+				return pair.second;	
+			}
+			else if (pair.second == s)
+			{
+				// Se il parametro è il negato di un concetto esistente, ritorna il concetto originale.
+				return pair.first;
+			}
+		}		
 	}
-
+	else
+	{
+		std::cout << "La mappa dei negati è vuota." << std::endl;
+	}
+	
 	// Se non è stato trovata una coppia nella mappa dei negati, viene generato il negato.
 
-	std::vector<DL::Individual*> cIndvs = c->getIndividuals();
-	
+	std::cout << "Creo il negato." << std::endl;
 	bool check = false;
-	DL::Concept* c_2 = &ont.get_c(neg);
-	
-	if (ont.negateMap.find(c) == ont.negateMap.end())
+	DL::Concept& c_2 = ont.get_c(name);
+	std::cout << "Recupero gli individui di " << c.getName() << std::endl;
+	std::vector<string> cIndvs = ont.get_c(s).getIndividuals();
+	std::cout << "Negato creato." << std::endl;
+	if (ont.negateMap.find(s) == ont.negateMap.end())
 	{
-		std::cout << "Sto per inserire nella mappa dei negati " << c->getName() << " e " << c_2->getName() << std::endl;
-		std::pair<DL::Concept*,DL::Concept*> negPair = std::make_pair(c, c_2);
+		std::cout << "Sto per inserire nella mappa dei negati " << c.getName() << " e " << c_2.getName() << std::endl;
+		std::pair<string, string> negPair = std::make_pair(s, name);
 		ont.negateMap.insert(negPair);
 	}
 	
 	if (cIndvs.empty())
 	{
-		for (DL::Individual& indv : ont.allIndividuals)
+		for (DL::Individual ind : ont.allIndividuals)
 		{
-			//std::cout << "Provo a recuperare il concetto" << std::endl;
-			ont.get_c(neg).addIndividual(&indv);
+			std::cout << "Provo a recuperare il concetto" << std::endl;
+			string tmp = ind.getName();
+			ont.get_c(name).addIndividual(tmp);
 		}
 	}
 	else
 	{
-		for (DL::Individual& indv : ont.allIndividuals)
+		for (DL::Individual indv : ont.allIndividuals)
 		{
-			//std::cout << "Ciclo l'individuo " << indv.getName() <<  std::endl;
-			for (DL::Individual* idual : cIndvs)
+			std::cout << "Ciclo l'individuo " << indv.getName() <<  std::endl;
+			for (string idual : cIndvs)
 			{
-				if(idual == nullptr){
-					//std::cout << "Sono nullo" << std::endl;
+				std::cout << "Ciclo gli individui del complementare" << std::endl;
+				if (idual.compare(indv.getName()) == 0)
+				{
+					check = true;
+					break;
 				}
-				else{
-					//std::cout << "Ciclo gli individui del complementare" << std::endl;
-					if (idual->getName().compare(indv.getName()) == 0)
-					{
-						check = true;
-						break;
-					}
-				}
-
 			}
 
 			if (!check)
 			{
-				//std::cout << "Provo a recuperare il concetto" << std::endl;
-				ont.get_c(neg).addIndividual(&indv);
+				std::cout << "Provo a recuperare il concetto" << std::endl;
+				string tmp = indv.getName();
+				ont.get_c(name).addIndividual(tmp);
 			}
 
 			check = false;
 		}		
 	}
 
-	return neg;
+	return name;
 }
 
 string DL::Onthology::universal (std::string& r, std::string& c)
 {
 	/**
-	 * Quantificatore esistenziale.
-	 * Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di
-	 * almeno un ruolo "role" con individui appartenenti al concetto "concept".
-	 * Gli individui così trovati vanno a formare un nuovo concetto.
+	 * Quantificatore universale.
+	 * Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità
+	 * di ruoli di cui sono soggetti sono ruoli di tipo "r" e verso individui
+	 * appartenenti al concetto "c". Gli individui trovati vanno a formare un nuovo concetto.
+	 * 
+	 * Questa funzione esclude il seguente caso, che nella teoria è corretto
+	 * ma è scomodo nelle applicazioni pratiche:
+	 * 		Se un individuo non è soggetto di nessun ruolo, va considerato.
+	 * 		Dimostrazione:
+	 * 			∀r.C == ¬∃r.¬C
+	 * 		Cioè l'individuo non è soggetto di ruoli verso ¬C,
+	 * 		che è vero perché non è soggetto di nessun ruolo.
 	 */
 
-	DL::Onthology& ont = DL::Onthology::getInstance();
+	Onthology& ont = Onthology::getInstance();
 	ont.get_c(c); // Controlla se il ruolo esiste. Se no, causa un errore critico. Non viene usata una reference al concetto effettivo.
     DL::Role& role = ont.get_r(r);;	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
 	std::string name = "UNIV" + r + "_" + c;
-	
+
 	try
     {
         ont.put_c(name);
@@ -425,21 +435,22 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 		else // "ind" è soggetto soltanto del ruolo cercato.
 		{
 			// Lista delle coppie di individui facenti parte del ruolo cercato.
-			//std::multimap<std::string, std::string> pairList = role.getPairs();
-			
-			if ( !role.getPairs().empty() )
+			std::multimap<std::string, std::string> pairList = role.getPairs();
+
+			if ( !pairList.empty() )
 			{
-				for ( auto it = role.getPairs().begin(); it != role.getPairs().end(); it++/*std::pair<Individual*, Individual*> p : pairList*/ )
+				for ( auto it = pairList.begin(); it != pairList.end(); it++/*std::pair<Individual*, Individual*> p : pairList*/ )
 				{
 					if ( ind.getName().compare(it->first) == 0 )
 					{
-						//std::vector<std::string> concList = ont.get_i(it->second).getConcepts();
-						
-						if ( !ont.get_i(it->second).getConcepts().empty() )
+						std::vector<std::string> concList = ont.get_i(it->second).getConcepts();
+
+						if ( !concList.empty() )
 						{
-							for ( auto itr = ont.get_i(it->second).getConcepts().begin(); itr != ont.get_i(it->second).getConcepts().end(); itr++/*DL::Concept* conc : concList*/ )
+							//for ( auto itr = ont.get_i(it->second).getConcepts().begin(); itr != ont.get_i(it->second).getConcepts().end(); itr++/*DL::Concept* conc : concList*/ )
+							for (string itr : concList)
 							{
-								if (itr->compare(c) != 0)
+								if (itr.compare(c) != 0)
 								{
 									found = false;
 								}
@@ -505,10 +516,10 @@ string DL::Onthology::existential (string& role, string& concept)
 				for (std::pair<string, string> p : pairList)
 				{
 
-					if(p.first == nullptr){
+					/*if(p.first == nullptr){
 						std::cout << "Sono vuoto" << std::endl;
 					}
-					else{
+					else*/{
 						std::cout << "Controllo che " << p.first << " coincida con " << ind.getName() << std::endl;
 						if(ind.getName().compare(p.first) == 0){
 							std::cout << "Coincidono!" << std::endl;
@@ -517,8 +528,9 @@ string DL::Onthology::existential (string& role, string& concept)
 							{
 								std::cout << "Cerco " << concept << " tra i concetti di " << p.second << std::endl;
 								for( string c : pCons ){
-									if(c != nullptr){
-										std::cout << "Confronto " << c->getName() << " con " << concept << std::endl;
+									//if(c != nullptr)
+									{
+										std::cout << "Confronto " << c << " con " << concept << std::endl;
 										if (c.compare(concept) == 0)	// Se lo trova
 										{
 											std::cout << "Trovato! Aggiungo " << ind.getName() << " al concetto " << exist << std::endl;
@@ -531,9 +543,9 @@ string DL::Onthology::existential (string& role, string& concept)
 											break;
 										}									
 									}
-									else{
+									/*else{
 										std::cout << "Sono nullo" << std::endl;
-									}
+									}*/
 								}
 							}
 						}
@@ -559,8 +571,8 @@ bool DL::Onthology::checkNames (const std::string& s) const
 	}
 }
 
-template<class InputIterator, class T>
-InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, const T& val) const
+template<class InputIterator>
+InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, const string& val) const
 {
 	while (first!=last) {
 		if ((*first).getName()==val) return first;
@@ -569,11 +581,21 @@ InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, co
 	return last;
 }
 
-template<class InputIterator, class T>
-InputIterator DL::Onthology::myFindPtr (InputIterator first, InputIterator last, const T& val) const
+template<class InputIterator>
+InputIterator DL::Onthology::myFindPtr (InputIterator first, InputIterator last, const string& val) const
 {
 	while (first!=last) {
 		if ((*first)->getName()==val) return first;
+		++first;
+	}
+	return last;
+}
+
+template<class InputIterator>
+InputIterator DL::Onthology::myFindStr (InputIterator first, InputIterator last, const string& val) const
+{
+	while (first!=last) {
+		if ((*first)==val) return first;
 		++first;
 	}
 	return last;
@@ -637,25 +659,17 @@ DL::Individual::Individual (std::string& name)
 
 void DL::Individual::addConcept (string& con)
 {
-	if (Onthology::getInstance().myFind(concepts.begin(), concepts.end(), con) == concepts.end())
+	if (Onthology::getInstance().myFindStr(concepts.begin(), concepts.end(), con) == concepts.end())
 	{
 		concepts.push_back(con);
-	}
-	else
-	{
-		// Already there.
 	}
 }
 
 void DL::Individual::addRole (string& role)
 {
-	if (Onthology::getInstance().myFind(roles.begin(), roles.end(), role) == roles.end())
+	if (Onthology::getInstance().myFindStr(roles.begin(), roles.end(), role) == roles.end())
 	{
 		roles.push_back(role);
-	}
-	else
-	{
-		// Already there.
 	}
 }
 
@@ -695,11 +709,9 @@ std::multimap<string, string> DL::Role::getPairs () const
 
 void DL::Role::insert (string& s1, string& s2)
 {
-	/*
-	DL::Individual* first = &DL::Onthology::getInstance().get_i(s1);
-	DL::Individual* second = &DL::Onthology::getInstance().get_i(s2);
-*/
-	if(!DL::Onthology::getInstance().checkIndividual(s1)||!DL::Onthology::getInstance().checkIndividual(s2)){
+	Onthology& ont = Onthology::getInstance();
+
+	if(!ont.checkIndividuals(s1) || !ont.checkIndividuals(s2)){
 		exit(1);
 	}
 
@@ -707,12 +719,8 @@ void DL::Role::insert (string& s1, string& s2)
 
 	if (find_pair(pairs, p) == pairs.end())
 	{
-		DL::Onthology::getInstance().get_i(s1).addRole(this->name);
+		ont.get_i(s1).addRole(this->name);
 		pairs.insert(p);
-	}
-	else
-	{
-		throw std::logic_error("In role assertion: already existing.");
 	}
 }
 
@@ -759,11 +767,7 @@ void DL::Concept::addIndividual (string& s)
 		return;
 	}
 
-	if (this->checkIndividuals(s))
-	{
-		throw std::logic_error(" Adding Individual: already exists ");
-	}
-	else
+	if (!this->checkIndividuals(s))
 	{
 		individuals.push_back(s);
 		i->addConcept(this->name);
@@ -793,7 +797,7 @@ bool DL::Concept::checkIndividuals (const std::string s) const
 
 // subsume = true -> subsumeS; subsume = false -> subsumeD.
 bool DL::Concept::checkSubs (const DL::Concept* c, const bool subsume) const
-{
+{/*
 	if (c == nullptr)
 	{
 		std::cerr << " In Concept::checkSubs(): argument is a null pointer. " << std::endl;
@@ -826,5 +830,6 @@ bool DL::Concept::checkSubs (const DL::Concept* c, const bool subsume) const
 		{
 			return false;
 		}
-	}
+	}*/
+	return true;
 }

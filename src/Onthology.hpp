@@ -52,11 +52,14 @@ namespace DL
 		string universal (std::string&, std::string&);
 		string existential (string&, string&);
 		void addSubs (std::string&, std::string&);	// throws exception
+		bool checkIndividuals (const std::string&) const;
 		
-		template<class InputIterator, class T>
-  			InputIterator myFind (InputIterator first, InputIterator last, const T& val) const;
-		template<class InputIterator, class T>
-  			InputIterator myFindPtr (InputIterator first, InputIterator last, const T& val) const;
+		template<class InputIterator>
+  			InputIterator myFind (InputIterator first, InputIterator last, const string& val) const;
+		template<class InputIterator>
+  			InputIterator myFindPtr (InputIterator first, InputIterator last, const string& val) const;
+		template<class InputIterator>
+  			InputIterator myFindStr (InputIterator first, InputIterator last, const string& val) const;
 	
 	private:
 		Onthology () {}
@@ -66,7 +69,6 @@ namespace DL
 		bool checkNames (const std::string&) const;
 		bool checkConcepts (const std::string&) const;
 		bool checkRoles (const std::string&) const;
-		bool checkIndividuals (const std::string&) const;
 		string correctDoubleNot (string&);
 	};
 
@@ -102,7 +104,7 @@ namespace DL
 
 		std::string getName () const;
 		std::multimap<string, string> getPairs () const;
-		void insert (string&, string&); // throws exception
+		void insert (string&, string&);
 	};
 
 	class Concept
@@ -123,7 +125,7 @@ namespace DL
 		std::vector<string> getSubsumes () const;
 		std::vector<string> getSubsumed () const;
 
-		void addIndividual (string&);		// throws exception
+		void addIndividual (string&);
 
 	private:
 		bool checkIndividuals (const std::string) const;

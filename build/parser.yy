@@ -158,6 +158,7 @@ complex_concept:
 |	'(' complex_concept ')' DISJ NAME    { $$ = DL::Onthology::getInstance().disjunction($2, $5); }
 |	'!' NAME 					 { $$ = DL::Onthology::getInstance().negation($2); }
 |	'!' complex_concept			 { $$ = DL::Onthology::getInstance().negation($2); }
+|	'!' '(' complex_concept ')'	 { $$ = DL::Onthology::getInstance().negation($3); }
 |	EX  NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().existential($2, $4); }
 |	EX  NAME DOT complex_concept { $$ = DL::Onthology::getInstance().existential($2, $4); }
 |	ALL NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().universal($2, $4); }
