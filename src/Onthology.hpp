@@ -125,7 +125,7 @@ namespace DL
 		void addIndividual (string&);		// throws exception
 
 	private:
-		bool checkIndividuals (const Individual*) const;
+		bool checkIndividuals (const std::string) const;
 		bool checkSubs (const Concept*, const bool) const;	// bool = true -> subsumes; bool = false -> subsumed.
 	};
 }
