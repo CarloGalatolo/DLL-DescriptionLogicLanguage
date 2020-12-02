@@ -718,46 +718,21 @@ std::string DL::Concept::getName () const
 	return this->name;
 }
 
-std::vector<DL::Individual*> DL::Concept::getIndividuals () const
+std::vector<std::string> DL::Concept::getIndividuals () const
 {
 	return this->individuals;
 }
 
-std::vector<DL::Concept*> DL::Concept::getSubsumes () const
+std::vector<string> DL::Concept::getSubsumes () const
 {
 	/*ATTENZIONE NON USARE CON GLI ITERATORI*/
 	return (*this).subsumes;
 }
 
-std::vector<DL::Concept*> DL::Concept::getSubsumed () const
+std::vector<std::string> DL::Concept::getSubsumed () const
 {
 	/*ATTENZIONE NON USARE CON GLI ITERATORI*/
 	return (*this).subsumed;
-}
-
-void DL::Concept::addIndividual (DL::Individual* i)
-{
-	if (i == nullptr)
-	{
-		std::cerr << " In Concept::addIndividual(Individual*): argument is a null pointer. " << std::endl;
-		return;
-	}
-
-	if (this->checkIndividuals(i))
-	{
-		throw std::logic_error(" Adding Individual: already exists ");
-	}
-	else
-	{
-		individuals.push_back(i);
-		i->addConcept(this);
-		for(auto it = Onthology::getInstance().subsGraph.begin(); it != Onthology::getInstance().subsGraph.end(); it++)
-		{
-			if(it->first->name.compare(this->name) == 0){
-				it->second->addIndividual(i);
-			}
-		}
-	}
 }
 
 void DL::Concept::addIndividual (string& s)
@@ -770,33 +745,28 @@ void DL::Concept::addIndividual (string& s)
 		return;
 	}
 
-	if (this->checkIndividuals(i))
+	if (this->checkIndividuals(s))
 	{
 		throw std::logic_error(" Adding Individual: already exists ");
 	}
 	else
 	{
-		individuals.push_back(i);
-		i->addConcept(this);
+		individuals.push_back(s);
+		i->addConcept(this->name);
 		for(auto it = Onthology::getInstance().subsGraph.begin(); it != Onthology::getInstance().subsGraph.end(); it++)
 		{
-			if(it->first->name.compare(this->name) == 0){
-				it->second->addIndividual(s);
+			if(it->first.compare(this->name) == 0){
+				DL::Onthology::getInstance().get_c(it->second).addIndividual(s);
 			}
 
 		}
 	}
 }
 
-bool DL::Concept::checkIndividuals (const DL::Individual* indv) const
+bool DL::Concept::checkIndividuals (const std::string s) const
 {
-	if (indv == nullptr)
-	{
-		std::cerr << " In Concept::checkIndividuals(Individual*): argument is a null pointer. " << std::endl;
-		exit(EXIT_FAILURE);
-	}
 
-	auto res = std::find(this->individuals.begin(), this->individuals.end(), indv);
+	auto res = std::find(this->individuals.begin(), this->individuals.end(), s);
 
 	if (res != this->individuals.end())	// Individuo già presente.
 	{
