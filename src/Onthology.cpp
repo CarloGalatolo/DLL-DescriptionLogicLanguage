@@ -178,24 +178,24 @@ std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Int
 	put(res);
 	Concept &c1 = get_c(s1), &c2 = get_c(s2), &c = get_c(name);
 	auto c1Indvs = c1.getIndividuals(), c2Indvs = c2.getIndividuals();
-
+/*
 	subsumption(name, s1);
 	subsumption(name, s2);
-
+*/
 	if (!(c1Indvs.empty() || c2Indvs.empty()))
 	{
-		for (DL::Individual* i1 : c1Indvs)
+		for (string i1 : c1Indvs)
 		{
-			for (DL::Individual* i2 : c2Indvs)
+			for (string i2 : c2Indvs)
 			{
 				if (!(i1 == nullptr || i2 == nullptr))
 				{
-					if (i1->getName().compare(i2->getName()) == 0)
+					if (i1.compare(i2) == 0)
 					{
 						try
 						{
 							c.addIndividual(i1);
-							std::cout << c.getIndividuals().at(0)->getName() << std::endl;
+							//std::cout << c.getIndividuals().at(0) << std::endl;
 						}
 						catch(const std::exception& e)
 						{
@@ -500,29 +500,30 @@ string DL::Onthology::existential (string& role, string& concept)
 		{
 			std::cout << "Controllo " << ind.getName() << std::endl;
 			std::cout << "Sto per ciclare le coppie di " << r->getName() << std::endl;
-			std::multimap<DL::Individual *, DL::Individual *> pairList = r->getPairs();
+			std::multimap<string, string> pairList = r->getPairs();
 			if(!pairList.empty()){
-				for (std::pair<DL::Individual *, DL::Individual *> p : pairList)
+				for (std::pair<string, string> p : pairList)
 				{
 
 					if(p.first == nullptr){
 						std::cout << "Sono vuoto" << std::endl;
 					}
 					else{
-						std::cout << "Controllo che " << p.first->getName() << " coincida con " << ind.getName() << std::endl;
-						if(ind.getName().compare(p.first->getName()) == 0){
+						std::cout << "Controllo che " << p.first << " coincida con " << ind.getName() << std::endl;
+						if(ind.getName().compare(p.first) == 0){
 							std::cout << "Coincidono!" << std::endl;
-							std::vector<DL::Concept*> pCons = p.second->getConcepts();
+							std::vector<std::string> pCons = ont.get_i(p.second).getConcepts();
 							if (!pCons.empty())
 							{
-								std::cout << "Cerco " << concept << " tra i concetti di " << p.second->getName() << std::endl;
-								for( DL::Concept* c : pCons ){
+								std::cout << "Cerco " << concept << " tra i concetti di " << p.second << std::endl;
+								for( string c : pCons ){
 									if(c != nullptr){
 										std::cout << "Confronto " << c->getName() << " con " << concept << std::endl;
-										if (c->getName().compare(concept) == 0)	// Se lo trova
+										if (c.compare(concept) == 0)	// Se lo trova
 										{
 											std::cout << "Trovato! Aggiungo " << ind.getName() << " al concetto " << exist << std::endl;
-											ont.get_c(exist).addIndividual(&ind);
+											string save = ind.getName();
+											ont.get_c(exist).addIndividual(save);
 											break;
 										}
 										else{
