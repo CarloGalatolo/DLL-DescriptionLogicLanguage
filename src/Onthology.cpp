@@ -224,11 +224,11 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 
 	if (!c1Indvs.empty())
 	{
-		for(DL::Individual* i1 : c1Indvs)
+		for(auto it = c1Indvs.begin(); it != c1Indvs.end(); it++)
 		{
 			try
 			{
-				c.addIndividual(i1); // Checks for nullptr.
+				c.addIndividual(*it); // Checks for nullptr.
 			}
 			catch (std::exception e)
 			{
@@ -240,10 +240,10 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 
 	if (!c2Indvs.empty())
 	{
-		for(Individual* i2 : c2Indvs){
+		for(auto it = c1Indvs.begin(); it != c1Indvs.end(); it++){
 			try
 			{
-				c.addIndividual(i2); // Checks for nullptr.
+				c.addIndividual(*it); // Checks for nullptr.
 			}
 			catch (std::exception e)
 			{
@@ -394,7 +394,7 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 
 	DL::Onthology& ont = DL::Onthology::getInstance();
 	ont.get_c(c); // Controlla se il ruolo esiste. Se no, causa un errore critico. Non viene usata una reference al concetto effettivo.
-    ont.get_r(r);;	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
+    DL::Role& role = ont.get_r(r);;	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
 	std::string name = "UNIV" + r + "_" + c;
 	
 	try
@@ -407,7 +407,6 @@ string DL::Onthology::universal (std::string& r, std::string& c)
         return name;
     }
 
-	bool exit = false;
 	bool found = false;
 
 	for (DL::Individual& ind : ont.allIndividuals) // Itera ogni individuo del dominio.
@@ -418,7 +417,7 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 			continue;
 		}
 		
-		if ( ind.getRoles().at(0)->getName().compare(r) != 0 ) // L'unico ruolo in cui "ind" è soggetto non è quello cercato.
+		if ( ind.getRoles().at(0).compare(r) != 0 ) // L'unico ruolo in cui "ind" è soggetto non è quello cercato.
 		{
 			found = false;
 			continue;				
@@ -426,34 +425,32 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 		else // "ind" è soggetto soltanto del ruolo cercato.
 		{
 			// Lista delle coppie di individui facenti parte del ruolo cercato.
-			std::multimap<DL::Individual *, DL::Individual *> pairList = ind.getRoles().at(0)->getPairs();
+			//std::multimap<std::string, std::string> pairList = role.getPairs();
 			
-			if ( !pairList.empty() )
+			if ( !role.getPairs().empty() )
 			{
-				for ( std::pair<Individual*, Individual*> p : pairList )
+				for ( auto it = role.getPairs().begin(); it != role.getPairs().end(); it++/*std::pair<Individual*, Individual*> p : pairList*/ )
 				{
-					if ( ind.getName().compare(p.first->getName()) == 0 )
+					if ( ind.getName().compare(it->first) == 0 )
 					{
-						std::vector<DL::Concept*> concList = p.second->getConcepts();
+						//std::vector<std::string> concList = ont.get_i(it->second).getConcepts();
 						
-						if ( !concList.empty() )
+						if ( !ont.get_i(it->second).getConcepts().empty() )
 						{
-							for ( DL::Concept* conc : concList )
+							for ( auto itr = ont.get_i(it->second).getConcepts().begin(); itr != ont.get_i(it->second).getConcepts().end(); itr++/*DL::Concept* conc : concList*/ )
 							{
-								if (conc->getName().compare(c) != 0)
+								if (itr->compare(c) != 0)
 								{
 									found = false;
-									exit = true;
 								}
 								else{
 									found = true;
-									exit = true;
 									break;
 								}
 							}							
 						}
 
-						if (exit)
+						if (found)
 						{
 							break;
 						}
@@ -462,7 +459,8 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 			}
 
 			if(found){
-				ont.get_c(name).addIndividual(&ind);
+				std::string indName = ind.getName();
+				ont.get_c(name).addIndividual(indName);
 				found = false;
 			}
 		}
@@ -689,7 +687,7 @@ std::string DL::Role::getName () const
 	return this->name;
 }
 
-std::multimap<string&, string&> DL::Role::getPairs () const
+std::multimap<string, string> DL::Role::getPairs () const
 {
 	return this->pairs;
 }
