@@ -636,24 +636,28 @@ DL::Individual::Individual (std::string& name)
 	this->name = name;
 }
 
-void DL::Individual::addConcept (DL::Concept* con)
+void DL::Individual::addConcept (string& con)
 {
-	if (con == nullptr)
+	if (Onthology::getInstance().myFind(concepts.begin(), concepts.end(), con) == concepts.end())
 	{
-		std::cerr << " In Individual::addConcept(): argument is a null pointer. " << std::endl;
-		return;
+		concepts.push_back(con);
 	}
-	concepts.push_back(con);
+	else
+	{
+		// Already there.
+	}
 }
 
-void DL::Individual::addRole (DL::Role* role)
+void DL::Individual::addRole (string& role)
 {
-	if (role == nullptr)
+	if (Onthology::getInstance().myFind(roles.begin(), roles.end(), role) == roles.end())
 	{
-		std::cerr << " In Individual::addRole(): argument is a null pointer. " << std::endl;
-		return;
+		roles.push_back(role);
 	}
-	roles.push_back(role);
+	else
+	{
+		// Already there.
+	}
 }
 
 std::string DL::Individual::getName () const
@@ -661,17 +665,19 @@ std::string DL::Individual::getName () const
 	return this->name;
 }
 
-std::vector<DL::Concept*> DL::Individual::getConcepts () const
+std::vector<string> DL::Individual::getConcepts () const
 {
 	return this->concepts;
 }
 
-std::vector<DL::Role*> DL::Individual::getRoles () const
+std::vector<string> DL::Individual::getRoles () const
 {
 	return this->roles;
 }
 
-// ===== CLASS ROLE =====
+/**
+ *  ========== CLASS ROLE ==========
+ */
 
 DL::Role::Role (std::string& name)
 {
@@ -710,7 +716,10 @@ void DL::Role::insert (string& s1, string& s2)
 		throw std::logic_error("In role assertion: already existing.");
 	}
 }
-// === CLASS CONCEPT ===
+
+/**
+ *  ========== CLASS CONCEPT ==========
+ */
 
 DL::Concept::Concept (std::string& name)
 {
@@ -741,7 +750,9 @@ std::vector<std::string> DL::Concept::getSubsumed () const
 
 void DL::Concept::addIndividual (string& s)
 {
-	DL::Individual* i = &DL::Onthology::getInstance().get_i(s);
+	Onthology& ont = Onthology::getInstance();
+
+	DL::Individual* i = &ont.get_i(s);
 	
 	if (i == nullptr)
 	{
@@ -757,12 +768,11 @@ void DL::Concept::addIndividual (string& s)
 	{
 		individuals.push_back(s);
 		i->addConcept(this->name);
-		for(auto it = Onthology::getInstance().subsGraph.begin(); it != Onthology::getInstance().subsGraph.end(); it++)
+		for(auto it = ont.subsGraph.begin(); it != ont.subsGraph.end(); it++)
 		{
 			if(it->first.compare(this->name) == 0){
-				DL::Onthology::getInstance().get_c(it->second).addIndividual(s);
+				ont.get_c(it->second).addIndividual(s);
 			}
-
 		}
 	}
 }

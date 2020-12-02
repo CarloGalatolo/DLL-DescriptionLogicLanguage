@@ -52,17 +52,18 @@ namespace DL
 		string universal (std::string&, std::string&);
 		string existential (string&, string&);
 		void addSubs (std::string&, std::string&);	// throws exception
-
+		
+		template<class InputIterator, class T>
+  			InputIterator myFind (InputIterator first, InputIterator last, const T& val) const;
+		template<class InputIterator, class T>
+  			InputIterator myFindPtr (InputIterator first, InputIterator last, const T& val) const;
+	
 	private:
 		Onthology () {}
 		Onthology (Onthology const&) = delete;
 		~Onthology () {}
 		void operator = (Onthology const&) = delete;
 		bool checkNames (const std::string&) const;
-		template<class InputIterator, class T>
-  			InputIterator myFind (InputIterator first, InputIterator last, const T& val) const;
-		template<class InputIterator, class T>
-  			InputIterator myFindPtr (InputIterator first, InputIterator last, const T& val) const;
 		bool checkConcepts (const std::string&) const;
 		bool checkRoles (const std::string&) const;
 		bool checkIndividuals (const std::string&) const;
@@ -92,7 +93,7 @@ namespace DL
 	{
 	private:
 		std::string name;
-		std::multimap<string, string> pairs;
+		std::multimap<string, string> pairs; // Coppie di individui facenti parte del ruolo
 
 	public:
 		Role () {}
@@ -119,8 +120,8 @@ namespace DL
 
 		std::string getName () const;
 		std::vector<string> getIndividuals () const;
-		std::vector<string>    getSubsumes () const;
-		std::vector<string>    getSubsumed () const;
+		std::vector<string> getSubsumes () const;
+		std::vector<string> getSubsumed () const;
 
 		void addIndividual (string&);		// throws exception
 
