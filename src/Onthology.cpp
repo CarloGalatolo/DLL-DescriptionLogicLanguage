@@ -258,7 +258,7 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 	return name;
 }
 
-string DL::Onthology::negation (string& s)
+string DL::Onthology::negation (string& s, bool flag)
 {
 	/**
 	 * Genera il negato del conetto il cui nome è "s" e lo inserisce nell'Ontologia,
@@ -269,8 +269,15 @@ string DL::Onthology::negation (string& s)
 	Onthology& ont = Onthology::getInstance();
 
 	Concept& c = ont.get_c(s);		// Recupera il concetto il cui nome è passato a parametro.
-	string name = "NOT_" + s;
-	
+	string name;
+	if (flag==false)
+	{
+		name = "NOT_" + s;
+	}
+	else 
+	{
+ 		name = "NOT_[" + s +"]";
+	}
 	std::cout << "Sono prima del try" << std::endl;
 	try 
 	{
@@ -302,7 +309,7 @@ string DL::Onthology::negation (string& s)
 
 		std::cout << "Esco dal for" << std::endl;
 
-		Concept& n = ont.get_c(s.erase(0, 4));
+		Concept& n = ont.get_c(name.erase(0, 4));
 		ont.negateMap.insert(std::make_pair(n.getName(), s));
 	}
 
@@ -642,6 +649,13 @@ string DL::Onthology::correctDoubleNot (string& s)
 	if (s.substr(0, 8) == "NOT_NOT_")
 	{
 		s.erase(0, 8);
+		correctDoubleNot(s);
+		std::cerr << "WARNING: concept name with double NOT is very unsafe; concept: " << s << std::endl;
+	}
+	if (s.substr(0, 10) == "NOT_[NOT_[")
+	{
+		s.erase(0, 10);
+		s.erase(s.size()-2,2);
 		correctDoubleNot(s);
 		std::cerr << "WARNING: concept name with double NOT is very unsafe; concept: " << s << std::endl;
 	}

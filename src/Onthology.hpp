@@ -48,7 +48,7 @@ namespace DL
 		void   subsumption (std::string&, std::string&);
 		string conjunction (std::string&, std::string&);
 		string disjunction (std::string&, std::string&);
-		string negation (string&);
+		string negation (string&, bool);
 		string universal (std::string&, std::string&);
 		string existential (string&, string&);
 		void addSubs (std::string&, std::string&);	// throws exception
