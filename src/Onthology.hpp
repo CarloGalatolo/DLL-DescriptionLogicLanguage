@@ -26,9 +26,9 @@ namespace DL
 		std::vector<Concept> allConcepts;
 		std::vector<std::string> allNames;
 
-		std::multimap<Concept*, Concept*> subsGraph; // Grafo delle sussunzioni
-		std::map<Concept*, Concept*> coincidenceMap; // Mappa delle coincidenze
-		std::map<Concept*, Concept*> negateMap;	 // Mappa delle negazioni
+		std::multimap<string, string> subsGraph; // Grafo delle sussunzioni
+		std::map<string, string> coincidenceMap; // Mappa delle coincidenze
+		std::map<string, string> negateMap;	 // Mappa delle negazioni
 
 		static Onthology& getInstance ()
 		{
@@ -73,26 +73,26 @@ namespace DL
 	{
 	private:
 		std::string name;
-		std::vector<Concept*> concepts;
-		std::vector<Role*> roles;
+		std::vector<string> concepts; // Concetti a cui l'individuo appartiene.
+		std::vector<string> roles; // Ruoli di cui l'individuo è soggetto.
 
 	public:
 		Individual () {}
 		Individual (std::string&);
 		~Individual () {}
 
-		void addConcept (Concept*);
-		void addRole (Role*);
+		void addConcept (string&);
+		void addRole (string&);
 		std::string getName () const;
-		std::vector<Concept*> getConcepts () const;
-		std::vector<Role*> getRoles () const;
+		std::vector<string> getConcepts () const;
+		std::vector<string> getRoles () const;
 	};
 
 	class Role
 	{
 	private:
 		std::string name;
-		std::multimap<Individual*, Individual*> pairs;
+		std::multimap<string, string> pairs;
 
 	public:
 		Role () {}
@@ -100,7 +100,7 @@ namespace DL
 		~Role () {}
 
 		std::string getName () const;
-		std::multimap<Individual*, Individual*> getPairs () const;
+		std::multimap<string, string> getPairs () const;
 		void insert (string&, string&); // throws exception
 	};
 
@@ -108,9 +108,9 @@ namespace DL
 	{
 	private:
 		std::string name;
-		std::vector<Individual*> individuals;
-		std::vector<Concept*> subsumes; // Concepts that this concept subsumes.
-		std::vector<Concept*> subsumed;	// Concepts that subsume this concept.
+		std::vector<string> individuals; // Individui appartenenti al concetto.
+		std::vector<string> subsumes; // Concepts that this concept subsumes.
+		std::vector<string> subsumed;	// Concepts that subsume this concept.
 
 	public:
 		Concept () {}
@@ -118,11 +118,10 @@ namespace DL
 		~Concept () {}
 
 		std::string getName () const;
-		std::vector<Individual*> getIndividuals () const;
-		std::vector<Concept*>    getSubsumes () const;
-		std::vector<Concept*>    getSubsumed () const;
+		std::vector<string> getIndividuals () const;
+		std::vector<string>    getSubsumes () const;
+		std::vector<string>    getSubsumed () const;
 
-		void addIndividual (Individual*);	// throws exception
 		void addIndividual (string&);		// throws exception
 
 	private:

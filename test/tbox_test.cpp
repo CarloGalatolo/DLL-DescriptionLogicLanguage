@@ -87,6 +87,7 @@ int main ( const int argc, const char **argv )
 		for (auto it = DL::Onthology::getInstance().allConcepts.begin(); it != DL::Onthology::getInstance().allConcepts.end(); it++)
 		{
 			print_indv(*it);
+			
 		}
 
 		for (auto it = DL::Onthology::getInstance().allRoles.begin(); it != DL::Onthology::getInstance().allRoles.end(); it++)

@@ -301,6 +301,7 @@ string DL::Onthology::negation (string& s)
 					return p.first->getName();
 				}
 			}
+
 		}
 
 		//std::cout << "Esco dal for" << std::endl;
@@ -385,26 +386,15 @@ string DL::Onthology::negation (string& s)
 string DL::Onthology::universal (std::string& r, std::string& c)
 {
 	/**
-	 * Quantificatore universale.
-	 * Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità
-	 * di ruoli di cui sono soggetti sono ruoli di tipo "r" e verso individui
-	 * appartenenti al concetto "c". Gli individui trovati vanno a formare un nuovo concetto.
-	 * 
-	 * Questa funzione esclude il seguente caso, che nella teoria è corretto
-	 * ma è scomodo nelle applicazioni pratiche:
-	 * 		Se un individuo non è soggetto di nessun ruolo, va considerato.
-	 * 		Dimostrazione:
-	 * 			∀r.C == ¬∃r.¬C
-	 * 		Cioè l'individuo non è soggetto di ruoli verso ¬C,
-	 * 		che è vero perché non è soggetto di nessun ruolo.
+	 * Quantificatore esistenziale.
+	 * Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di
+	 * almeno un ruolo "role" con individui appartenenti al concetto "concept".
+	 * Gli individui così trovati vanno a formare un nuovo concetto.
 	 */
-	
+
 	DL::Onthology& ont = DL::Onthology::getInstance();
-	
-	// Controllo sulla presenza dei parametri nell'ontologia. Se fallisce, viene lanciato un errore critico.
-	ont.get_c(c);
-	ont.get_r(r);
-	
+	ont.get_c(c); // Controlla se il ruolo esiste. Se no, causa un errore critico. Non viene usata una reference al concetto effettivo.
+    ont.get_r(r);;	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
 	std::string name = "UNIV" + r + "_" + c;
 	
 	try
@@ -428,7 +418,7 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 			continue;
 		}
 		
-		if ( ind.getRoles().at(0)->getName() != r ) // L'unico ruolo in cui "ind" è soggetto non è quello cercato.
+		if ( ind.getRoles().at(0)->getName().compare(r) != 0 ) // L'unico ruolo in cui "ind" è soggetto non è quello cercato.
 		{
 			found = false;
 			continue;				
@@ -442,7 +432,7 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 			{
 				for ( std::pair<Individual*, Individual*> p : pairList )
 				{
-					if ( ind.getName() == p.first->getName() )
+					if ( ind.getName().compare(p.first->getName()) == 0 )
 					{
 						std::vector<DL::Concept*> concList = p.second->getConcepts();
 						
@@ -450,9 +440,13 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 						{
 							for ( DL::Concept* conc : concList )
 							{
-								if (conc->getName() != c)
+								if (conc->getName().compare(c) != 0)
 								{
 									found = false;
+									exit = true;
+								}
+								else{
+									found = true;
 									exit = true;
 									break;
 								}
@@ -463,8 +457,6 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 						{
 							break;
 						}
-						
-						found = true;
 					}
 				}
 			}
@@ -480,7 +472,7 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 }
 
 string DL::Onthology::existential (string& role, string& concept)
-{
+{    
 	/**
 	 * Quantificatore esistenziale.
 	 * Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di
@@ -488,7 +480,7 @@ string DL::Onthology::existential (string& role, string& concept)
 	 * Gli individui così trovati vanno a formare un nuovo concetto.
 	 */
 	
-    auto& ont = DL::Onthology::getInstance();
+    DL::Onthology& ont = DL::Onthology::getInstance();
     ont.get_c(concept); // Controlla se il ruolo esiste. Se no, causa un errore critico. Non viene usata una reference al concetto effettivo.
     DL::Role* r = &ont.get_r(role);	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
     string exist = "EXIST" +role+"_"+concept;
@@ -503,22 +495,49 @@ string DL::Onthology::existential (string& role, string& concept)
         return exist;
     }
     
-	if ( !r->getPairs().empty() )
+	if (!r->getPairs().empty())
 	{
+		std::cout << "Sto per ciclare gli individui di ontologia" << std::endl;	
 		for (DL::Individual& ind : ont.allIndividuals)
 		{
-			for (std::pair<DL::Individual *, DL::Individual *> p : r->getPairs())
-			{
-				if ( ind.getName() == p.first->getName() )
+			std::cout << "Controllo " << ind.getName() << std::endl;
+			std::cout << "Sto per ciclare le coppie di " << r->getName() << std::endl;
+			std::multimap<DL::Individual *, DL::Individual *> pairList = r->getPairs();
+			if(!pairList.empty()){
+				for (std::pair<DL::Individual *, DL::Individual *> p : pairList)
 				{
-					std::vector<DL::Concept*> pCons = p.second->getConcepts();
-					if (!pCons.empty())
-					{
-						if (myFindPtr(pCons.begin(), pCons.end(), concept) != pCons.end())	// Se lo trova
-						{
-							ont.get_c(exist).addIndividual(&ind);
-							break;
-						}					
+
+					if(p.first == nullptr){
+						std::cout << "Sono vuoto" << std::endl;
+					}
+					else{
+						std::cout << "Controllo che " << p.first->getName() << " coincida con " << ind.getName() << std::endl;
+						if(ind.getName().compare(p.first->getName()) == 0){
+							std::cout << "Coincidono!" << std::endl;
+							std::vector<DL::Concept*> pCons = p.second->getConcepts();
+							if (!pCons.empty())
+							{
+								std::cout << "Cerco " << concept << " tra i concetti di " << p.second->getName() << std::endl;
+								for( DL::Concept* c : pCons ){
+									if(c != nullptr){
+										std::cout << "Confronto " << c->getName() << " con " << concept << std::endl;
+										if (c->getName().compare(concept) == 0)	// Se lo trova
+										{
+											std::cout << "Trovato! Aggiungo " << ind.getName() << " al concetto " << exist << std::endl;
+											ont.get_c(exist).addIndividual(&ind);
+											break;
+										}
+										else{
+											std::cout << "Non esite una corrispondenza" << std::endl;
+											break;
+										}									
+									}
+									else{
+										std::cout << "Sono nullo" << std::endl;
+									}
+								}
+							}
+						}
 					}
 				}
 			}
