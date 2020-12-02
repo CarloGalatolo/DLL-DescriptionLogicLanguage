@@ -683,21 +683,26 @@ std::string DL::Role::getName () const
 	return this->name;
 }
 
-std::multimap<DL::Individual*, DL::Individual*> DL::Role::getPairs () const
+std::multimap<string&, string&> DL::Role::getPairs () const
 {
 	return this->pairs;
 }
 
 void DL::Role::insert (string& s1, string& s2)
 {
+	/*
 	DL::Individual* first = &DL::Onthology::getInstance().get_i(s1);
 	DL::Individual* second = &DL::Onthology::getInstance().get_i(s2);
+*/
+	if(!DL::Onthology::getInstance().checkIndividual(s1)||!DL::Onthology::getInstance().checkIndividual(s2)){
+		exit(1);
+	}
 
-	std::pair<DL::Individual*, DL::Individual*> p = std::make_pair(first, second);
+	std::pair<string, string> p = std::make_pair(s1,s2);
 
 	if (find_pair(pairs, p) == pairs.end())
 	{
-		first->addRole(this);
+		DL::Onthology::getInstance().get_i(s1).addRole(this->name);
 		pairs.insert(p);
 	}
 	else
@@ -705,7 +710,6 @@ void DL::Role::insert (string& s1, string& s2)
 		throw std::logic_error("In role assertion: already existing.");
 	}
 }
-
 // === CLASS CONCEPT ===
 
 DL::Concept::Concept (std::string& name)
