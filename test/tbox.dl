@@ -5,7 +5,7 @@ INDV pirlo, ronaldo, dybala, bonucci, agnelli, kompany;
 %%
 
 pirlo, kompany : Allenatore;
-ronaldo, dybala, bonucci : Calciatore;
+ronaldo, dybala, bonucci, kompany : Calciatore;
 
 (ronaldo, dybala), (bonucci, dybala), (kompany, bonucci) : giocacon;
 (pirlo, ronaldo), (ronaldo, pirlo) : allena;
@@ -18,7 +18,9 @@ ronaldo, dybala, bonucci : Calciatore;
 //Allenatore DISJ Calciatore;
 //Allenatore SUBS Calciatore;
 
-(EX giocacon . Calciatore) CONJ (!Allenatore);
+(EX giocacon . Calciatore) SUBS (!Allenatore);
 
 //EX allena . Calciatore;
 //ALL giocacon . Calciatore;
+
+%%

@@ -53,6 +53,7 @@ namespace DL
 		string existential (string&, string&);
 		void addSubs (std::string&, std::string&);	// throws exception
 		bool checkIndividuals (const std::string&) const;
+		void validate();
 		
 		template<class InputIterator>
   			InputIterator myFind (InputIterator first, InputIterator last, const string& val) const;

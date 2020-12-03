@@ -651,6 +651,43 @@ string DL::Onthology::correctDoubleNot (string& s)
 	return s;
 }
 
+void DL::Onthology::validate ()
+{
+	DL::Onthology& ont = DL::Onthology::getInstance();
+	if(!ont.negateMap.empty())
+	{
+	
+		for(std::pair<string, string> negPair : ont.negateMap)
+		{	
+			string c1Name=negPair.first;
+			string c1NegName=negPair.second ;
+
+			std::cerr << "Controllo" << c1Name << " and "<< c1NegName << std::endl;
+			
+			DL::Concept c1 = ont.get_c(c1Name);
+			DL::Concept nC1 = ont.get_c(c1NegName);
+
+			for(auto c1Indvs : c1.getIndividuals())
+			{	
+				for(auto c1NegIndvs : nC1.getIndividuals())
+				{
+						if(c1Indvs==c1NegIndvs)
+						{
+								std::cerr << "ERROR: logic error between " << negPair.first << " and "<< negPair.second << std::endl;
+								std::cerr << "at " << c1Indvs << std::endl;
+								std::cerr << "invalid interpretation "<< std::endl;
+								exit(1);
+
+						}
+				
+				}
+			} 
+		}
+	
+	}
+}
+
+
 /**
  *  ========== CLASS INDIVIDUAL ==========
  */

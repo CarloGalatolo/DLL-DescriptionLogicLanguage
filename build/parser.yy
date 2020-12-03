@@ -66,8 +66,8 @@
 program:
 	names_decl END	/* debug */
 |	names_decl SECTION abox END	/* debug */ 
-|	names_decl SECTION abox SECTION tbox END /* debug
-|	names_decl SECTION tbox SECTION abox SECTION queries*/
+|	names_decl SECTION abox SECTION tbox SECTION {DL::Onthology::getInstance().validate();} END /* debug
+|	names_decl SECTION abox SECTION tbox SECTION {DL::Onthology::getInstance().validate();} queries END*/
 ;
 
 	/* FIRST SECTION */
@@ -146,6 +146,7 @@ tbox:
 t_stmt:
 	NAME SUBS NAME			  { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
+|	'(' complex_concept ')' SUBS '(' complex_concept ')' { DL::Onthology::getInstance().subsumption($2, $6); }
 |	complex_concept /* for testing purposes */
 ;
 
