@@ -27,7 +27,7 @@ namespace DL
 		std::vector<std::string> allNames;
 
 		std::multimap<string, string> subsGraph; // Grafo delle sussunzioni
-		std::map<string, string> coincidenceMap; // Mappa delle coincidenze
+		// std::map<string, string> coincidenceMap; // Mappa delle coincidenze
 		std::map<string, string> negateMap;	 // Mappa delle negazioni
 
 		static Onthology& getInstance ()
@@ -113,8 +113,6 @@ namespace DL
 	private:
 		std::string name;
 		std::vector<string> individuals; // Individui appartenenti al concetto.
-		std::vector<string> subsumes; // Concepts that this concept subsumes.
-		std::vector<string> subsumed;	// Concepts that subsume this concept.
 
 	public:
 		Concept () {}
@@ -123,13 +121,10 @@ namespace DL
 
 		std::string getName () const;
 		std::vector<string> getIndividuals () const;
-		std::vector<string> getSubsumes () const;
-		std::vector<string> getSubsumed () const;
 
 		void addIndividual (string&);
 
 	private:
 		bool checkIndividuals (const std::string) const;
-		bool checkSubs (const Concept*, const bool) const;	// bool = true -> subsumes; bool = false -> subsumed.
 	};
 }

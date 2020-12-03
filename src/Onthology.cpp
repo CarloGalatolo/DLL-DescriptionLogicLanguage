@@ -286,13 +286,13 @@ string DL::Onthology::negation (string& s, bool flag)
 	}
 	catch (std::logic_error e) // Negated concept already there.
 	{
-		std::cout << "Sono dentro la catch" << std::endl;
+		//std::cout << "Sono dentro la catch" << std::endl;
 
 		// Cerca nella mappa dei negati se esiste già una corrispondenza.
 		for (std::pair<string, string> pair : ont.negateMap)
 		{
-			std::cout << "Sto ciclando per cercare il negato misterioso" << std::endl;
-			std::cout << pair.first << " " << pair.second << std::endl;
+			//std::cout << "Sto ciclando per cercare il negato misterioso" << std::endl;
+			//std::cout << pair.first << " " << pair.second << std::endl;
 
 			// Corrispondenza trovata come primo o secondo elemento.
 			if (pair.first.compare(s) == 0)	
@@ -307,7 +307,7 @@ string DL::Onthology::negation (string& s, bool flag)
 			}
 		}
 		// Non c'è corrispondenza nella mappa dei negati.
-		std::cout << "Esco dal for" << std::endl;
+		//std::cout << "Esco dal for" << std::endl;
 
 		ont.negateMap.insert(std::make_pair(name, s));
 		wasInCatch = true;
@@ -318,7 +318,7 @@ string DL::Onthology::negation (string& s, bool flag)
 		// Ciclo della mappa dei negati per controllare se il negato esiste già.
 		for (std::pair<string, string> pair : ont.negateMap)
 		{
-			std::cout << "Sto ciclando per evitare i NOT_NOT_etc..." << std::endl;
+			//std::cout << "Sto ciclando per evitare i NOT_NOT_etc..." << std::endl;
 
 			if (pair.first == s)	
 			{
@@ -334,20 +334,20 @@ string DL::Onthology::negation (string& s, bool flag)
 	}
 	else
 	{
-		std::cout << "La mappa dei negati è vuota." << std::endl;
+		//std::cout << "La mappa dei negati è vuota." << std::endl;
 	}
 	
 	// Se non è stato trovata una coppia nella mappa dei negati, viene generato il negato.
 
-	std::cout << "Creo il negato di " << s << " : " << name << std::endl;
+	//std::cout << "Creo il negato di " << s << " : " << name << std::endl;
 	bool check = false;
 	DL::Concept& c_2 = ont.get_c(name);
-	std::cout << "Recupero gli individui di " << ont.get_c(s).getName() << std::endl;
+	//std::cout << "Recupero gli individui di " << ont.get_c(s).getName() << std::endl;
 	std::vector<string> cIndvs = ont.get_c(s).getIndividuals();
-	std::cout << "Negato creato." << std::endl;
+	//std::cout << "Negato creato." << std::endl;
 	if (ont.negateMap.find(s) == ont.negateMap.end())
 	{
-		std::cout << "Sto per inserire nella mappa dei negati " << ont.get_c(s).getName() << " e " << c_2.getName() << std::endl;
+		//std::cout << "Sto per inserire nella mappa dei negati " << ont.get_c(s).getName() << " e " << c_2.getName() << std::endl;
 		std::pair<string, string> negPair = std::make_pair(s, name);
 		ont.negateMap.insert(negPair);
 	}
@@ -356,7 +356,7 @@ string DL::Onthology::negation (string& s, bool flag)
 	{
 		for (DL::Individual ind : ont.allIndividuals)
 		{
-			std::cout << "Provo a recuperare il concetto" << std::endl;
+			//std::cout << "Provo a recuperare il concetto" << std::endl;
 			string tmp = ind.getName();
 			ont.get_c(name).addIndividual(tmp);
 		}
@@ -365,10 +365,10 @@ string DL::Onthology::negation (string& s, bool flag)
 	{
 		for (DL::Individual indv : ont.allIndividuals)
 		{
-			std::cout << "Ciclo l'individuo " << indv.getName() <<  std::endl;
+			//std::cout << "Ciclo l'individuo " << indv.getName() <<  std::endl;
 			for (string idual : cIndvs)
 			{
-				std::cout << "Ciclo gli individui di " << s << std::endl;
+				//std::cout << "Ciclo gli individui di " << s << std::endl;
 				if (idual.compare(indv.getName()) == 0)
 				{
 					check = true;
@@ -378,7 +378,8 @@ string DL::Onthology::negation (string& s, bool flag)
 
 			if (!check)
 			{
-				std::cout << "Provo a recuperare il concetto" << std::endl;
+				//std::cout << "Provo a recuperare il concetto" << std::endl;
+				//std::cout << "Aggiungo " << indv.getName() << " a " << name << std::endl;
 				string tmp = indv.getName();
 				ont.get_c(name).addIndividual(tmp);
 			}
@@ -659,10 +660,10 @@ void DL::Onthology::validate ()
 	
 		for(std::pair<string, string> negPair : ont.negateMap)
 		{	
-			string c1Name=negPair.first;
-			string c1NegName=negPair.second ;
+			string c1Name = negPair.first;
+			string c1NegName = negPair.second ;
 
-			std::cerr << "Controllo" << c1Name << " and "<< c1NegName << std::endl;
+			//std::cerr << "Controllo " << c1Name << " and "<< c1NegName << std::endl;
 			
 			DL::Concept c1 = ont.get_c(c1Name);
 			DL::Concept nC1 = ont.get_c(c1NegName);
@@ -671,19 +672,17 @@ void DL::Onthology::validate ()
 			{	
 				for(auto c1NegIndvs : nC1.getIndividuals())
 				{
-						if(c1Indvs==c1NegIndvs)
-						{
-								std::cerr << "ERROR: logic error between " << negPair.first << " and "<< negPair.second << std::endl;
-								std::cerr << "at " << c1Indvs << std::endl;
-								std::cerr << "invalid interpretation "<< std::endl;
-								exit(1);
-
-						}
-				
+					//std::cerr << "Confronto " << c1Indvs << " di " << c1Name << " e " << c1NegIndvs << " di " << c1NegName << std::endl;
+					if(c1Indvs == c1NegIndvs)
+					{
+							std::cerr << "ERROR: logic error between " << negPair.first << " and "<< negPair.second << std::endl;
+							std::cerr << "At " << c1Indvs << std::endl;
+							std::cerr << "Invalid Interpretation "<< std::endl;
+							exit(1);
+					}
 				}
 			} 
 		}
-	
 	}
 }
 
@@ -783,18 +782,6 @@ std::vector<std::string> DL::Concept::getIndividuals () const
 	return this->individuals;
 }
 
-std::vector<string> DL::Concept::getSubsumes () const
-{
-	/*ATTENZIONE NON USARE CON GLI ITERATORI*/
-	return (*this).subsumes;
-}
-
-std::vector<std::string> DL::Concept::getSubsumed () const
-{
-	/*ATTENZIONE NON USARE CON GLI ITERATORI*/
-	return (*this).subsumed;
-}
-
 void DL::Concept::addIndividual (string& s)
 {
 	Onthology& ont = Onthology::getInstance();
@@ -833,43 +820,4 @@ bool DL::Concept::checkIndividuals (const std::string s) const
 	{
 		return false;
 	}
-}
-
-// subsume = true -> subsumeS; subsume = false -> subsumeD.
-bool DL::Concept::checkSubs (const DL::Concept* c, const bool subsume) const
-{/*
-	if (c == nullptr)
-	{
-		std::cerr << " In Concept::checkSubs(): argument is a null pointer. " << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	// subsume = true -> subsumeS; subsume = false -> subsumeD.
-	if (subsume)
-	{
-		auto res = std::find(this->subsumes.begin(), this->subsumes.end(), c);
-
-		if (res != this->subsumes.end())	// Già presente.
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		auto res = std::find(this->subsumed.begin(), this->subsumed.end(), c);
-
-		if (res != this->subsumed.end())	// Già presente.
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}*/
-	return true;
 }
