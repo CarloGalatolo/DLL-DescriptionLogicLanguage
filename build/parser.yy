@@ -146,22 +146,22 @@ tbox:
 t_stmt:
 	NAME SUBS NAME			  { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
-|	NAME '=' NAME	/* implementare */
-|	complex_concept '=' NAME	/* implementare */
 |	complex_concept /* for testing purposes */
 ;
 
 complex_concept:
 	NAME CONJ NAME 			     { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
 |	'(' complex_concept ')' CONJ NAME    { $$ = DL::Onthology::getInstance().conjunction($2, $5); }
+|	'(' complex_concept ')' CONJ '(' complex_concept ')'    { $$ = DL::Onthology::getInstance().conjunction($2, $6); }
 |	NAME DISJ NAME 			     { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
 |	'(' complex_concept ')' DISJ NAME    { $$ = DL::Onthology::getInstance().disjunction($2, $5); }
+|	'(' complex_concept ')' DISJ '(' complex_concept ')'    { $$ = DL::Onthology::getInstance().disjunction($2, $6); }
 |	'!' NAME 					 { $$ = DL::Onthology::getInstance().negation($2,false); }
 |	'!' '(' complex_concept ')'	 { $$ = DL::Onthology::getInstance().negation($3,true); }
 |	EX  NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().existential($2, $4); }
-|	EX  NAME DOT complex_concept { $$ = DL::Onthology::getInstance().existential($2, $4); }
+|	EX  NAME DOT '(' complex_concept ')' { $$ = DL::Onthology::getInstance().existential($2, $5); }
 |	ALL NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().universal($2, $4); }
-|	ALL NAME DOT complex_concept { $$ = DL::Onthology::getInstance().universal($2, $4); }
+|	ALL NAME DOT '(' complex_concept ')' { $$ = DL::Onthology::getInstance().universal($2, $5); }
 ;
 
 queries:;

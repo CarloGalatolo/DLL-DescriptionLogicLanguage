@@ -265,11 +265,12 @@ string DL::Onthology::negation (string& s, bool flag)
 	 * poi inserisce una pair nella mappa dei negati. Se "s" ha già un negato nell'Ontologia,
 	 * la funzione ritorna il nome quel concetto invece di crearne un duplicato.
 	 */
-	std::cout << "Negazione" << std::endl;
-	Onthology& ont = Onthology::getInstance();
 
-	Concept& c = ont.get_c(s);		// Recupera il concetto il cui nome è passato a parametro.
+	Onthology& ont = Onthology::getInstance();
+	ont.get_c(s);	// Verifico che il concetto di nome "s" esista. Per tutto il resto ripetere questa chiamata di get_c().
 	string name;
+	bool wasInCatch = false;
+
 	if (flag==false)
 	{
 		name = "NOT_" + s;
@@ -278,44 +279,41 @@ string DL::Onthology::negation (string& s, bool flag)
 	{
  		name = "NOT_[" + s +"]";
 	}
-	std::cout << "Sono prima del try" << std::endl;
+	
 	try 
 	{
 		ont.put_c(name);
-		std::cout << ont.get_c(name).getName() << " messo" << std::endl;
 	}
 	catch (std::logic_error e) // Negated concept already there.
 	{
 		std::cout << "Sono dentro la catch" << std::endl;
 
+		// Cerca nella mappa dei negati se esiste già una corrispondenza.
 		for (std::pair<string, string> pair : ont.negateMap)
 		{
 			std::cout << "Sto ciclando per cercare il negato misterioso" << std::endl;
-
 			std::cout << pair.first << " " << pair.second << std::endl;
+
+			// Corrispondenza trovata come primo o secondo elemento.
 			if (pair.first.compare(s) == 0)	
 			{
 				std::cout << "IF" << std::endl;
-				return pair.second;	
+				name = pair.second;	
 			}
-			else if (pair.second.compare(s) == 0)
+			if (pair.second.compare(s) == 0)
 			{
 				std::cout << "ELSEIF" << std::endl;
-				return pair.first;
+				name = pair.first;
 			}
-
-
 		}
-
+		// Non c'è corrispondenza nella mappa dei negati.
 		std::cout << "Esco dal for" << std::endl;
 
-		Concept& n = ont.get_c(name.erase(0, 4));
-		ont.negateMap.insert(std::make_pair(n.getName(), s));
+		ont.negateMap.insert(std::make_pair(name, s));
+		wasInCatch = true;
 	}
 
-	std::cout << "Sto per esplodere." << std::endl;
-
-	if (!ont.negateMap.empty())
+	if (!wasInCatch && !ont.negateMap.empty())
 	{
 		// Ciclo della mappa dei negati per controllare se il negato esiste già.
 		for (std::pair<string, string> pair : ont.negateMap)
@@ -325,12 +323,12 @@ string DL::Onthology::negation (string& s, bool flag)
 			if (pair.first == s)	
 			{
 				// Se il parametro ha già un negato, ritorna il suo negato.
-				return pair.second;	
+				name = pair.second;	
 			}
 			else if (pair.second == s)
 			{
 				// Se il parametro è il negato di un concetto esistente, ritorna il concetto originale.
-				return pair.first;
+				name = pair.first;
 			}
 		}		
 	}
@@ -341,20 +339,20 @@ string DL::Onthology::negation (string& s, bool flag)
 	
 	// Se non è stato trovata una coppia nella mappa dei negati, viene generato il negato.
 
-	std::cout << "Creo il negato." << std::endl;
+	std::cout << "Creo il negato di " << s << " : " << name << std::endl;
 	bool check = false;
 	DL::Concept& c_2 = ont.get_c(name);
-	std::cout << "Recupero gli individui di " << c.getName() << std::endl;
+	std::cout << "Recupero gli individui di " << ont.get_c(s).getName() << std::endl;
 	std::vector<string> cIndvs = ont.get_c(s).getIndividuals();
 	std::cout << "Negato creato." << std::endl;
 	if (ont.negateMap.find(s) == ont.negateMap.end())
 	{
-		std::cout << "Sto per inserire nella mappa dei negati " << c.getName() << " e " << c_2.getName() << std::endl;
+		std::cout << "Sto per inserire nella mappa dei negati " << ont.get_c(s).getName() << " e " << c_2.getName() << std::endl;
 		std::pair<string, string> negPair = std::make_pair(s, name);
 		ont.negateMap.insert(negPair);
 	}
 	
-	if (cIndvs.empty())
+	if (cIndvs.empty()) // Se il concetto è vuoto, il suo negato ha tutti gli individui.
 	{
 		for (DL::Individual ind : ont.allIndividuals)
 		{
@@ -370,7 +368,7 @@ string DL::Onthology::negation (string& s, bool flag)
 			std::cout << "Ciclo l'individuo " << indv.getName() <<  std::endl;
 			for (string idual : cIndvs)
 			{
-				std::cout << "Ciclo gli individui del complementare" << std::endl;
+				std::cout << "Ciclo gli individui di " << s << std::endl;
 				if (idual.compare(indv.getName()) == 0)
 				{
 					check = true;
@@ -454,7 +452,6 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 
 						if ( !concList.empty() )
 						{
-							//for ( auto itr = ont.get_i(it->second).getConcepts().begin(); itr != ont.get_i(it->second).getConcepts().end(); itr++/*DL::Concept* conc : concList*/ )
 							for (string itr : concList)
 							{
 								if (itr.compare(c) != 0)
@@ -513,46 +510,38 @@ string DL::Onthology::existential (string& role, string& concept)
     
 	if (!r->getPairs().empty())
 	{
-		std::cout << "Sto per ciclare gli individui di ontologia" << std::endl;	
+		//std::cout << "Sto per ciclare gli individui di ontologia" << std::endl;	
 		for (DL::Individual& ind : ont.allIndividuals)
 		{
-			std::cout << "Controllo " << ind.getName() << std::endl;
-			std::cout << "Sto per ciclare le coppie di " << r->getName() << std::endl;
+			//std::cout << "Controllo " << ind.getName() << std::endl;
+			//std::cout << "Sto per ciclare le coppie di " << r->getName() << std::endl;
 			std::multimap<string, string> pairList = r->getPairs();
 			if(!pairList.empty()){
 				for (std::pair<string, string> p : pairList)
-				{
-
-					/*if(p.first == nullptr){
-						std::cout << "Sono vuoto" << std::endl;
-					}
-					else*/{
-						std::cout << "Controllo che " << p.first << " coincida con " << ind.getName() << std::endl;
-						if(ind.getName().compare(p.first) == 0){
-							std::cout << "Coincidono!" << std::endl;
-							std::vector<std::string> pCons = ont.get_i(p.second).getConcepts();
-							if (!pCons.empty())
-							{
-								std::cout << "Cerco " << concept << " tra i concetti di " << p.second << std::endl;
-								for( string c : pCons ){
-									//if(c != nullptr)
+				{	
+					//std::cout << "Controllo che " << p.first << " coincida con " << ind.getName() << std::endl;
+					if(ind.getName().compare(p.first) == 0){
+						//std::cout << "Coincidono!" << std::endl;
+						std::vector<std::string> pCons = ont.get_i(p.second).getConcepts();
+						if (!pCons.empty())
+						{
+							//std::cout << "Cerco " << concept << " tra i concetti di " << p.second << std::endl;
+							for( string c : pCons ){
+								//if(c != nullptr)
+								{
+									//std::cout << "Confronto " << c << " con " << concept << std::endl;
+									if (c.compare(concept) == 0)	// Se lo trova
 									{
-										std::cout << "Confronto " << c << " con " << concept << std::endl;
-										if (c.compare(concept) == 0)	// Se lo trova
-										{
-											std::cout << "Trovato! Aggiungo " << ind.getName() << " al concetto " << exist << std::endl;
-											string save = ind.getName();
-											ont.get_c(exist).addIndividual(save);
-											break;
-										}
-										else{
-											std::cout << "Non esite una corrispondenza" << std::endl;
-											break;
-										}									
+										//std::cout << "Trovato! Aggiungo " << ind.getName() << " al concetto " << exist << std::endl;
+										string save = ind.getName();
+										ont.get_c(exist).addIndividual(save);
+										break;
 									}
-									/*else{
-										std::cout << "Sono nullo" << std::endl;
-									}*/
+									else
+									{
+										//std::cout << "Non esite una corrispondenza" << std::endl;
+										break;
+									}									
 								}
 							}
 						}
