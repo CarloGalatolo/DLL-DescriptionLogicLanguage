@@ -27,7 +27,7 @@ namespace DL
 		std::vector<std::string> allNames;
 
 		std::multimap<string, string> subsGraph; // Grafo delle sussunzioni
-		// std::map<string, string> coincidenceMap; // Mappa delle coincidenze
+		//std::map<string, string> coincidenceMap; // Mappa delle coincidenze
 		std::map<string, string> negateMap;	 // Mappa delle negazioni
 
 		static Onthology& getInstance ()
@@ -45,7 +45,9 @@ namespace DL
 		Concept&    get_c (std::string&);
 		Role& 	    get_r (std::string&);
 		Individual& get_i (std::string&);
+		void   alias (string&, string&);
 		void   subsumption (std::string&, std::string&);
+		void   coincidence (string&, string&);
 		string conjunction (std::string&, std::string&);
 		string disjunction (std::string&, std::string&);
 		string negation (string&, bool);
@@ -53,7 +55,7 @@ namespace DL
 		string existential (string&, string&);
 		void addSubs (std::string&, std::string&);	// throws exception
 		bool checkIndividuals (const std::string&) const;
-		void validate();
+		void validate ();
 		
 		template<class InputIterator>
   			InputIterator myFind (InputIterator first, InputIterator last, const string& val) const;
@@ -119,6 +121,7 @@ namespace DL
 		Concept (std::string&);
 		~Concept () {}
 
+		void setName (string&);
 		std::string getName () const;
 		std::vector<string> getIndividuals () const;
 

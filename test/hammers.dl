@@ -1,0 +1,49 @@
+// Dichiarazione dei nomi
+
+CONCEPT Object, Simple_Object, Complex_Object, Hammer, Knoxel, Box_Shaped, Cylinder_Shaped;
+ROLE has_part, has_head, has_handle;
+INDV wiesemann, bnd, bosch;
+INDV titanium_head, rubber_head;
+INDV wood_handle, rubber_handle;
+INDV basket_ball, ball;
+
+%%
+
+// ABox
+
+wiesemann, bnd, bosch : Hammer;
+titanium_head, rubber_head : Box_Shaped;
+wood_handle, rubber_handle : Cylinder_Shaped;
+basket_ball : Simple_Object;
+ball : Knoxel;
+
+(wiesemann, titanium_head) , (bnd, rubber_head) , (bosch, titanium_head) : has_head;
+(wiesemann, titanium_head) , (bnd, rubber_head) , (bosch, titanium_head) : has_part;
+(wiesemann, wood_handle) , (bnd, rubber_handle) , (bosch, wood_handle) : has_handle;
+(wiesemann, wood_handle) , (bnd, rubber_handle) , (bosch, wood_handle) : has_part;
+(basket_ball, ball) : has_part;
+
+%%
+
+// TBox
+
+Simple_Object SUBS Object;
+Complex_Object SUBS Object;
+Hammer SUBS Complex_Object;
+
+Box_Shaped SUBS Knoxel;
+Cylinder_Shaped SUBS Knoxel;
+
+// Testing
+
+EX has_head . Knoxel;
+EX has_handle . Knoxel;
+EX has_part . Knoxel;
+
+ALL has_head . Knoxel;
+ALL has_handle . Knoxel;
+ALL has_part . Knoxel;
+
+(EX has_part . Knoxel) CONJ (!Hammer);
+
+%%

@@ -146,7 +146,17 @@ tbox:
 t_stmt:
 	NAME SUBS NAME			  { DL::Onthology::getInstance().subsumption($1, $3); }
 |	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
+|	'(' complex_concept ')' SUBS NAME 					 { DL::Onthology::getInstance().subsumption($2, $5); }
 |	'(' complex_concept ')' SUBS '(' complex_concept ')' { DL::Onthology::getInstance().subsumption($2, $6); }
+|	NAME '=' NAME						{ DL::Onthology::getInstance().alias($1, $3); }
+|	complex_concept '=' NAME			{ DL::Onthology::getInstance().alias($1, $3); }
+|	'(' complex_concept ')' '=' NAME 	{ DL::Onthology::getInstance().alias($2, $5); }
+|	NAME COMPARISON NAME					{ if ($2 == 1) {DL::Onthology::getInstance().coincidence($1, $3);}
+											  else {driver.soft_error("Warning: wrong operator used in place of '=='.");} }
+|	complex_concept COMPARISON NAME			{ if ($2 == 1) {DL::Onthology::getInstance().coincidence($1, $3);}
+											  else {driver.soft_error("Warning: wrong operator used in place of '=='.");} }
+|	'(' complex_concept ')' COMPARISON NAME { if ($4 == 1) {DL::Onthology::getInstance().coincidence($2, $5);}
+											  else {driver.soft_error("Warning: wrong operator used in place of '=='.");} }
 |	complex_concept /* for testing purposes */
 ;
 

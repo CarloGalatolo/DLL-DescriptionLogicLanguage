@@ -87,6 +87,7 @@ int main ( const int argc, const char **argv )
 		DL::DL_Driver driver;
 		DL::Onthology& ont = DL::Onthology::getInstance();
 		driver.parse( argv[1] );
+
 		print( std::cout ) << std::endl;
 
 		for (auto it = ont.allConcepts.begin(); it != ont.allConcepts.end(); it++)

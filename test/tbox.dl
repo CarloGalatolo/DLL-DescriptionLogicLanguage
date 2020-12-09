@@ -1,4 +1,4 @@
-CONCEPT Allenatore, Calciatore;
+CONCEPT Allenatore, NOT_Calciatore, Calciatore;
 ROLE allena, giocacon;
 INDV pirlo, ronaldo, dybala, bonucci, agnelli, kompany;
 
@@ -11,6 +11,7 @@ ronaldo, dybala, bonucci: Calciatore;
 (pirlo, ronaldo), (ronaldo, pirlo) : allena;
 
 %%
+/*
 !Calciatore; //CONJ Allenatore;
 //!(!(!(!(Calciatore CONJ Allenatore))));
 //!Allenatore;

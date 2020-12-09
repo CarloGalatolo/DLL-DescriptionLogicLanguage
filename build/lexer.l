@@ -48,10 +48,10 @@ SECTION ^[ \t]*%%[ \t]*$
 ":" |	// Used in assertions. E.g.: indv : Concept
 "," |	// Separator. Used in role assertions. E.g.: (i1, i2) : role
 ";" |	// End of statenìment.
-"=" |	// Coincidence operator.
 "#" |	// Cardinality of a concept. E.g.: #Concept
 "!" |	// Complement of a concept. E.g.: !Concept
 "?" |	// Query marker. E.g.: a : C ?
+"=" |	// Alias operator, i.e. rename operator.
 	/* Brackets */
 "(" |
 ")" |
@@ -59,7 +59,7 @@ SECTION ^[ \t]*%%[ \t]*$
 "}"		{ return yytext[0]; }
 
 	/* Comparison operators */
-"==" { yylval->build<int>(1); return token::COMPARISON; }
+"==" { yylval->build<int>(1); return token::COMPARISON; }	// Also coincidence operator.
 "<"  { yylval->build<int>(2); return token::COMPARISON; }
 "<=" { yylval->build<int>(3); return token::COMPARISON; }
 ">"  { yylval->build<int>(4); return token::COMPARISON; }
