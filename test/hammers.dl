@@ -44,6 +44,7 @@ ALL has_head . Knoxel;
 ALL has_handle . Knoxel;
 ALL has_part . Knoxel;
 
-(EX has_part . Knoxel) CONJ (!Hammer);
+(EX has_part . Knoxel) CONJ (!Hammer) = Test;
+(!Hammer) = Test2;
 
 %%

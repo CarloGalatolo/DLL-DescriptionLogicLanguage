@@ -160,6 +160,7 @@ void DL::Onthology::alias (string& before, string& after)
 		c.setName(after);
 		
 		// Aggiorno il vettore di tutti i nomi.
+		//std::cout << "Aggiorno il vettore di tutti i nomi." << std::endl;
 		for (string& s : allNames)
 		{
 			if (s == before)
@@ -169,6 +170,8 @@ void DL::Onthology::alias (string& before, string& after)
 		}
 
 		// Aggiorno il grafo delle sussunzioni.
+		//std::cout << "Aggiorno il grafo delle sussunzioni." << std::endl;
+		size_t erase_counter = 0;
 		if (!subsGraph.empty())
 		{
 			for (auto& pair : subsGraph)
@@ -176,17 +179,37 @@ void DL::Onthology::alias (string& before, string& after)
 				if (pair.first == before)
 				{
 					auto tmp = std::pair<string,string>(pair.first, pair.second);
+					//std::cout << "tmp" << std::endl;
 					subsGraph.insert( std::pair<string,string>(after, pair.second) );
-					subsGraph.erase( find_pair(subsGraph, tmp) );
+					//std::cout << "insert" << std::endl;
+					erase_counter++;
 				}
 				if (pair.second == before)
 				{
 					pair.second = after;
 				}
 			}
+
+			for (size_t i = 0; i < erase_counter; i++)
+			{
+				for (auto& pair : subsGraph)
+				{
+					auto tmp = std::pair<string,string>(before, pair.second);
+					auto f = find_pair(subsGraph, tmp);
+					//std::cout << "find_pair" << std::endl;
+					if (f != subsGraph.end())
+					{
+						subsGraph.erase( f );
+						//std::cout << "erase" << std::endl;
+						break;
+					}					
+				}
+			}
 		}
 
 		// Aggiorno la mappa dei negati.
+		//std::cout << "Aggiorno la mappa dei negati." << std::endl;
+		erase_counter = 0;
 		if (!negateMap.empty())
 		{
 			for (auto& pair : negateMap)
@@ -194,16 +217,26 @@ void DL::Onthology::alias (string& before, string& after)
 				if (pair.first == before)
 				{
 					negateMap.insert( std::pair<string,string>(after, pair.second) );
-					negateMap.erase( negateMap.find(before) );
+					
 				}
 				if (pair.second == before)
 				{
 					pair.second = after;
 				}
 			}
+			
+			for (size_t i = 0; i < erase_counter; i++)
+			{
+				auto f = negateMap.find(before);
+				if (f != negateMap.end())
+				{
+					negateMap.erase( f );
+				}	
+			}
 		}
 
 		// Aggiorno tutti gli individui.
+		//std::cout << "Aggiorno tutti gli individui." << std::endl;
 		if (!ont.allIndividuals.empty())
 		{
 			for (Individual& ind : ont.allIndividuals)	
@@ -601,41 +634,41 @@ string DL::Onthology::existential (string& role, string& concept)
     }
     catch(std::logic_error x)
     {
-		std::cerr << x.what() << std::endl;
+		//std::cerr << x.what() << std::endl;
         return exist;
     }
     
 	if (!r->getPairs().empty())
 	{
-		std::cout << "Sto per ciclare gli individui di ontologia" << std::endl;	
+		//std::cout << "Sto per ciclare gli individui di ontologia" << std::endl;	
 		for (DL::Individual& ind : ont.allIndividuals)
 		{
-			std::cout << "Controllo " << ind.getName() << std::endl;
-			std::cout << "Sto per ciclare le coppie di " << r->getName() << std::endl;
+			//std::cout << "Controllo " << ind.getName() << std::endl;
+			//std::cout << "Sto per ciclare le coppie di " << r->getName() << std::endl;
 			std::multimap<string, string> pairList = r->getPairs();
 			if(!pairList.empty()){
 				for (std::pair<string, string> p : pairList)
 				{	
-					std::cout << "Controllo che " << p.first << " coincida con " << ind.getName() << std::endl;
+					//std::cout << "Controllo che " << p.first << " coincida con " << ind.getName() << std::endl;
 					if(ind.getName().compare(p.first) == 0){
-						std::cout << "Coincidono!" << std::endl;
+						//std::cout << "Coincidono!" << std::endl;
 						std::vector<std::string> pCons = ont.get_i(p.second).getConcepts();
 						if (!pCons.empty())
 						{
-							std::cout << "Cerco " << concept << " tra i concetti di " << p.second << std::endl;
+							//std::cout << "Cerco " << concept << " tra i concetti di " << p.second << std::endl;
 							for( string c : pCons ){
-								std::cout << "Confronto " << c << " con " << concept << std::endl;
+								//std::cout << "Confronto " << c << " con " << concept << std::endl;
 								if (c.compare(concept) == 0)	// Se lo trova
 								{
-									std::cout << "Trovato! Aggiungo " << ind.getName() << " al concetto " << exist << std::endl;
+									//std::cout << "Trovato! Aggiungo " << ind.getName() << " al concetto " << exist << std::endl;
 									string save = ind.getName();
 									ont.get_c(exist).addIndividual(save);
 									break;
 								}
-								else
+								/*else
 								{
 									std::cout << "Non esite una corrispondenza" << std::endl;
-								}
+								}*/
 							}
 						}
 					}
