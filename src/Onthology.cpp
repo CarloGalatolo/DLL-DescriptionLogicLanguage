@@ -153,6 +153,8 @@ void DL::Onthology::alias (string& before, string& after)
 {
 	Onthology& ont = Onthology::getInstance();
 
+	//std::cout << "\n\n\n\n\n\n" <<  "Devo sostituire " << before << " con " << after << "\n\n\n\n\n\n" << std::endl;
+
 	if (!checkConcepts(after))
 	{
 		Concept& c = ont.get_c(before); // Controllo che il concetto esista.
@@ -212,21 +214,29 @@ void DL::Onthology::alias (string& before, string& after)
 		erase_counter = 0;
 		if (!negateMap.empty())
 		{
+			//std::cout << "Sto per ciclare la mappa dei negati" << std::endl;
 			for (auto& pair : negateMap)
 			{
+				//std::cout << "Verifico che " << pair.first << " sia uguale a " << before << std::endl;
 				if (pair.first == before)
 				{
+					//std::cout << "Copincidono!" << std::endl;
 					negateMap.insert( std::pair<string,string>(after, pair.second) );
+					erase_counter++;
 					
 				}
+				//std::cout << "Verifico che " << pair.second << " sia uguale a " << before << std::endl;
 				if (pair.second == before)
 				{
+					//std::cout << "Coincidono!" << std::endl;
 					pair.second = after;
 				}
 			}
 			
+			//std::cout << "Sto per eliminare le vecchie coppie" << std::endl;
 			for (size_t i = 0; i < erase_counter; i++)
 			{
+				//std::cout << "EXTERMINATE!" << std::endl;
 				auto f = negateMap.find(before);
 				if (f != negateMap.end())
 				{
@@ -239,14 +249,18 @@ void DL::Onthology::alias (string& before, string& after)
 		//std::cout << "Aggiorno tutti gli individui." << std::endl;
 		if (!ont.allIndividuals.empty())
 		{
+			//std::cout << "Sto per ciclare gli individui dell'ontologia" << std::endl;
 			for (Individual& ind : ont.allIndividuals)	
 			{
 				if (!ind.getConcepts().empty())
 				{
 					for (string& c : ind.getConcepts())
 					{
+						//std::cout << "\nCiclo i concetti di " << ind.getName() << std::endl;
+						//std::cout << "Confronto " << c << " e " << before << std::endl;
 						if (c == before)
 						{
+							//std::cout << "Coincidono!" << std::endl;
 							c = after;
 						}
 					}
@@ -259,6 +273,7 @@ void DL::Onthology::alias (string& before, string& after)
 	{
 		std::cerr << "Can't create alias " << after << ": concept with that name already exists." << std::endl;
 	}
+	//std::cout << "Ho finito" << std::endl;
 }
 
 void DL::Onthology::subsumption (std::string& s1, std::string& s2) // a subsumed by b
