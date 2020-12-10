@@ -304,13 +304,15 @@ void DL::Onthology::coincidence (string& s1, string& s2)
 {
 	Onthology& ont = Onthology::getInstance();
 
+	ont.get_c(s2);
+
 	try
 	{
 		ont.put_c(s2);
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "Warning: " << e.what() << std::endl;
+		//std::cerr << "Warning: " << e.what() << std::endl;
 	}
 
 	ont.subsumption(s1, s2);
@@ -409,11 +411,10 @@ string DL::Onthology::negation (string& s, bool flag)
 	 * poi inserisce una pair nella mappa dei negati. Se "s" ha già un negato nell'Ontologia,
 	 * la funzione ritorna il nome quel concetto invece di crearne un duplicato.
 	 */
-
+	
 	Onthology& ont = Onthology::getInstance();
 	ont.get_c(s);	// Verifico che il concetto di nome "s" esista. Per tutto il resto ripetere questa chiamata di get_c().
 	string name;
-	bool wasInCatch = false;
 
 	if (flag==false)
 	{
@@ -421,9 +422,33 @@ string DL::Onthology::negation (string& s, bool flag)
 	}
 	else 
 	{
- 		name = "NOT_[" + s +"]";
+ 		name = "NOT_[" + s + "]";
 	}
 	
+	if (!ont.negateMap.empty())
+	{
+		// Ciclo della mappa dei negati per controllare se il negato esiste già.
+		for (std::pair<string, string> pair : ont.negateMap)
+		{
+			//std::cout << "Sto ciclando per evitare i NOT_NOT_etc..." << std::endl;
+
+			if (pair.first == s)	
+			{
+				// Se il parametro ha già un negato, ritorna il suo negato.
+				name = pair.second;
+			}
+			else if (pair.second == s)
+			{
+				// Se il parametro è il negato di un concetto esistente, ritorna il concetto originale.
+				name = pair.first;
+			}
+		}		
+	}
+	else
+	{
+		//std::cout << "La mappa dei negati è vuota." << std::endl;
+	}
+
 	try 
 	{
 		ont.put_c(name);
@@ -442,55 +467,30 @@ string DL::Onthology::negation (string& s, bool flag)
 			if (pair.first.compare(s) == 0)	
 			{
 				//std::cout << "IF" << std::endl;
-				name = pair.second;	
+				name = pair.second;
+				ont.negateMap.insert(std::make_pair(s, name));
 			}
 			if (pair.second.compare(s) == 0)
 			{
 				//std::cout << "ELSEIF" << std::endl;
 				name = pair.first;
+				ont.negateMap.insert(std::make_pair(name, s));
 			}
 		}
 		// Non c'è corrispondenza nella mappa dei negati.
 		//std::cout << "Esco dal for" << std::endl;
-
-		ont.negateMap.insert(std::make_pair(name, s));
-		wasInCatch = true;
 	}
 
-	if (!wasInCatch && !ont.negateMap.empty())
-	{
-		// Ciclo della mappa dei negati per controllare se il negato esiste già.
-		for (std::pair<string, string> pair : ont.negateMap)
-		{
-			//std::cout << "Sto ciclando per evitare i NOT_NOT_etc..." << std::endl;
-
-			if (pair.first == s)	
-			{
-				// Se il parametro ha già un negato, ritorna il suo negato.
-				name = pair.second;	
-			}
-			else if (pair.second == s)
-			{
-				// Se il parametro è il negato di un concetto esistente, ritorna il concetto originale.
-				name = pair.first;
-			}
-		}		
-	}
-	else
-	{
-		//std::cout << "La mappa dei negati è vuota." << std::endl;
-	}
-	
 	// Se non è stato trovata una coppia nella mappa dei negati, viene generato il negato.
 
-	//std::cout << "Creo il negato di " << s << " : " << name << std::endl;
+	//std::cout << "Il negato di " << s << " è " << name << std::endl;
 	bool check = false;
 	//std::cout << "Recupero gli individui di " << ont.get_c(s).getName() << std::endl;
 	std::vector<string> cIndvs = ont.get_c(s).getIndividuals();
 	//std::cout << "Negato creato." << std::endl;
 	if (ont.negateMap.find(s) == ont.negateMap.end())
 	{
-		//std::cout << "Sto per inserire nella mappa dei negati " << ont.get_c(s).getName() << " e " << c_2.getName() << std::endl;
+		//std::cout << "Sto per inserire nella mappa dei negati " << s << " e " << name << std::endl;
 		std::pair<string, string> negPair = std::make_pair(s, name);
 		ont.negateMap.insert(negPair);
 	}

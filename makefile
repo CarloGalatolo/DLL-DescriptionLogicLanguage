@@ -1,9 +1,7 @@
 CC    ?= clang
 CXX   ?= clang++
 
-MAIN = test/tbox_test
-
-EXE = $(addsuffix .out, $(MAIN))
+EXE = minidl
 DEBUG = -g -Wall
 
 CSTD = -std=c99
@@ -12,8 +10,8 @@ CXXSTD = -std=c++11
 CFLAGS = -Wno-deprecated-register -O0  $(DEBUG) $(CSTD) 
 CXXFLAGS = -O0  $(DEBUG) $(CXXSTD)
 
-CPPOBJ = $(MAIN) src/dl_driver src/Onthology
-SOBJ = parser lexer	#Riferimenti a regole, non file.
+CPPOBJ = main src/dl_driver src/Onthology
+SOBJ = parser lexer
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
 

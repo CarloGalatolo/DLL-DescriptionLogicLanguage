@@ -33,13 +33,13 @@ void DL::DL_Driver::parse( const char* const filename )
 void
 DL::DL_Driver::parse( std::istream &stream )
 {
-   if( ! stream.good()  && stream.eof() )
-   {
-       return;
-   }
-   //else
-   parse_helper( stream ); 
-   return;
+	if( !stream.good()  && stream.eof() ) // Empty file
+	{
+		std::cerr << "File is empty." << std::endl;
+		return;
+	}
+	parse_helper( stream ); 
+	return;
 }
 
 void DL::DL_Driver::parse_helper( std::istream &stream )

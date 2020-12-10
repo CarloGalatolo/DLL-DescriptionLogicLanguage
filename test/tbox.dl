@@ -11,8 +11,9 @@ ronaldo, dybala, bonucci: Calciatore;
 (pirlo, ronaldo), (ronaldo, pirlo) : allena;
 
 %%
+!Calciatore
 /*
-!Calciatore; //CONJ Allenatore;
+ //CONJ Allenatore;
 //!(!(!(!(Calciatore CONJ Allenatore))));
 //!Allenatore;
 //Allenatore CONJ Calciatore;
@@ -23,5 +24,4 @@ ronaldo, dybala, bonucci: Calciatore;
 
 //EX allena . Calciatore;
 //ALL giocacon . Calciatore;
-
-%%
+*/

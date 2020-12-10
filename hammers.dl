@@ -1,7 +1,11 @@
 // Dichiarazione dei nomi
 
-CONCEPT Object, Simple_Object, Complex_Object, Hammer, Knoxel, Box_Shaped, Cylinder_Shaped;
+CONCEPT Object, Simple_Object, Complex_Object, Hammer;
+CONCEPT Knoxel, Box_Shaped, Cylinder_Shaped;
+CONCEPT Test3;
+
 ROLE has_part, has_head, has_handle;
+
 INDV wiesemann, bnd, bosch;
 INDV titanium_head, rubber_head;
 INDV wood_handle, rubber_handle;
@@ -44,7 +48,6 @@ ALL has_head . Knoxel;
 ALL has_handle . Knoxel;
 ALL has_part . Knoxel;
 
+!Hammer = Test2;
+Simple_Object == Test3;
 (EX has_part . Knoxel) CONJ (!Hammer) = Test;
-(!Hammer) = Test2;
-
-%%

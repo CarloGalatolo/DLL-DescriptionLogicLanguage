@@ -1,4 +1,0 @@
-PER COMPILARE:
- 1) Bison con bison -d parser.y
- 2) Flex con flex lexer.ly
- 3) C con gcc lex.yy.c parser.tab.c DDLfunctionsDefine.c -o Nome.exe

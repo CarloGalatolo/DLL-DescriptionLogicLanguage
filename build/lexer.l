@@ -19,6 +19,7 @@
 	#define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 
 	int oldstate;	// Usato nei commenti.
+	int comment_start = 0;
 %}
 
 %option nodefault
@@ -36,7 +37,6 @@ SECTION ^[ \t]*%%[ \t]*$
 
 %{  /* Code executed at the beginning of yylex */
 	yylval = lval;
-	// BEGIN NAMES_DECL;
 %}
 
 	/* Changing section with "%%" */
@@ -48,70 +48,34 @@ SECTION ^[ \t]*%%[ \t]*$
 ":" |	// Used in assertions. E.g.: indv : Concept
 "," |	// Separator. Used in role assertions. E.g.: (i1, i2) : role
 ";" |	// End of statenìment.
-"#" |	// Cardinality of a concept. E.g.: #Concept
 "!" |	// Complement of a concept. E.g.: !Concept
-"?" |	// Query marker. E.g.: a : C ?
 "=" |	// Alias operator, i.e. rename operator.
 	/* Brackets */
 "(" |
-")" |
-"{" |	// Curly brackets determine a block of statements or instructions.
-"}"		{ return yytext[0]; }
-
-	/* Comparison operators */
-"==" { yylval->build<int>(1); return token::COMPARISON; }	// Also coincidence operator.
-"<"  { yylval->build<int>(2); return token::COMPARISON; }
-"<=" { yylval->build<int>(3); return token::COMPARISON; }
-">"  { yylval->build<int>(4); return token::COMPARISON; }
-">=" { yylval->build<int>(5); return token::COMPARISON; }
-"!=" { yylval->build<int>(6); return token::COMPARISON; }
-
-	/* Integer values */
--?[0-9]+	{ yylval->build<int>(atoi(yytext)); return token::INTVAL; }
-
-	/* Boolean values */
-TRUE	{ yylval->build<bool>(true); return token::BOOLVAL; }
-FALSE	{ yylval->build<bool>(false); return token::BOOLVAL; }
-
-	/* Strings */
-\"[^"\n]*\"	{ yylval->build<std::string>(yytext); return token::STRVAL; }
-\"[^"\n]*$	{ DL::DL_Scanner::yyerror(std::string("Unterminated string ").append(yytext)); }
+")" 	{ return yytext[0]; }
+"=="	{ return token::COINCIDENCE; }
 
 	/* Keywords */
-ALL		{ return token::ALL; }
-BOOL	{ return token::BOOL; } //?
-CONCEPT	{ return token::CONCEPT; }
-CONJ(UNCTION)?	{ return token::CONJ; }
-DISJ(UNCTION)?	{ return token::DISJ; }
-EX(ISTS)?	{ return token::EX; }
-(INDIVIDUAL|INDV)	{ return token::INDV; }
-INT		{ return token::INT; } //?
-NOTHING	{ return token::NOTHING; }
-ROLE	{ return token::ROLE; }
-STR(ING)?	{ return token::STR; } //?
-SUBS(UMPTION)?	{ return token::SUBS; }
-THING	{ return token::THING; }
+ALL				  { return token::ALL; 	   }
+CONCEPT			  { return token::CONCEPT; }
+CONJ(UNCTION)?	  { return token::CONJ;    }
+DISJ(UNCTION)?	  { return token::DISJ;    }
+EX(ISTS)?		  { return token::EX;      }
+(INDIVIDUAL|INDV) { return token::INDV;    }
+ROLE			  { return token::ROLE;    }
+SUBS(UMPTION)?	  { return token::SUBS;    }
 
-	/* Unquoted names */
+	/* Names */
 [a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
 
 	/* C-style comments */
-"/*"			 { oldstate = YY_START; BEGIN COMMENT; }
+"/*"			 { comment_start = yylineno; oldstate = YY_START; BEGIN COMMENT;  }
 <COMMENT>"*/"	 { BEGIN oldstate; }
 <COMMENT>.|\n 	 ;
-<COMMENT><<EOF>> { DL::DL_Scanner::yyerror("Unclosed comment before EOF."); }
+<COMMENT><<EOF>> { fprintf(stderr, "Comment at line %d unclosed before EOF.\n", comment_start); exit(EXIT_FAILURE); }
 
 	/* Ignore empty spaces and comments. */
 [ \t\n] |
 "//".*  ;	// C++-style comment.
 
 %%
-/*
-main (int argc, char **argv) {
-	yyparse();	
-}
-
-void yyerror (char *s, ...) {
-	fprintf (stderr, "%s\n", s);
-}
-*/

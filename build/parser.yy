@@ -42,19 +42,13 @@
 %define api.value.type variant	// Ignores union
 %define parse.assert
 
-%token <int> BOOLVAL INTVAL
-%token <std::string> NAME STRVAL
-%token DOT INT BOOL STR CONCEPT ROLE INDV SUBS CONJ DISJ EX ALL THING NOTHING SECTION
+%token <std::string> NAME
+%token DOT CONCEPT ROLE INDV SUBS COINCIDENCE CONJ DISJ EX ALL SECTION
 %token END 0 "end of file"
 
-//%type <a> EXP IstanceIndividual
 %type <std::string> complex_concept indv_assert role_assert
-//%type <DL::Concept> 
 
 	/* Precedence levels */
-%nonassoc '?'
-%left <int> COMPARISON
-%nonassoc '#'
 %left CONJ DISJ
 %right '!'
 %nonassoc '.'
@@ -64,10 +58,7 @@
 %%
 
 program:
-	names_decl END	/* debug */
-|	names_decl SECTION abox END	/* debug */ 
-|	names_decl SECTION abox SECTION tbox SECTION {DL::Onthology::getInstance().validate();} END /* debug
-|	names_decl SECTION abox SECTION tbox SECTION {DL::Onthology::getInstance().validate();} queries END*/
+	names_decl SECTION abox SECTION tbox {DL::Onthology::getInstance().validate();} END
 ;
 
 	/* FIRST SECTION */
@@ -75,7 +66,6 @@ program:
 names_decl:
 	/* empty */
 |	names_decl decl ';'
-|	names_decl error { error(@1, std::string("In Names Declaration section")); }
 ;
 
 decl:
@@ -110,7 +100,6 @@ indv_decl:
 abox:
 	/* empty */	
 |	abox a_stmt ';'
-|	abox error { error(@1, std::string("In ABox Section")); }
 ;
 
 a_stmt:
@@ -119,10 +108,10 @@ a_stmt:
 ;
 
 indv_assert:
-	NAME ':' NAME		 { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
+	NAME ':' NAME		  { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
 							catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
 							$$ = $3; }
-|	NAME ',' indv_assert { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
+|	NAME ',' indv_assert  { try {DL::Onthology::getInstance().get_c($3).addIndividual($1);}
 							catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
 							$$ = $3; }
 ;
@@ -140,42 +129,39 @@ role_assert:
 tbox:
 	/* empty */
 |	tbox t_stmt ';'
-|	tbox error { error(@1, std::string("In TBox Section")); }
 ;
 
 t_stmt:
-	NAME SUBS NAME			  { DL::Onthology::getInstance().subsumption($1, $3); }
-|	complex_concept SUBS NAME { DL::Onthology::getInstance().subsumption($1, $3); }
+	NAME 					SUBS NAME					 { DL::Onthology::getInstance().subsumption($1, $3); }
+|	complex_concept 		SUBS NAME					 { DL::Onthology::getInstance().subsumption($1, $3); }
 |	'(' complex_concept ')' SUBS NAME 					 { DL::Onthology::getInstance().subsumption($2, $5); }
+|	complex_concept			SUBS complex_concept		 { DL::Onthology::getInstance().subsumption($1, $3); }
+|	complex_concept			SUBS '(' complex_concept ')' { DL::Onthology::getInstance().subsumption($1, $4); }
+|	'(' complex_concept ')'	SUBS complex_concept		 { DL::Onthology::getInstance().subsumption($2, $5); }
 |	'(' complex_concept ')' SUBS '(' complex_concept ')' { DL::Onthology::getInstance().subsumption($2, $6); }
-|	NAME '=' NAME						{ DL::Onthology::getInstance().alias($1, $3); }
-|	complex_concept '=' NAME			{ DL::Onthology::getInstance().alias($1, $3); }
-|	'(' complex_concept ')' '=' NAME 	{ DL::Onthology::getInstance().alias($2, $5); }
-|	NAME COMPARISON NAME					{ if ($2 == 1) {DL::Onthology::getInstance().coincidence($1, $3);}
-											  else {driver.soft_error("Warning: wrong operator used in place of '=='.");} }
-|	complex_concept COMPARISON NAME			{ if ($2 == 1) {DL::Onthology::getInstance().coincidence($1, $3);}
-											  else {driver.soft_error("Warning: wrong operator used in place of '=='.");} }
-|	'(' complex_concept ')' COMPARISON NAME { if ($4 == 1) {DL::Onthology::getInstance().coincidence($2, $5);}
-											  else {driver.soft_error("Warning: wrong operator used in place of '=='.");} }
-|	complex_concept /* for testing purposes */
+|	NAME 					'=' NAME					 { DL::Onthology::getInstance().alias($1, $3); }
+|	complex_concept 		'=' NAME					 { DL::Onthology::getInstance().alias($1, $3); }
+|	'(' complex_concept ')' '=' NAME 					 { DL::Onthology::getInstance().alias($2, $5); }
+|	NAME 					COINCIDENCE NAME			 { DL::Onthology::getInstance().coincidence($1, $3); }
+|	complex_concept 		COINCIDENCE NAME			 { DL::Onthology::getInstance().coincidence($1, $3); }
+|	'(' complex_concept ')' COINCIDENCE NAME			 { DL::Onthology::getInstance().coincidence($2, $5); }
+|	complex_concept										 /* for testing purposes */
 ;
 
 complex_concept:
-	NAME CONJ NAME 			     { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
-|	'(' complex_concept ')' CONJ NAME    { $$ = DL::Onthology::getInstance().conjunction($2, $5); }
-|	'(' complex_concept ')' CONJ '(' complex_concept ')'    { $$ = DL::Onthology::getInstance().conjunction($2, $6); }
-|	NAME DISJ NAME 			     { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
-|	'(' complex_concept ')' DISJ NAME    { $$ = DL::Onthology::getInstance().disjunction($2, $5); }
-|	'(' complex_concept ')' DISJ '(' complex_concept ')'    { $$ = DL::Onthology::getInstance().disjunction($2, $6); }
-|	'!' NAME 					 { $$ = DL::Onthology::getInstance().negation($2,false); }
-|	'!' '(' complex_concept ')'	 { $$ = DL::Onthology::getInstance().negation($3,true); }
-|	EX  NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().existential($2, $4); }
-|	EX  NAME DOT '(' complex_concept ')' { $$ = DL::Onthology::getInstance().existential($2, $5); }
-|	ALL NAME DOT NAME 			 { $$ = DL::Onthology::getInstance().universal($2, $4); }
-|	ALL NAME DOT '(' complex_concept ')' { $$ = DL::Onthology::getInstance().universal($2, $5); }
+	NAME 					CONJ NAME 					 { $$ = DL::Onthology::getInstance().conjunction($1, $3); }
+|	'(' complex_concept ')' CONJ NAME    				 { $$ = DL::Onthology::getInstance().conjunction($2, $5); }
+|	'(' complex_concept ')' CONJ '(' complex_concept ')' { $$ = DL::Onthology::getInstance().conjunction($2, $6); }
+|	NAME 					DISJ NAME 					 { $$ = DL::Onthology::getInstance().disjunction($1, $3); }
+|	'(' complex_concept ')' DISJ NAME    				 { $$ = DL::Onthology::getInstance().disjunction($2, $5); }
+|	'(' complex_concept ')' DISJ '(' complex_concept ')' { $$ = DL::Onthology::getInstance().disjunction($2, $6); }
+|	'!' NAME 					 						 { $$ = DL::Onthology::getInstance().negation($2,false); }
+|	'!' '(' complex_concept ')'	 						 { $$ = DL::Onthology::getInstance().negation($3,true); }
+|	EX  NAME DOT NAME 									 { $$ = DL::Onthology::getInstance().existential($2, $4); }
+|	EX  NAME DOT '(' complex_concept ')'				 { $$ = DL::Onthology::getInstance().existential($2, $5); }
+|	ALL NAME DOT NAME 									 { $$ = DL::Onthology::getInstance().universal($2, $4); }
+|	ALL NAME DOT '(' complex_concept ')'				 { $$ = DL::Onthology::getInstance().universal($2, $5); }
 ;
-
-queries:;
 
 %%
 
