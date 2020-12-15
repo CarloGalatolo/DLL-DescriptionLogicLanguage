@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "dl_driver.hpp"
-//#include "Onthology.hpp"
+//#include "Ontology.hpp"
 
 DL::DL_Driver::~DL_Driver()
 {

@@ -2,13 +2,13 @@
 #include <cstdlib>
 #include <cstring>
 #include "src/dl_driver.hpp"
-#include "src/Onthology.hpp"
+#include "src/Ontology.hpp"
 using namespace std;
 using namespace DL;
 
 std::ostream& print( std::ostream &stream )
 {
-	DL::Onthology& o = DL::Onthology::getInstance();
+	DL::Ontology& o = DL::Ontology::getInstance();
 
 	stream << "\n>All Names:" << std::endl;
 	for (auto i = o.allNames.begin(); i != o.allNames.end(); i++)
@@ -62,7 +62,7 @@ void print_pair (DL::Role &r)
 
 void print_subs ()
 {
-	Onthology& o = Onthology::getInstance();
+	Ontology& o = Ontology::getInstance();
 	
 	cout << "\n>Subsumption Graph" << endl;
 
@@ -74,7 +74,7 @@ void print_subs ()
 
 void print_negate ()
 {
-	Onthology& o = Onthology::getInstance();
+	Ontology& o = Ontology::getInstance();
 	
 	cout << "\n>Pairs of negations" << endl;
 	
@@ -92,7 +92,7 @@ int main ( const int argc, const char **argv )
 		if (filename.substr(filename.length() - 3, 3) == ".dl")
 		{
 			DL::DL_Driver driver;
-			DL::Onthology& ont = DL::Onthology::getInstance();
+			DL::Ontology& ont = DL::Ontology::getInstance();
 			driver.parse( argv[1] );
 
 			print( std::cout ) << std::endl;

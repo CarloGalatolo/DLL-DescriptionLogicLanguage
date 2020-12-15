@@ -1,4 +1,4 @@
-#include "Onthology.hpp"
+#include "Ontology.hpp"
 using std::string;
 
 template<class K, class V>
@@ -13,10 +13,10 @@ typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>
 }
 
 /**
- * ========== CLASS ONTHOLOGY ==========
+ * ========== CLASS Ontology ==========
  */
 
-void DL::Onthology::put (DL::Concept& c)
+void DL::Ontology::put (DL::Concept& c)
 {
 	if (checkNames(c.getName()))	// Nome già esistente.
 	{
@@ -29,7 +29,7 @@ void DL::Onthology::put (DL::Concept& c)
 	}
 }
 
-void DL::Onthology::put (DL::Role& r)
+void DL::Ontology::put (DL::Role& r)
 {
 	if (checkNames(r.getName()))	// Nome già esistente.
 	{
@@ -42,7 +42,7 @@ void DL::Onthology::put (DL::Role& r)
 	}
 }
 
-void DL::Onthology::put (DL::Individual& i)
+void DL::Ontology::put (DL::Individual& i)
 {
 	if (checkNames(i.getName()))	// Nome già esistente.
 	{
@@ -55,7 +55,7 @@ void DL::Onthology::put (DL::Individual& i)
 	}
 }
 
-void DL::Onthology::put_c (std::string& t)
+void DL::Ontology::put_c (std::string& t)
 {
 	string s = correctDoubleNot(t);
 	if (checkNames(s))	// Nome già esistente.
@@ -69,7 +69,7 @@ void DL::Onthology::put_c (std::string& t)
 	}
 }
 
-void DL::Onthology::put_r (std::string& s)
+void DL::Ontology::put_r (std::string& s)
 {
 	if (checkNames(s))	// Nome già esistente.
 	{
@@ -82,7 +82,7 @@ void DL::Onthology::put_r (std::string& s)
 	}
 }
 
-void DL::Onthology::put_i (std::string& s)
+void DL::Ontology::put_i (std::string& s)
 {
 	if (checkNames(s))	// Nome già esistente.
 	{
@@ -95,7 +95,7 @@ void DL::Onthology::put_i (std::string& s)
 	}
 }
 
-DL::Concept& DL::Onthology::get_c (std::string& s)
+DL::Concept& DL::Ontology::get_c (std::string& s)
 {
 	auto res = myFind(allConcepts.begin(), allConcepts.end(), s);
 
@@ -113,7 +113,7 @@ DL::Concept& DL::Onthology::get_c (std::string& s)
 	return r;
 }
 
-DL::Role& DL::Onthology::get_r (std::string& s)
+DL::Role& DL::Ontology::get_r (std::string& s)
 {
 	auto res = myFind(allRoles.begin(), allRoles.end(), s);
 	
@@ -131,7 +131,7 @@ DL::Role& DL::Onthology::get_r (std::string& s)
 	return r;
 }
 
-DL::Individual& DL::Onthology::get_i (std::string& s)
+DL::Individual& DL::Ontology::get_i (std::string& s)
 {
 	auto res = myFind(allIndividuals.begin(), allIndividuals.end(), s);
 	
@@ -149,9 +149,9 @@ DL::Individual& DL::Onthology::get_i (std::string& s)
 	return r;
 }
 
-void DL::Onthology::alias (string& before, string& after)
+void DL::Ontology::alias (string& before, string& after)
 {
-	Onthology& ont = Onthology::getInstance();
+	Ontology& ont = Ontology::getInstance();
 
 	//std::cout << "\n\n\n\n\n\n" <<  "Devo sostituire " << before << " con " << after << "\n\n\n\n\n\n" << std::endl;
 
@@ -276,9 +276,9 @@ void DL::Onthology::alias (string& before, string& after)
 	//std::cout << "Ho finito" << std::endl;
 }
 
-void DL::Onthology::subsumption (std::string& s1, std::string& s2) // a subsumed by b
+void DL::Ontology::subsumption (std::string& s1, std::string& s2) // a subsumed by b
 {
-	Onthology& ont = Onthology::getInstance();
+	Ontology& ont = Ontology::getInstance();
 	Concept& subsumed = ont.get_c(s1);
 	Concept& subsumes = ont.get_c(s2);
 	std::vector<string> individualsInTheSubsumedConcept = subsumed.getIndividuals();
@@ -300,9 +300,9 @@ void DL::Onthology::subsumption (std::string& s1, std::string& s2) // a subsumed
 	}
 }
 
-void DL::Onthology::coincidence (string& s1, string& s2)
+void DL::Ontology::coincidence (string& s1, string& s2)
 {
-	Onthology& ont = Onthology::getInstance();
+	Ontology& ont = Ontology::getInstance();
 
 	ont.get_c(s2);
 
@@ -319,7 +319,7 @@ void DL::Onthology::coincidence (string& s1, string& s2)
 	ont.subsumption(s2, s1);
 }
 
-std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Intersezione
+std::string DL::Ontology::conjunction (std::string& s1, std::string& s2) // Intersezione
 {
 	std::string name = s1 + "CON" + s2;
 	Concept res(name);
@@ -359,7 +359,7 @@ std::string DL::Onthology::conjunction (std::string& s1, std::string& s2) // Int
 	return name;
 }
 
-std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Unione
+std::string DL::Ontology::disjunction (std::string& s1, std::string& s2) // Unione
 {
 	std::string name = s1 + "DIS" + s2;
 	Concept res(name);
@@ -404,7 +404,7 @@ std::string DL::Onthology::disjunction (std::string& s1, std::string& s2) // Uni
 	return name;
 }
 
-string DL::Onthology::negation (string& s, bool flag)
+string DL::Ontology::negation (string& s, bool flag)
 {
 	/**
 	 * Genera il negato del conetto il cui nome è "s" e lo inserisce nell'Ontologia,
@@ -412,7 +412,7 @@ string DL::Onthology::negation (string& s, bool flag)
 	 * la funzione ritorna il nome quel concetto invece di crearne un duplicato.
 	 */
 	
-	Onthology& ont = Onthology::getInstance();
+	Ontology& ont = Ontology::getInstance();
 	ont.get_c(s);	// Verifico che il concetto di nome "s" esista. Per tutto il resto ripetere questa chiamata di get_c().
 	string name;
 
@@ -534,7 +534,7 @@ string DL::Onthology::negation (string& s, bool flag)
 	return name;
 }
 
-string DL::Onthology::universal (std::string& r, std::string& c)
+string DL::Ontology::universal (std::string& r, std::string& c)
 {
 	/**
 	 * Quantificatore universale.
@@ -552,7 +552,7 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 	 * 		che è vero perché non è soggetto di nessun ruolo.
 	 */
 
-	Onthology& ont = Onthology::getInstance();
+	Ontology& ont = Ontology::getInstance();
 	ont.get_c(c); // Controlla se il ruolo esiste. Se no, causa un errore critico. Non viene usata una reference al concetto effettivo.
     DL::Role& role = ont.get_r(r);;	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
 	std::string name = "UNIV" + r + "_" + c;
@@ -629,7 +629,7 @@ string DL::Onthology::universal (std::string& r, std::string& c)
 	return name;
 }
 
-string DL::Onthology::existential (string& role, string& concept)
+string DL::Ontology::existential (string& role, string& concept)
 {    
 	/**
 	 * Quantificatore esistenziale.
@@ -638,7 +638,7 @@ string DL::Onthology::existential (string& role, string& concept)
 	 * Gli individui così trovati vanno a formare un nuovo concetto.
 	 */
 	
-    DL::Onthology& ont = DL::Onthology::getInstance();
+    DL::Ontology& ont = DL::Ontology::getInstance();
     ont.get_c(concept); // Controlla se il ruolo esiste. Se no, causa un errore critico. Non viene usata una reference al concetto effettivo.
     DL::Role* r = &ont.get_r(role);	// Controlla se il ruolo esiste. Se non esiste, causa un errore critico.
     string exist = "EXIST" + role + "_" + concept;
@@ -694,7 +694,7 @@ string DL::Onthology::existential (string& role, string& concept)
 	return exist;
 }
 
-bool DL::Onthology::checkNames (const std::string& s) const
+bool DL::Ontology::checkNames (const std::string& s) const
 {
 	auto res = std::find(allNames.begin(), allNames.end(), s);
 
@@ -709,7 +709,7 @@ bool DL::Onthology::checkNames (const std::string& s) const
 }
 
 template<class InputIterator>
-InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, const string& val) const
+InputIterator DL::Ontology::myFind (InputIterator first, InputIterator last, const string& val) const
 {
 	while (first!=last) {
 		if ((*first).getName()==val) return first;
@@ -719,7 +719,7 @@ InputIterator DL::Onthology::myFind (InputIterator first, InputIterator last, co
 }
 
 template<class InputIterator>
-InputIterator DL::Onthology::myFindPtr (InputIterator first, InputIterator last, const string& val) const
+InputIterator DL::Ontology::myFindPtr (InputIterator first, InputIterator last, const string& val) const
 {
 	while (first!=last) {
 		if ((*first)->getName()==val) return first;
@@ -729,7 +729,7 @@ InputIterator DL::Onthology::myFindPtr (InputIterator first, InputIterator last,
 }
 
 template<class InputIterator>
-InputIterator DL::Onthology::myFindStr (InputIterator first, InputIterator last, const string& val) const
+InputIterator DL::Ontology::myFindStr (InputIterator first, InputIterator last, const string& val) const
 {
 	while (first!=last) {
 		if ((*first)==val) return first;
@@ -738,7 +738,7 @@ InputIterator DL::Onthology::myFindStr (InputIterator first, InputIterator last,
 	return last;
 }
 
-bool DL::Onthology::checkConcepts (const std::string& s) const
+bool DL::Ontology::checkConcepts (const std::string& s) const
 {
 	if (myFind(allConcepts.begin(), allConcepts.end(), s) != allConcepts.end())	// Nome già esistente.
 	{
@@ -750,7 +750,7 @@ bool DL::Onthology::checkConcepts (const std::string& s) const
 	}
 }
 
-bool DL::Onthology::checkRoles (const std::string& s) const
+bool DL::Ontology::checkRoles (const std::string& s) const
 {
 	if (myFind(allRoles.begin(), allRoles.end(), s) != allRoles.end())	// Nome già esistente.
 	{
@@ -762,7 +762,7 @@ bool DL::Onthology::checkRoles (const std::string& s) const
 	}
 }
 
-bool DL::Onthology::checkIndividuals (const std::string& s) const
+bool DL::Ontology::checkIndividuals (const std::string& s) const
 {
 	if (myFind(allIndividuals.begin(), allIndividuals.end(), s) != allIndividuals.end())	// Nome già esistente.
 	{
@@ -774,7 +774,7 @@ bool DL::Onthology::checkIndividuals (const std::string& s) const
 	}
 }
 
-string DL::Onthology::correctDoubleNot (string& s)
+string DL::Ontology::correctDoubleNot (string& s)
 {
 	if (s.substr(0, 8) == "NOT_NOT_")
 	{
@@ -792,9 +792,9 @@ string DL::Onthology::correctDoubleNot (string& s)
 	return s;
 }
 
-void DL::Onthology::validate ()
+void DL::Ontology::validate ()
 {
-	DL::Onthology& ont = DL::Onthology::getInstance();
+	DL::Ontology& ont = DL::Ontology::getInstance();
 	if(!ont.negateMap.empty())
 	{
 	
@@ -838,7 +838,7 @@ DL::Individual::Individual (std::string& name)
 
 void DL::Individual::addConcept (string& con)
 {
-	if (Onthology::getInstance().myFindStr(concepts.begin(), concepts.end(), con) == concepts.end())
+	if (Ontology::getInstance().myFindStr(concepts.begin(), concepts.end(), con) == concepts.end())
 	{
 		concepts.push_back(con);
 	}
@@ -846,7 +846,7 @@ void DL::Individual::addConcept (string& con)
 
 void DL::Individual::addRole (string& role)
 {
-	if (Onthology::getInstance().myFindStr(roles.begin(), roles.end(), role) == roles.end())
+	if (Ontology::getInstance().myFindStr(roles.begin(), roles.end(), role) == roles.end())
 	{
 		roles.push_back(role);
 	}
@@ -888,7 +888,7 @@ std::multimap<string, string> DL::Role::getPairs () const
 
 void DL::Role::insert (string& s1, string& s2)
 {
-	Onthology& ont = Onthology::getInstance();
+	Ontology& ont = Ontology::getInstance();
 
 	if(!ont.checkIndividuals(s1) || !ont.checkIndividuals(s2)){
 		exit(1);
@@ -926,7 +926,7 @@ std::vector<std::string> DL::Concept::getIndividuals () const
 
 void DL::Concept::addIndividual (string& s)
 {
-	Onthology& ont = Onthology::getInstance();
+	Ontology& ont = Ontology::getInstance();
 
 	DL::Individual* i = &ont.get_i(s);
 	

@@ -12,13 +12,13 @@ template<class K, class V>
 
 namespace DL
 {
-	class Onthology;
+	class Ontology;
 	class Individual;
 	class Role;
 	class Concept;
 
 	// Singleton class
-	class Onthology
+	class Ontology
 	{
 	public:
 		std::vector<Individual> allIndividuals;	// Same as THING
@@ -30,9 +30,9 @@ namespace DL
 		//std::map<string, string> coincidenceMap; // Mappa delle coincidenze
 		std::map<string, string> negateMap;	 // Mappa delle negazioni
 
-		static Onthology& getInstance ()
+		static Ontology& getInstance ()
 		{
-			static Onthology instance;
+			static Ontology instance;
 			return instance;
 		}
 	
@@ -53,7 +53,6 @@ namespace DL
 		string negation (string&, bool);
 		string universal (std::string&, std::string&);
 		string existential (string&, string&);
-		void addSubs (std::string&, std::string&);	// throws exception
 		bool checkIndividuals (const std::string&) const;
 		void validate ();
 		
@@ -65,10 +64,10 @@ namespace DL
   			InputIterator myFindStr (InputIterator first, InputIterator last, const string& val) const;
 	
 	private:
-		Onthology () {}
-		Onthology (Onthology const&) = delete;
-		~Onthology () {}
-		void operator = (Onthology const&) = delete;
+		Ontology () {}
+		Ontology (Ontology const&) = delete;
+		~Ontology () {}
+		void operator = (Ontology const&) = delete;
 		bool checkNames (const std::string&) const;
 		bool checkConcepts (const std::string&) const;
 		bool checkRoles (const std::string&) const;

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../src/Onthology.hpp"
+#include "../src/Ontology.hpp"
 
 /*
 void print_subs(Concept &c){
@@ -26,29 +26,29 @@ int main ()
 	std::string str_2("Componente");
 	std::string str_3("Transistor");
 	std::string str_4("GPU");
-	DL::Onthology::getInstance().put_c(str_1);
-	DL::Onthology::getInstance().put_c(str_3);
-	DL::Onthology::getInstance().put_c(str_2);
-	DL::Onthology::getInstance().put_i(str_4);
+	DL::Ontology::getInstance().put_c(str_1);
+	DL::Ontology::getInstance().put_c(str_3);
+	DL::Ontology::getInstance().put_c(str_2);
+	DL::Ontology::getInstance().put_i(str_4);
 
 	try 
 	{
-		//Onthology::getInstance().subsumption(&Onthology::getInstance().allConcepts.at(2), &Onthology::getInstance().allConcepts.at(1));
-		//Onthology::getInstance().subsumption(&Onthology::getInstance().allConcepts.at(1), &Onthology::getInstance().allConcepts.at(0));
+		//Ontology::getInstance().subsumption(&Ontology::getInstance().allConcepts.at(2), &Ontology::getInstance().allConcepts.at(1));
+		//Ontology::getInstance().subsumption(&Ontology::getInstance().allConcepts.at(1), &Ontology::getInstance().allConcepts.at(0));
 
-		/*print_subs(Onthology::getInstance().allConcepts.at(0));*/
+		/*print_subs(Ontology::getInstance().allConcepts.at(0));*/
 
-		/*std::cout << Onthology::getInstance().allConcepts.at(0).getSubsumes().at(0)->getName() << std::endl;*/
+		/*std::cout << Ontology::getInstance().allConcepts.at(0).getSubsumes().at(0)->getName() << std::endl;*/
 
-		/*for(int i = 0; i < Onthology::getInstance().allConcepts.at(0).getSubsumes().size(); i++){
-			std::cout << Onthology::getInstance().allConcepts.at(0).getSubsumes().at(i)->getName() << std::endl;
+		/*for(int i = 0; i < Ontology::getInstance().allConcepts.at(0).getSubsumes().size(); i++){
+			std::cout << Ontology::getInstance().allConcepts.at(0).getSubsumes().at(i)->getName() << std::endl;
 		}*/
 
-		/*for(auto i = Onthology::getInstance().allConcepts.begin(); i!= Onthology::getInstance().allConcepts.end(); i++){
+		/*for(auto i = Ontology::getInstance().allConcepts.begin(); i!= Ontology::getInstance().allConcepts.end(); i++){
 			print_subs((*i));
 		}*/
-		DL::Concept c = DL::Onthology::getInstance().get_c(str_2);
-		//Individual i = Onthology::getInstance().get_i(str_4);
+		DL::Concept c = DL::Ontology::getInstance().get_c(str_2);
+		//Individual i = Ontology::getInstance().get_i(str_4);
 		c.addIndividual(str_4);
 
 		std::cout << c.getIndividuals().at(0)->getName() << std::endl;

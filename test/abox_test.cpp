@@ -3,11 +3,11 @@
 #include <cstring>
 
 #include "../src/dl_driver.hpp"
-#include "../src/Onthology.hpp"
+#include "../src/Ontology.hpp"
 
 std::ostream& print( std::ostream &stream )
 {
-	DL::Onthology& o = DL::Onthology::getInstance();
+	DL::Ontology& o = DL::Ontology::getInstance();
 	stream << "\nAll Names:" << std::endl;
 	for (auto i = o.allNames.begin(); i != o.allNames.end(); i++)
 	{
@@ -92,22 +92,22 @@ int main ( const int argc, const char **argv )
 		driver.parse( argv[1] );
 		print( std::cout ) << std::endl;
 
-		/*for (auto it = DL::Onthology::getInstance().allConcepts.begin(); it != DL::Onthology::getInstance().allConcepts.end(); it++)
+		/*for (auto it = DL::Ontology::getInstance().allConcepts.begin(); it != DL::Ontology::getInstance().allConcepts.end(); it++)
 		{
 			print_subs(*it);
 		}*/
 
-		for (auto it = DL::Onthology::getInstance().allConcepts.begin(); it != DL::Onthology::getInstance().allConcepts.end(); it++)
+		for (auto it = DL::Ontology::getInstance().allConcepts.begin(); it != DL::Ontology::getInstance().allConcepts.end(); it++)
 		{
 			print_indv(*it);
 		}
 
-		/*for (auto it = DL::Onthology::getInstance().allRoles.begin(); it != DL::Onthology::getInstance().allRoles.end(); it++)
+		/*for (auto it = DL::Ontology::getInstance().allRoles.begin(); it != DL::Ontology::getInstance().allRoles.end(); it++)
 		{
 			print_pair(*it);
 		}*/
 /*
-		DL::Concept* c = &DL::Onthology::getInstance().allConcepts.at(0);
+		DL::Concept* c = &DL::Ontology::getInstance().allConcepts.at(0);
 
 		std::cout << "Gli individui istanziati nel concetto: " << c->getName() << std::endl;
 		for(size_t i = 0; i < c->getIndividuals().size(); i++){

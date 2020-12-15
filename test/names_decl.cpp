@@ -3,11 +3,11 @@
 #include <cstring>
 
 #include "../src/dl_driver.hpp"
-#include "../src/Onthology.hpp"
+#include "../src/Ontology.hpp"
 
 std::ostream& print( std::ostream &stream )
 {
-	DL::Onthology& o = DL::Onthology::getInstance();
+	DL::Ontology& o = DL::Ontology::getInstance();
 	stream << "\nAll Names:" << std::endl;
 	for (auto i = o.allNames.begin(); i != o.allNames.end(); i++)
 	{

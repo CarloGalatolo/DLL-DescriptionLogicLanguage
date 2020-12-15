@@ -2,13 +2,13 @@
 #include <cstdlib>
 #include <cstring>
 #include "../src/dl_driver.hpp"
-#include "../src/Onthology.hpp"
+#include "../src/Ontology.hpp"
 using namespace std;
 using namespace DL;
 
 std::ostream& print( std::ostream &stream )
 {
-	DL::Onthology& o = DL::Onthology::getInstance();
+	DL::Ontology& o = DL::Ontology::getInstance();
 
 	stream << "\nAll Names:" << std::endl;
 	for (auto i = o.allNames.begin(); i != o.allNames.end(); i++)
@@ -63,7 +63,7 @@ void print_pair (DL::Role &r)
 
 void print_subs ()
 {
-	Onthology& o = Onthology::getInstance();
+	Ontology& o = Ontology::getInstance();
 	for (auto it : o.subsGraph)
 	{
 		cout << it.first << " e' contenuto da " << it.second << endl;
@@ -72,7 +72,7 @@ void print_subs ()
 /*
 void print_negate ()
 {
-	Onthology& o = Onthology::getInstance();
+	Ontology& o = Ontology::getInstance();
 	std::cout << "La dimensione della mappa dei negati e' " << o.negateMap.size() << std::endl;
 	for(/*std::pair<Concept*, Concept*> p : o.negateGraph auto it = o.negateMap.begin(); it != o.negateMap.end(); it++){
 		//cout << p.first->getName() << " e' il negato di " << p.second->getName() << std::endl;
@@ -85,7 +85,7 @@ int main ( const int argc, const char **argv )
 	if (argc == 2)
 	{
 		DL::DL_Driver driver;
-		DL::Onthology& ont = DL::Onthology::getInstance();
+		DL::Ontology& ont = DL::Ontology::getInstance();
 		driver.parse( argv[1] );
 
 		print( std::cout ) << std::endl;
@@ -104,7 +104,7 @@ int main ( const int argc, const char **argv )
 /*
 		print_negate();
 /*
-		DL::Concept* c = &DL::Onthology::getInstance().allConcepts.at(0);
+		DL::Concept* c = &DL::Ontology::getInstance().allConcepts.at(0);
 
 		std::cout << "Gli individui istanziati nel concetto: " << c->getName() << std::endl;
 		for(size_t i = 0; i < c->getIndividuals().size(); i++){
