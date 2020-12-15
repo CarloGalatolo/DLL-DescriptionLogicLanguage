@@ -1,0 +1,39 @@
+.TH "DL::DL_Scanner" 3 "Tue Dec 15 2020" "SDLL" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DL::DL_Scanner
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <dl_scanner\&.hpp>\fP
+.PP
+Inherits yyFlexLexer\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDL_Scanner\fP (std::istream *in)"
+.br
+.ti -1c
+.RI "virtual int \fByylex\fP (DL::DL_Parser::semantic_type *const lval, DL::DL_Parser::location_type *location)"
+.br
+.ti -1c
+.RI "void \fByyerror\fP (std::string s)"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "DL::DL_Scanner::DL_Scanner (std::istream * in)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void DL::DL_Scanner::yyerror (std::string s)\fC [inline]\fP"
+
+.SS "virtual int DL::DL_Scanner::yylex (DL::DL_Parser::semantic_type *const lval, DL::DL_Parser::location_type * location)\fC [virtual]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for SDLL from the source code\&.

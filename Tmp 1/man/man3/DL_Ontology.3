@@ -1,0 +1,177 @@
+.TH "DL::Ontology" 3 "Tue Dec 15 2020" "SDLL" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DL::Ontology
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Ontology\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBput\fP (\fBConcept\fP &)"
+.br
+.ti -1c
+.RI "void \fBput\fP (\fBRole\fP &)"
+.br
+.ti -1c
+.RI "void \fBput\fP (\fBIndividual\fP &)"
+.br
+.ti -1c
+.RI "void \fBput_c\fP (std::string &)"
+.br
+.ti -1c
+.RI "void \fBput_r\fP (std::string &)"
+.br
+.ti -1c
+.RI "void \fBput_i\fP (std::string &)"
+.br
+.ti -1c
+.RI "\fBConcept\fP & \fBget_c\fP (std::string &)"
+.br
+.ti -1c
+.RI "\fBRole\fP & \fBget_r\fP (std::string &)"
+.br
+.ti -1c
+.RI "\fBIndividual\fP & \fBget_i\fP (std::string &)"
+.br
+.ti -1c
+.RI "void \fBalias\fP (string &, string &)"
+.br
+.ti -1c
+.RI "void \fBsubsumption\fP (std::string &, std::string &)"
+.br
+.ti -1c
+.RI "void \fBcoincidence\fP (string &, string &)"
+.br
+.ti -1c
+.RI "string \fBconjunction\fP (std::string &, std::string &)"
+.br
+.ti -1c
+.RI "string \fBdisjunction\fP (std::string &, std::string &)"
+.br
+.ti -1c
+.RI "string \fBnegation\fP (string &, bool)"
+.br
+.ti -1c
+.RI "string \fBuniversal\fP (std::string &, std::string &)"
+.br
+.ti -1c
+.RI "string \fBexistential\fP (string &, string &)"
+.br
+.ti -1c
+.RI "bool \fBcheckIndividuals\fP (const std::string &) const"
+.br
+.ti -1c
+.RI "void \fBvalidate\fP ()"
+.br
+.ti -1c
+.RI "template<class InputIterator > InputIterator \fBmyFind\fP (InputIterator first, InputIterator last, const string &val) const"
+.br
+.ti -1c
+.RI "template<class InputIterator > InputIterator \fBmyFindPtr\fP (InputIterator first, InputIterator last, const string &val) const"
+.br
+.ti -1c
+.RI "template<class InputIterator > InputIterator \fBmyFindStr\fP (InputIterator first, InputIterator last, const string &val) const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBOntology\fP & \fBgetInstance\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBIndividual\fP > \fBallIndividuals\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBRole\fP > \fBallRoles\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBConcept\fP > \fBallConcepts\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBallNames\fP"
+.br
+.ti -1c
+.RI "std::multimap< string, string > \fBsubsGraph\fP"
+.br
+.ti -1c
+.RI "std::map< string, string > \fBnegateMap\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void DL::Ontology::alias (string & before, string & after)"
+
+.SS "bool DL::Ontology::checkIndividuals (const std::string & s) const"
+
+.SS "void DL::Ontology::coincidence (string & s1, string & s2)"
+
+.SS "std::string DL::Ontology::conjunction (std::string & s1, std::string & s2)"
+
+.SS "std::string DL::Ontology::disjunction (std::string & s1, std::string & s2)"
+
+.SS "string DL::Ontology::existential (string & role, string & concept)"
+Quantificatore esistenziale\&. Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di almeno un ruolo 'role' con individui appartenenti al concetto 'concept'\&. Gli individui così trovati vanno a formare un nuovo concetto\&.
+.SS "\fBDL::Concept\fP & DL::Ontology::get_c (std::string & s)"
+
+.SS "\fBDL::Individual\fP & DL::Ontology::get_i (std::string & s)"
+
+.SS "\fBDL::Role\fP & DL::Ontology::get_r (std::string & s)"
+
+.SS "static \fBOntology\fP& DL::Ontology::getInstance ()\fC [inline]\fP, \fC [static]\fP"
+
+.SS "template<class InputIterator > InputIterator DL::Ontology::myFind (InputIterator first, InputIterator last, const string & val) const"
+
+.SS "template<class InputIterator > InputIterator DL::Ontology::myFindPtr (InputIterator first, InputIterator last, const string & val) const"
+
+.SS "template<class InputIterator > InputIterator DL::Ontology::myFindStr (InputIterator first, InputIterator last, const string & val) const"
+
+.SS "string DL::Ontology::negation (string & s, bool flag)"
+Genera il negato del conetto il cui nome è 's' e lo inserisce nell'Ontologia, poi inserisce una pair nella mappa dei negati\&. Se 's' ha già un negato nell'Ontologia, la funzione ritorna il nome quel concetto invece di crearne un duplicato\&.
+.SS "void DL::Ontology::put (\fBDL::Concept\fP & c)"
+========== CLASS \fBOntology\fP ========== 
+.SS "void DL::Ontology::put (\fBDL::Individual\fP & i)"
+
+.SS "void DL::Ontology::put (\fBDL::Role\fP & r)"
+
+.SS "void DL::Ontology::put_c (std::string & t)"
+
+.SS "void DL::Ontology::put_i (std::string & s)"
+
+.SS "void DL::Ontology::put_r (std::string & s)"
+
+.SS "void DL::Ontology::subsumption (std::string & s1, std::string & s2)"
+
+.SS "string DL::Ontology::universal (std::string & r, std::string & c)"
+Quantificatore universale\&. Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità di ruoli di cui sono soggetti sono ruoli di tipo 'r' e verso individui appartenenti al concetto 'c'\&. Gli individui trovati vanno a formare un nuovo concetto\&.
+.PP
+Questa funzione esclude il seguente caso, che nella teoria è corretto ma è scomodo nelle applicazioni pratiche: Se un individuo non è soggetto di nessun ruolo, va considerato in ogni applicazione del quantificatore universale\&. > Dimostrazione: ∀r\&.C == ¬∃r\&.¬C Cioè l'individuo non è soggetto di ruoli verso ¬C, che è vero perché non è soggetto di nessun ruolo\&.
+.SS "void DL::Ontology::validate ()"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<\fBConcept\fP> DL::Ontology::allConcepts"
+
+.SS "std::vector<\fBIndividual\fP> DL::Ontology::allIndividuals"
+
+.SS "std::vector<std::string> DL::Ontology::allNames"
+
+.SS "std::vector<\fBRole\fP> DL::Ontology::allRoles"
+
+.SS "std::map<string, string> DL::Ontology::negateMap"
+
+.SS "std::multimap<string, string> DL::Ontology::subsGraph"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for SDLL from the source code\&.

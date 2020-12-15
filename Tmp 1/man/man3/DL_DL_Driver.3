@@ -1,0 +1,66 @@
+.TH "DL::DL_Driver" 3 "Tue Dec 15 2020" "SDLL" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DL::DL_Driver
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <dl_driver\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDL_Driver\fP ()=default"
+.br
+.ti -1c
+.RI "virtual \fB~DL_Driver\fP ()"
+.br
+.ti -1c
+.RI "void \fBparse\fP (const char *filename)"
+.br
+.ti -1c
+.RI "void \fBparse\fP (std::istream &iss)"
+.br
+.ti -1c
+.RI "void \fBcritical_error\fP (const std::string &)"
+.br
+.ti -1c
+.RI "void \fBsoft_error\fP (const std::string &)"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "DL::DL_Driver::DL_Driver ()\fC [default]\fP"
+
+.SS "DL::DL_Driver::~DL_Driver ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void DL::DL_Driver::critical_error (const std::string & err_message)"
+
+.SS "void DL::DL_Driver::parse (const char * filename)"
+parse - parse from a file 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP - valid string with input file 
+.RE
+.PP
+Remember, if you want to have checks in release mode then this needs to be an if statement
+.SS "void DL::DL_Driver::parse (std::istream & iss)"
+parse - parse from a c++ input stream 
+.PP
+\fBParameters\fP
+.RS 4
+\fIis\fP - std::istream&, valid input stream 
+.RE
+.PP
+
+.SS "void DL::DL_Driver::soft_error (const std::string & s)"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for SDLL from the source code\&.
