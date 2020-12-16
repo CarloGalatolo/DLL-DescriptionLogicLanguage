@@ -24,7 +24,11 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
-{text:"Caratteristiche del Linguaggio", url:"language.html"},
+{text:"Caratteristiche del Linguaggio", children:[
+{text:"Decomposizione",  url:"decomposition.html"},
+{text:"Specifiche tecniche dell'interprete", url:"interpreter.html"},
+{text:"Lexer", url:"lexer.html"},
+{text:"Parser", url:"parser.html"}]},
 {text:"Namespace",url:"namespaces.html",children:[
 {text:"Lista dei Namespace",url:"namespaces.html"}]},
 {text:"Classi",url:"annotated.html",children:[

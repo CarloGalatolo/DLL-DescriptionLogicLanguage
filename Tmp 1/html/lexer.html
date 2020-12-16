@@ -48,6 +48,22 @@ $(function() {
     con il linguaggio scelto (nel nostro caso abbiamo utilizzato C++ per implementare le funzionalità). Il diagramma dei package è mostrato in seguito:
  </p>
  <img src="../immagini/decomposition.jpg">
+ <h2><pre style="color: rgb(83, 67, 67);">&Tab;Descrizione dei package</pre></h2>
+  <p>
+    SDLL: è il package radice del progetto flex/bison, in cui sono contenuti i file di configurazione dello sviluppo del linguaggio stesso,
+    oltre che l’eseguibile del linguaggio ed i file che descrivono le basi di conoscenze:
+  </p>
+  <ul>
+    <li>
+     build: al suo interno vengono contenuti i file del lexer e del parser, che descrivono nel dettaglio la grammatica del linguaggio; 
+    </li>
+    <li>
+     doc: la documentazione del linguaggio;
+    </li>
+    <li>
+     src: si trovano tutte le librerie, e le loro implementazioni in C++, utilizzate per lo sviluppo.
+    </li>
+  </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
