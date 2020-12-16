@@ -136,20 +136,22 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>before</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>after</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Operatore alias.
+		<br/> Permette di fornire un alias a un concetto presente nell'Ontologia o creato
+		da un operatore logico. Il concetto corrispondente a <strong class="paramname">before</strong> sarà
+		ridenominato come <strong class="paramname">after</strong>.</p>
 
 </div>
 </div>
@@ -168,6 +170,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Funzione che verifica la presenza dell'individuo di nome <strong class="paramname">s</strong> nell'Ontologia.</p>
 
 </div>
 </div>
@@ -182,20 +185,23 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>s1</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>s2</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Operatore coincidenza di due concetti di nomi <strong class="paramname">s1</strong> e <strong class="paramname">s2</strong>.
+		<br/> Un concetto A coincide con il concetto B se e solo se sia A è sussunto da B
+		sia B è sussunto da A.
+		<br/> La funzione svolge l'operazione di doppia sussunzione, aggiornando tutti gli
+		individui e il grafo delle sussunzioni di conseguenza.</p>
 
 </div>
 </div>
@@ -210,20 +216,24 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>s1</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>s2</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Operatore congiunzione di due concetti di nomi <strong class="paramname">s1</strong> e <strong class="paramname">s2</strong>.
+		<br/> La congiunzione di due concetti A e B restituisce un nuovo concetto, il cui nome sarà
+		la composizione "s1CONs2", che conterrà tutti gli individui facenti parte contemporaneamente
+		sia del concetto A che del concetto B.
+		<br/> Inoltre, il grafo delle sussunzioni sarà aggiornato in modo tale che il concetto risultante
+		dalla congiunzione sia sussunto sia da A che da B.</p>
 
 </div>
 </div>
@@ -238,20 +248,24 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>s1</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>s2</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Operatore disgiunzione di due concetti di nomi <strong class="paramname">s2</strong> e <strong class="paramname">s2</strong>.
+		<br/> La disgiunzione di due concetti A e B restituisce un nuovo concetto, il cui nome è la
+		composizione "s1DISs2", che contiene tutti gli individui contenuti indifferentemente da
+		A oppure da B.
+		<br/> Inoltre, l'operazione aggiorna il grafo delle sussunzioni in modo che il concetto
+		risultante contenga sia il concetto A che B.</p>
 
 </div>
 </div>
@@ -266,22 +280,22 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>role</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>concept</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Quantificatore esistenziale. Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di almeno un ruolo "role" con individui appartenenti al concetto "concept". Gli individui così trovati vanno a formare un nuovo concetto.</p>
-
+<p>Quantificatore esistenziale.
+	<br/> Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di
+	almeno un ruolo "role" con individui appartenenti al concetto <strong class="paramname">concept</strong>.
+	<br/> Gli individui così trovati vanno a formare un nuovo concetto.</p>
 </div>
 </div>
 <a id="aba3d3e5c41cb9663ddaa9fb5f3d9a00e"></a>
@@ -299,6 +313,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Trova e restituisce l'oggetto di tipo DL::Concept di nome <strong class="paramname">s</strong>.
+		<br/>Se l'oggetto non è presente nell'Ontologia, è considerato un errore critico,
+		dunque l'esecuzione del programma termina.</p>
 
 </div>
 </div>
@@ -317,6 +334,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Trova e restituisce l'oggetto di tipo DL::Individual di nome <strong class="paramname">s</strong>.
+		<br/> Se l'oggetto non è presente nell'Ontologia, è considerato un errore critico,
+		dunque l'esecuzione del programma termina.</p>
 
 </div>
 </div>
@@ -335,6 +355,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Trova e restituisce l'oggetto di tipo DL::Role di nome <strong class="paramname">s</strong>.
+		<br/> Se l'oggetto non è presente nell'Ontologia, è considerato un errore critico,
+		dunque l'esecuzione del programma termina.</p>
 
 </div>
 </div>
@@ -376,26 +399,25 @@ template&lt;class InputIterator &gt; </div>
           <td>(</td>
           <td class="paramtype">InputIterator&#160;</td>
           <td class="paramname"><em>first</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">InputIterator&#160;</td>
           <td class="paramname"><em>last</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const string &amp;&#160;</td>
           <td class="paramname"><em>val</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Replica della funzione std::find(), che cerca un valore corrispondente a <strong class="paramname">val</strong>
+		nella collezione compresa tra gli iteratori <strong class="paramname">first</strong> e <strong class="paramname">last</strong>.</p>
 
 </div>
 </div>
@@ -412,26 +434,25 @@ template&lt;class InputIterator &gt; </div>
           <td>(</td>
           <td class="paramtype">InputIterator&#160;</td>
           <td class="paramname"><em>first</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">InputIterator&#160;</td>
           <td class="paramname"><em>last</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const string &amp;&#160;</td>
           <td class="paramname"><em>val</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Replica della funzione std::find(), che cerca un valore corrispondente a <strong class="paramname">val</strong>
+		nella collezione compresa tra gli iteratori <strong class="paramname">first</strong> e <strong class="paramname">last</strong>.</p>
 
 </div>
 </div>
@@ -448,26 +469,25 @@ template&lt;class InputIterator &gt; </div>
           <td>(</td>
           <td class="paramtype">InputIterator&#160;</td>
           <td class="paramname"><em>first</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">InputIterator&#160;</td>
           <td class="paramname"><em>last</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const string &amp;&#160;</td>
           <td class="paramname"><em>val</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Replica della funzione std::find(), che cerca un valore corrispondente a <strong class="paramname">val</strong>
+		nella collezione compresa tra gli iteratori <strong class="paramname">first</strong> e <strong class="paramname">last</strong>.</p>
 
 </div>
 </div>
@@ -482,22 +502,25 @@ template&lt;class InputIterator &gt; </div>
           <td>(</td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>flag</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Genera il negato del conetto il cui nome è "s" e lo inserisce nell'Ontologia, poi inserisce una pair nella mappa dei negati. Se "s" ha già un negato nell'Ontologia, la funzione ritorna il nome quel concetto invece di crearne un duplicato.</p>
-
+<p>Operatore negazione del concetto di nome <strong class="paramname">s</strong>.
+	<br/> La negazione di un concetto A restituisce un nuovo concetto, il cui nome è "NOT_s" se
+	si tratta di un concetto semplice (indicato dal <strong class="paramname">flag</strong> pari a false) oppure "NOT_[s]"
+	si tratta di un concetto complesso (indicato dal <strong class="paramname">flag</strong> pari a true), che contiene
+	tutti gli individui non contenuti nel concetto A.
+	<br/> Inoltre, aggiorna la mappa dei negati, inserendo una coppia chiave-valore che indica
+	che il concetto appena creato è il negato del concetto indicato.</p>
 </div>
 </div>
 <a id="a52dc4f8d33d9c2d3547778124484ee1c"></a>
@@ -515,7 +538,9 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>========== CLASS <a class="el" href="class_d_l_1_1_ontology.html">Ontology</a> ========== </p>
+<p>Funzione in overload che inserisce un oggetto <strong class="paramname">c</strong> di tipo DL::Concept nell'Ontologia.
+	<br/> Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+	funzione al livello superiore.</p>
 
 </div>
 </div>
@@ -534,6 +559,9 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Funzione in overload che inserisce un oggetto <strong class="paramname">i</strong> di tipo DL::Individual nell'Ontologia.
+		<br/> Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+		funzione al livello superiore.</p>
 
 </div>
 </div>
@@ -552,6 +580,9 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Funzione in overload che inserisce un oggetto <strong class="paramname">r</strong> di tipo DL::Role nell'Ontologia.
+		<br/> Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+		funzione al livello superiore.</p>
 
 </div>
 </div>
@@ -570,6 +601,11 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Crea un oggetto di tipo DL::Concept a partire dal nome <strong class="paramname">t</strong>.
+		<br/> Inoltre, effettua un controllo sulla presenza del doppio "not" nel nome inserito, per
+		evitare l'inserimento di concetti ridondanti.
+		<br/> Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+		funzione al livello superiore.</p>
 
 </div>
 </div>
@@ -588,6 +624,9 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Crea un oggetto di tipo DL::Individual a partire dal nome <strong class="paramname">s</strong>.
+		<br/> Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+		funzione al livello superiore.</p>
 
 </div>
 </div>
@@ -606,6 +645,9 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Crea un oggetto di tipo DL::Role a partire dal nome <strong class="paramname">s</strong>.
+		<br/> Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+		funzione al livello superiore.</p>
 
 </div>
 </div>
@@ -620,20 +662,24 @@ template&lt;class InputIterator &gt; </div>
           <td>(</td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>s1</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>s2</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Operatore di sussunzione di un concetto <strong class="paramname">s1</strong> in un altro concetto <strong class="paramname">s2</strong>.
+		<br/> Quando un concetto A è sussunto dal concetto B, tutti gli individui di A diventano
+		parte anche del concetto B. Tutti gli oggetti vengono aggiornati di conseguenza,
+		in modo che B abbia informazione sui nuovi individui al suo interno ed essi abbiano
+		l'informazione sul nuovo concetto di cui fanno parte.
+		<br/> Inoltre, viene aggiornato il grafo delle sussunzioni, indicando che A è sussunto da B.</p>
 
 </div>
 </div>
@@ -648,14 +694,12 @@ template&lt;class InputIterator &gt; </div>
           <td>(</td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>r</em>, </td>
-        </tr>
-        <tr>
+
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>c</em>&#160;</td>
-        </tr>
-        <tr>
+
           <td></td>
           <td>)</td>
           <td></td><td></td>
@@ -663,7 +707,8 @@ template&lt;class InputIterator &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Quantificatore universale. Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità di ruoli di cui sono soggetti sono ruoli di tipo "r" e verso individui appartenenti al concetto "c". Gli individui trovati vanno a formare un nuovo concetto.</p>
-<p>Questa funzione esclude il seguente caso, che nella teoria è corretto ma è scomodo nelle applicazioni pratiche: Se un individuo non è soggetto di nessun ruolo, va considerato in ogni applicazione del quantificatore universale. &gt; Dimostrazione: ∀r.C == ¬∃r.¬C Cioè l'individuo non è soggetto di ruoli verso ¬C, che è vero perché non è soggetto di nessun ruolo.</p>
+<p>Questa funzione esclude il seguente caso, che nella teoria è corretto ma è scomodo nelle applicazioni pratiche: Se un individuo non è soggetto di nessun ruolo, va considerato in ogni applicazione del quantificatore universale.
+	<br/> Dimostrazione: <br/> ∀r.C &equiv; ¬∃r.¬C <br/> Cioè l'individuo non è soggetto di ruoli verso ¬C, che è vero perché non è soggetto di nessun ruolo.</p>
 
 </div>
 </div>
@@ -681,6 +726,9 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Procedura di validazione della consistenza dell'interpretazione.
+		<br/> Se viene rintracciata una contraddizione, viene indicato l'oggetto che la causa
+		e viene interrotta l'esecuzione del programma.</p>
 
 </div>
 </div>
@@ -696,6 +744,9 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Vettore contenente tutti gli oggetti di tipo DL::Concept istanziati nell'Ontologia
+		<br/> Contiene anche tutti i concetti complessi istanziati successivamente.
+	</p>
 
 </div>
 </div>
@@ -710,6 +761,7 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Vettore contenente tutti gli oggetti di tipo DL::Individual istanziati nell'Ontologia.</p>
 
 </div>
 </div>
@@ -724,6 +776,7 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Vettore contenente tutti i nomi degli oggetti istanziati nell'Ontologia.</p>
 
 </div>
 </div>
@@ -738,6 +791,7 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Vettore contenente tutti gli oggetti di tipo DL::Role istanziati nell'Ontologia.</p>
 
 </div>
 </div>
@@ -752,6 +806,7 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Mappa dei negati, costituita da coppie chiave-valore di concetti che sono uno il negato dell'altro, in modo indifferente.</p>
 
 </div>
 </div>
@@ -766,6 +821,7 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+	<p>Grafo delle sussunzioni, cioè insieme di coppie chiave-valore di concetti, di cui il primo è sussunto dal secondo.</p>
 
 </div>
 </div>

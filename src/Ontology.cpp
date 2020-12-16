@@ -736,7 +736,7 @@ string DL::Ontology::existential (string& role, string& concept)
 	/**
 	 * Quantificatore esistenziale.
 	 * Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di
-	 * almeno un ruolo "role" con individui appartenenti al concetto "concept".
+	 * almeno un ruolo "role" con individui appartenenti al concetto @param concept.
 	 * Gli individui così trovati vanno a formare un nuovo concetto.
 	 */
 	
@@ -981,7 +981,7 @@ DL::Individual::Individual (std::string& name) : name(name) {}
 void DL::Individual::addConcept (string& con)
 {
 	/**
-	 * Funzione che agggiunge un nome @param con alla lista dei concetti a cui appartiene
+	 * Funzione che aggiunge un nome @param con alla lista dei concetti a cui appartiene
 	 * l'individuo in questione, così che ogni individuo sappia sempre a quali concetti appartiene.
 	 */
 	
@@ -1106,7 +1106,7 @@ std::string DL::Concept::getName () const
 std::vector<std::string> DL::Concept::getIndividuals () const
 {
 	/**
-	 * Funzione getter del parametro individuals.
+	 * Funzione getter dell'attributo individuals.
 	 */
 	
 	return this->individuals;
