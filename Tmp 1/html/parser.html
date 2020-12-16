@@ -5,11 +5,34 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.20"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SDLL: Namespace List</title>
+<title>SDLL: Parser</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<style>
+    table.interpreter {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td.td_int, th.th_int {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    pre{
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+</style>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -41,29 +64,45 @@ $(function() {
   <div class="headertitle"> <div class="title">Caratteristiche del linguaggio</div> </div>
 </div><!--header-->
 <div class="contents">
-<h1 style="color: #008d8d;">Decomposizione</h1>
+<h1 style="color: #008d8d;">Parser</h1>
  <p>
-    Il progetto si compone di un singolo package, costituita da tutti gli elementi che riguardano la definizione delle regole del linguaggio,
-    la creazione del lexer ed il parser per la realizzazione del compilatore, oltre che contenere le librerie necessarie per interfacciare bison
-    con il linguaggio scelto (nel nostro caso abbiamo utilizzato C++ per implementare le funzionalità). Il diagramma dei package è mostrato in seguito:
+    Di seguito viene riportata nel dettaglio la scrittura del parser. Il parser è salvato nel file corrispondente alla directory /build/parser.yy.
  </p>
- <img src="../immagini/decomposition.jpg">
- <h2><pre style="color: rgb(83, 67, 67);">&Tab;Descrizione dei package</pre></h2>
-  <p>
-    SDLL: è il package radice del progetto flex/bison, in cui sono contenuti i file di configurazione dello sviluppo del linguaggio stesso,
-    oltre che l’eseguibile del linguaggio ed i file che descrivono le basi di conoscenze:
-  </p>
-  <ul>
-    <li>
-     build: al suo interno vengono contenuti i file del lexer e del parser, che descrivono nel dettaglio la grammatica del linguaggio; 
-    </li>
-    <li>
-     doc: la documentazione del linguaggio;
-    </li>
-    <li>
-     src: si trovano tutte le librerie, e le loro implementazioni in C++, utilizzate per lo sviluppo.
-    </li>
-  </ul>
+ <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+%skeleton "lalr1.cc"
+%require "3.0"
+%language "C++"
+%defines
+%error-verbose
+%define api.namespace {DL}
+%define parser_class_name {DL_Parser}
+
+%code requires {
+    
+    namespace DL {
+        class DL_Driver;
+        class DL_Scanner;
+    }
+
+    // The following definitions is missing when %locations isn't used
+    # ifndef YY_NULLPTR
+    #  if defined __cplusplus && 201103L &lt;= __cplusplus
+    #   define YY_NULLPTR nullptr
+    #  else
+    #   define YY_NULLPTR 0
+    #  endif
+    # endif
+}
+            </pre>   
+      </td>
+    </tr>
+  </table>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
