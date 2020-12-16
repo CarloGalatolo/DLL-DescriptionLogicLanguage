@@ -4,7 +4,12 @@ using std::string;
 template<class K, class V>
 typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>& map, const std::pair<K, V>& pair)
 {
-    typedef typename std::multimap<K, V>::const_iterator it;
+    /**
+	 * Individua e restituisce un iteratore alla specifica coppi chiave-valore @param pair cercata all'interno
+	 * della multimap @param map.
+	 */
+
+	typedef typename std::multimap<K, V>::const_iterator it;
     std::pair<it,it> range = map.equal_range(pair.first);
     for (it p = range.first; p != range.second; ++p)
         if (p->second == pair.second)
@@ -12,12 +17,17 @@ typename std::multimap<K, V>::const_iterator find_pair(const std::multimap<K, V>
     return map.end();
 }
 
-/**
+/*
  * ========== CLASS Ontology ==========
  */
 
 void DL::Ontology::put (DL::Concept& c)
 {
+	/**
+	 * Funzione in overload che inserisce un oggetto @param c di tipo DL::Concept nell'Ontologia.
+	 * Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+	 * funzione al livello superiore.
+	 */
 	if (checkNames(c.getName()))	// Nome già esistente.
 	{
 		throw std::logic_error("Name already existing");
@@ -31,6 +41,12 @@ void DL::Ontology::put (DL::Concept& c)
 
 void DL::Ontology::put (DL::Role& r)
 {
+	/**
+	 * Funzione in overload che inserisce un oggetto @param r di tipo DL::Role nell'Ontologia.
+	 * Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+	 * funzione al livello superiore.
+	 */
+	
 	if (checkNames(r.getName()))	// Nome già esistente.
 	{
 		throw std::logic_error("Name already exists.");
@@ -44,6 +60,11 @@ void DL::Ontology::put (DL::Role& r)
 
 void DL::Ontology::put (DL::Individual& i)
 {
+	/**
+	 * Funzione in overload che inserisce un oggetto @param i di tipo DL::Individual nell'Ontologia.
+	 * Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+	 * funzione al livello superiore.
+	 */
 	if (checkNames(i.getName()))	// Nome già esistente.
 	{
 		throw std::logic_error("Name already exists.");
@@ -57,6 +78,13 @@ void DL::Ontology::put (DL::Individual& i)
 
 void DL::Ontology::put_c (std::string& t)
 {
+	/**
+	 * Crea un oggetto di tipo DL::Concept a partire dal nome @param t.
+	 * Inoltre, effettua un controllo sulla presenza del doppio "not" nel nome inserito, per
+	 * evitare l'inserimento di concetti ridondanti.
+	 * Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+	 * funzione al livello superiore.
+	 */
 	string s = correctDoubleNot(t);
 	if (checkNames(s))	// Nome già esistente.
 	{
@@ -71,6 +99,11 @@ void DL::Ontology::put_c (std::string& t)
 
 void DL::Ontology::put_r (std::string& s)
 {
+	/**
+	 * Crea un oggetto di tipo DL::Role a partire dal nome @param s.
+	 * Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+	 * funzione al livello superiore.
+	 */
 	if (checkNames(s))	// Nome già esistente.
 	{
 		throw std::logic_error("Name already exists.");
@@ -84,6 +117,11 @@ void DL::Ontology::put_r (std::string& s)
 
 void DL::Ontology::put_i (std::string& s)
 {
+	/**
+	 * Crea un oggetto di tipo DL::Individual a partire dal nome @param s.
+	 * Se l'oggetto è già presente nell'Ontologia, lancia un'eccezione che va raccolta dalla
+	 * funzione al livello superiore.
+	 */
 	if (checkNames(s))	// Nome già esistente.
 	{
 		throw std::logic_error("Name already exists.");
@@ -97,6 +135,12 @@ void DL::Ontology::put_i (std::string& s)
 
 DL::Concept& DL::Ontology::get_c (std::string& s)
 {
+	/**
+	 * Trova e restituisce l'oggetto di tipo DL::Concept di nome @param s.
+	 * Se l'oggetto non è presente nell'Ontologia, è considerato un errore critico,
+	 * dunque l'esecuzione del programma termina.
+	 */
+	
 	auto res = myFind(allConcepts.begin(), allConcepts.end(), s);
 
 	try
@@ -115,6 +159,12 @@ DL::Concept& DL::Ontology::get_c (std::string& s)
 
 DL::Role& DL::Ontology::get_r (std::string& s)
 {
+	/**
+	 * Trova e restituisce l'oggetto di tipo DL::Role di nome @param s.
+	 * Se l'oggetto non è presente nell'Ontologia, è considerato un errore critico,
+	 * dunque l'esecuzione del programma termina.
+	 */
+	
 	auto res = myFind(allRoles.begin(), allRoles.end(), s);
 	
 	try
@@ -133,6 +183,12 @@ DL::Role& DL::Ontology::get_r (std::string& s)
 
 DL::Individual& DL::Ontology::get_i (std::string& s)
 {
+	/**
+	 * Trova e restituisce l'oggetto di tipo DL::Individual di nome @param s.
+	 * Se l'oggetto non è presente nell'Ontologia, è considerato un errore critico,
+	 * dunque l'esecuzione del programma termina.
+	 */
+	
 	auto res = myFind(allIndividuals.begin(), allIndividuals.end(), s);
 	
 	try
@@ -151,6 +207,13 @@ DL::Individual& DL::Ontology::get_i (std::string& s)
 
 void DL::Ontology::alias (string& before, string& after)
 {
+	/**
+	 * Operatore alias.
+	 * Permette di fornire un alias a un concetto presente nell'Ontologia o creato
+	 * da un operatore logico. Il concetto corrispondente a @param before sarà
+	 * ridenominato come @param after.
+	 */
+	
 	Ontology& ont = Ontology::getInstance();
 
 	//std::cout << "\n\n\n\n\n\n" <<  "Devo sostituire " << before << " con " << after << "\n\n\n\n\n\n" << std::endl;
@@ -278,6 +341,15 @@ void DL::Ontology::alias (string& before, string& after)
 
 void DL::Ontology::subsumption (std::string& s1, std::string& s2) // a subsumed by b
 {
+	/**
+	 * Operatore di sussunzione di un concetto @param s1 in un altro concetto @param s2.
+	 * Quando un concetto A è sussunto dal concetto B, tutti gli individui di A diventano
+	 * parte anche del concetto B. Tutti gli oggetti vengono aggiornati di conseguenza,
+	 * in modo che B abbia informazione sui nuovi individui al suo interno ed essi abbiano
+	 * l'informazione sul nuovo concetto di cui fanno parte.
+	 * Inoltre, viene aggiornato il grafo delle sussunzioni, indicando che A è sussunto da B.
+	 */
+	
 	Ontology& ont = Ontology::getInstance();
 	Concept& subsumed = ont.get_c(s1);
 	Concept& subsumes = ont.get_c(s2);
@@ -302,6 +374,14 @@ void DL::Ontology::subsumption (std::string& s1, std::string& s2) // a subsumed 
 
 void DL::Ontology::coincidence (string& s1, string& s2)
 {
+	/**
+	 * Operatore coincidenza di due concetti di nomi @param s1 e @param s2.
+	 * Un concetto A coincide con il concetto B se e solo se sia A è sussunto da B
+	 * sia B è sussunto da A.
+	 * La funzione svolge l'operazione di doppia sussunzione, aggiornando tutti gli
+	 * individui e il grafo delle sussunzioni di conseguenza.
+	 */
+	
 	Ontology& ont = Ontology::getInstance();
 
 	ont.get_c(s2);
@@ -321,6 +401,15 @@ void DL::Ontology::coincidence (string& s1, string& s2)
 
 std::string DL::Ontology::conjunction (std::string& s1, std::string& s2) // Intersezione
 {
+	/**
+	 * Operatore congiunzione di due concetti di nomi @param s1 e @param s2.
+	 * La congiunzione di due concetti A e B restituisce un nuovo concetto, il cui nome sarà
+	 * la composizione "s1CONs2", che conterrà tutti gli individui facenti parte contemporaneamente
+	 * sia del concetto A che del concetto B.
+	 * Inoltre, il grafo delle sussunzioni sarà aggiornato in modo tale che il concetto risultante
+	 * dalla congiunzione sia sussunto sia da A che da B.
+	 */
+	
 	std::string name = s1 + "CON" + s2;
 	Concept res(name);
 	put(res);
@@ -361,6 +450,15 @@ std::string DL::Ontology::conjunction (std::string& s1, std::string& s2) // Inte
 
 std::string DL::Ontology::disjunction (std::string& s1, std::string& s2) // Unione
 {
+	/**
+	 * Operatore disgiunzione di due concetti di nomi @param s2 e @param s2.
+	 * La disgiunzione di due concetti A e B restituisce un nuovo concetto, il cui nome è la
+	 * composizione "s1DISs2", che contiene tutti gli individui contenuti indifferentemente da
+	 * A oppure da B.
+	 * Inoltre, l'operazione aggiorna il grafo delle sussunzioni in modo che il concetto
+	 * risultante contenga sia il concetto A che B.
+	 */
+	
 	std::string name = s1 + "DIS" + s2;
 	Concept res(name);
 	put(res);
@@ -407,9 +505,13 @@ std::string DL::Ontology::disjunction (std::string& s1, std::string& s2) // Unio
 string DL::Ontology::negation (string& s, bool flag)
 {
 	/**
-	 * Genera il negato del conetto il cui nome è "s" e lo inserisce nell'Ontologia,
-	 * poi inserisce una pair nella mappa dei negati. Se "s" ha già un negato nell'Ontologia,
-	 * la funzione ritorna il nome quel concetto invece di crearne un duplicato.
+	 * Operatore negazione del concetto di nome @param s.
+	 * La negazione di un concetto A restituisce un nuovo concetto, il cui nome è "NOT_s" se
+	 * si tratta di un concetto semplice (indicato dal @param flag pari a false) oppure "NOT_[s]"
+	 * si tratta di un concetto complesso (indicato dal @param flag pari a true), che contiene
+	 * tutti gli individui non contenuti nel concetto A.
+	 * Inoltre, aggiorna la mappa dei negati, inserendo una coppia chiave-valore che indica
+	 * che il concetto appena creato è il negato del concetto indicato.
 	 */
 	
 	Ontology& ont = Ontology::getInstance();
@@ -457,7 +559,7 @@ string DL::Ontology::negation (string& s, bool flag)
 	{
 		//std::cout << "Sono dentro la catch" << std::endl;
 
-		// Cerca nella mappa dei negati se esiste già una corrispondenza.
+		// Cerca nella mappa dei negati se esiste gConceptià una corrispondenza.
 		for (std::pair<string, string> pair : ont.negateMap)
 		{
 			//std::cout << "Sto ciclando per cercare il negato misterioso" << std::endl;
@@ -696,6 +798,10 @@ string DL::Ontology::existential (string& role, string& concept)
 
 bool DL::Ontology::checkNames (const std::string& s) const
 {
+	/**
+	 * Funzione che verifica la presenza del nome @param s nell'Ontologia.
+	 */
+	
 	auto res = std::find(allNames.begin(), allNames.end(), s);
 
 	if (res != allNames.end())	// Nome già esistente.
@@ -711,6 +817,11 @@ bool DL::Ontology::checkNames (const std::string& s) const
 template<class InputIterator>
 InputIterator DL::Ontology::myFind (InputIterator first, InputIterator last, const string& val) const
 {
+	/**
+	 * Replica della funzione std::find(), che cerca un valore corrispondente a @param val
+	 * nella collezione compresa tra gli iteratori @param first e @param last.
+	 */
+	
 	while (first!=last) {
 		if ((*first).getName()==val) return first;
 		++first;
@@ -721,6 +832,11 @@ InputIterator DL::Ontology::myFind (InputIterator first, InputIterator last, con
 template<class InputIterator>
 InputIterator DL::Ontology::myFindPtr (InputIterator first, InputIterator last, const string& val) const
 {
+	/**
+	 * Replica della funzione std::find(), che cerca un valore corrispondente a @param val
+	 * nella collezione compresa tra gli iteratori @param first e @param last.
+	 */
+
 	while (first!=last) {
 		if ((*first)->getName()==val) return first;
 		++first;
@@ -731,6 +847,11 @@ InputIterator DL::Ontology::myFindPtr (InputIterator first, InputIterator last, 
 template<class InputIterator>
 InputIterator DL::Ontology::myFindStr (InputIterator first, InputIterator last, const string& val) const
 {
+	/**
+	 * Replica della funzione std::find(), che cerca un valore corrispondente a @param val
+	 * nella collezione compresa tra gli iteratori @param first e @param last.
+	 */
+
 	while (first!=last) {
 		if ((*first)==val) return first;
 		++first;
@@ -740,6 +861,10 @@ InputIterator DL::Ontology::myFindStr (InputIterator first, InputIterator last, 
 
 bool DL::Ontology::checkConcepts (const std::string& s) const
 {
+	/**
+	 * Funzione che verifica la presenza del concetto di nome @param s nell'Ontologia.
+	 */
+	
 	if (myFind(allConcepts.begin(), allConcepts.end(), s) != allConcepts.end())	// Nome già esistente.
 	{
 		return true;
@@ -752,6 +877,10 @@ bool DL::Ontology::checkConcepts (const std::string& s) const
 
 bool DL::Ontology::checkRoles (const std::string& s) const
 {
+	/**
+	 * Funzione che verifica la presenza del ruolo di nome @param s nell'Ontologia.
+	 */
+	
 	if (myFind(allRoles.begin(), allRoles.end(), s) != allRoles.end())	// Nome già esistente.
 	{
 		return true;
@@ -764,6 +893,10 @@ bool DL::Ontology::checkRoles (const std::string& s) const
 
 bool DL::Ontology::checkIndividuals (const std::string& s) const
 {
+	/**
+	 * Funzione che verifica la presenza dell'individuo di nome @param s nell'Ontologia.
+	 */
+	
 	if (myFind(allIndividuals.begin(), allIndividuals.end(), s) != allIndividuals.end())	// Nome già esistente.
 	{
 		return true;
@@ -776,6 +909,12 @@ bool DL::Ontology::checkIndividuals (const std::string& s) const
 
 string DL::Ontology::correctDoubleNot (string& s)
 {
+	/**
+	 * Funzione che verifica e corregge i nomi di concetto che presentano la doppia
+	 * dicitura "NOT" all'inizio, poiché possono causare situaizoni indesiderate e
+	 * inserimenti di concetti ridondanti.
+	 */
+	
 	if (s.substr(0, 8) == "NOT_NOT_")
 	{
 		s.erase(0, 8);
@@ -794,6 +933,12 @@ string DL::Ontology::correctDoubleNot (string& s)
 
 void DL::Ontology::validate ()
 {
+	/**
+	 * Procedura di validazione della consistenza dell'interpretazione.
+	 * Se viene rintracciata una contraddizione, viene indicato l'oggetto che la causa
+	 * e viene interrotta l'esecuzione del programma.
+	 */
+	
 	DL::Ontology& ont = DL::Ontology::getInstance();
 	if(!ont.negateMap.empty())
 	{
@@ -826,18 +971,20 @@ void DL::Ontology::validate ()
 	}
 }
 
-
-/**
+/*
  *  ========== CLASS INDIVIDUAL ==========
  */
 
-DL::Individual::Individual (std::string& name)
-{
-	this->name = name;
-}
+// Costruttore della classe DL::Individual. Prende a parametro il nome dell'individuo.
+DL::Individual::Individual (std::string& name) : name(name) {}
 
 void DL::Individual::addConcept (string& con)
 {
+	/**
+	 * Funzione che agggiunge un nome @param con alla lista dei concetti a cui appartiene
+	 * l'individuo in questione, così che ogni individuo sappia sempre a quali concetti appartiene.
+	 */
+	
 	if (Ontology::getInstance().myFindStr(concepts.begin(), concepts.end(), con) == concepts.end())
 	{
 		concepts.push_back(con);
@@ -846,6 +993,11 @@ void DL::Individual::addConcept (string& con)
 
 void DL::Individual::addRole (string& role)
 {
+	/**
+	 * Funzione che aggiunge il nome di un ruolo @param role alla lista dei ruoli di cui
+	 * l'individuo in questione è il soggetto (non colui che lo subisce).
+	 */
+	
 	if (Ontology::getInstance().myFindStr(roles.begin(), roles.end(), role) == roles.end())
 	{
 		roles.push_back(role);
@@ -854,40 +1006,63 @@ void DL::Individual::addRole (string& role)
 
 std::string DL::Individual::getName () const
 {
+	/**
+	 * Funzione getter dell'ttributo name.
+	 */
 	return this->name;
 }
 
 std::vector<string> DL::Individual::getConcepts () const
 {
+	/**
+	 * Funzione getter dell'attributo concepts.
+	 */
+
 	return this->concepts;
 }
 
 std::vector<string> DL::Individual::getRoles () const
 {
+	/**
+	 * Funzione getter dell'attiìributo roles.
+	 */
+	
 	return this->roles;
 }
 
-/**
+/*
  *  ========== CLASS ROLE ==========
  */
 
-DL::Role::Role (std::string& name)
-{
-	this->name = name;
-}
+// Costrutore della classe DL::Role. Prende a parametro il nome del ruolo.
+DL::Role::Role (std::string& name) : name(name) {}
 
 std::string DL::Role::getName () const
 {
+	/**
+	 * Funzione getter dell'attributo name.
+	 */
+	
 	return this->name;
 }
 
 std::multimap<string, string> DL::Role::getPairs () const
 {
+	/**
+	 * Funzione getter dell'attributo pairs.
+	 */
+	
 	return this->pairs;
 }
 
 void DL::Role::insert (string& s1, string& s2)
 {
+	/**
+	 * Procedura di istanziazione di una coppia chiave-valore di individui di nome @param s1 e @param s2
+	 * nel ruolo in questione. L'elemento chiave sarà l'individuo che è soggetto del ruolo, mentre
+	 * l'elemento valore sarà l'individuo che subisce il ruolo.
+	 */
+	
 	Ontology& ont = Ontology::getInstance();
 
 	if(!ont.checkIndividuals(s1) || !ont.checkIndividuals(s2)){
@@ -903,29 +1078,49 @@ void DL::Role::insert (string& s1, string& s2)
 	}
 }
 
-/**
+/*
  *  ========== CLASS CONCEPT ==========
  */
 
+// Costruttore della classe DL::Concept. Prende a parametro il nome del concetto.
 DL::Concept::Concept (std::string& name) : name(name) {}
 
 void DL::Concept::setName (string& name)
 {
+	/**
+	 * Funzione setter dell'attributo name.
+	 */
+	
 	this->name = name;
 }
 
 std::string DL::Concept::getName () const
 {
+	/**
+	 * Funzione getter dell'attributo name.
+	 */
+	
 	return this->name;
 }
 
 std::vector<std::string> DL::Concept::getIndividuals () const
 {
+	/**
+	 * Funzione getter del parametro individuals.
+	 */
+	
 	return this->individuals;
 }
 
 void DL::Concept::addIndividual (string& s)
 {
+	/**
+	 * Procedura di inserimento di un individuo di nome @param s all'interno del concetto.
+	 * La procedura si assicura che l'individuo non sia già presente nel concetto, e inoltre
+	 * si chiama ricorsivamente per aggiungere l'individuo a tutti i concetti che sussumono
+	 * il concetto che la chiama.
+	 */
+	
 	Ontology& ont = Ontology::getInstance();
 
 	DL::Individual* i = &ont.get_i(s);
@@ -951,6 +1146,9 @@ void DL::Concept::addIndividual (string& s)
 
 bool DL::Concept::checkIndividuals (const std::string s) const
 {
+	/**
+	 * Funzione che verifica se l'individuo di nome @param s appartiene al concetto.
+	 */
 
 	auto res = std::find(this->individuals.begin(), this->individuals.end(), s);
 
