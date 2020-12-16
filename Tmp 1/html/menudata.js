@@ -24,14 +24,15 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
-{text:"Namespaces",url:"namespaces.html",children:[
-{text:"Namespace List",url:"namespaces.html"}]},
-{text:"Classes",url:"annotated.html",children:[
-{text:"Class List",url:"annotated.html"},
-{text:"Class Index",url:"classes.html"},
-{text:"Class Hierarchy",url:"hierarchy.html"},
-{text:"Class Members",url:"functions.html",children:[
-{text:"All",url:"functions.html",children:[
+{text:"Caratteristiche del Linguaggio", url:"language.html"},
+{text:"Namespace",url:"namespaces.html",children:[
+{text:"Lista dei Namespace",url:"namespaces.html"}]},
+{text:"Classi",url:"annotated.html",children:[
+{text:"Lista delle classi",url:"annotated.html"},
+{text:"Indice delle classi",url:"classes.html"},
+{text:"Gerarchia delle classi",url:"hierarchy.html"},
+{text:"Membri delle classi",url:"functions.html",children:[
+{text:"Tutti",url:"functions.html",children:[
 {text:"a",url:"functions.html#index_a"},
 {text:"c",url:"functions.html#index_c"},
 {text:"d",url:"functions.html#index_d"},
@@ -47,7 +48,7 @@ var menudata={children:[
 {text:"v",url:"functions.html#index_v"},
 {text:"y",url:"functions.html#index_y"},
 {text:"~",url:"functions.html#index__7E"}]},
-{text:"Functions",url:"functions_func.html",children:[
+{text:"Funzioni",url:"functions_func.html",children:[
 {text:"a",url:"functions_func.html#index_a"},
 {text:"c",url:"functions_func.html#index_c"},
 {text:"d",url:"functions_func.html#index_d"},
@@ -63,9 +64,9 @@ var menudata={children:[
 {text:"v",url:"functions_func.html#index_v"},
 {text:"y",url:"functions_func.html#index_y"},
 {text:"~",url:"functions_func.html#index__7E"}]},
-{text:"Variables",url:"functions_vars.html"}]}]},
-{text:"Files",url:"files.html",children:[
-{text:"File List",url:"files.html"},
-{text:"File Members",url:"globals.html",children:[
-{text:"All",url:"globals.html"},
-{text:"Functions",url:"globals_func.html"}]}]}]}
+{text:"Variabili",url:"functions_vars.html"}]}]},
+{text:"File",url:"files.html",children:[
+{text:"Lista dei File",url:"files.html"},
+{text:"File membri",url:"globals.html",children:[
+{text:"Tutti",url:"globals.html"},
+{text:"Funzioni",url:"globals_func.html"}]}]}]}

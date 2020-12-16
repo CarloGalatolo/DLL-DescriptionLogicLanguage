@@ -52,6 +52,118 @@ $(function() {
     non appena il documento verrà eseguito dal programma, verificando al contempo correttezza sintattica e validità della base stessa.
     Il linguaggio è semplice, immediato, oltre che facilmente leggibile dall’utente, e con elementi sintattici comuni ad altri linguaggi (C, C++, Java).
   </p>
+  <h1 style="color: #008d8d;">Stato dell'arte</h1>
+  <p>
+    La <b style="color: #036d6d;">Logica Descrittiva</b> (Description Logic, DL) è una famiglia dei linguaggi di rappresentazione delle conoscenze.
+    La logica descrittiva generale si distingue da quelle spaziale, temporale, spaziotemporale e dalla cosiddetta “fuzzy description logic”.
+    Differisce invece dalla Logica del Primo Ordine (First Order Logic, FOL),
+    in quanto linguaggio meno espressivo ma dalla più alta decidibilità dei problemi principali, e dalla Logica Proposizionale, in quanto più espressiva.
+    Una curiosa caratteristica della logica descrittiva è la totale assenza di variabili intese in senso matematico.
+    La Logica Descrittiva viene usata in intelligenza artificiale per descrivere e ragionare sui concetti di un determinato dominio applicativo
+    e in particolare su una delle sue infinite interpretazioni possibili, intesa come un insieme di entità che ne fanno parte (denominate individui),
+    categorie che raggruppano queste entità in base a proprietà di facile intuizione che le descrivono (denominati concetti),
+    e relazioni uno-a-uno tra queste entità che le collegano mettendo in risalto ulteriori caratteristiche (denominate ruoli).
+    Così come esistono diversi tipi di logica descrittiva,
+    numerose sono le implementazioni informatiche dei relativi linguaggi di rappresentazione delle conoscenze.
+    Il linguaggio <b style="color: #036d6d;">DAML</b>, ad esempio, è un progetto realizzato nel 1999 dell’agenzia di difesa statunitense <b style="color: #036d6d;">DARPA</b>
+    che divenne presto il punto di partenza per la creazione del <b style="color: #036d6d;">Web Ontology Language</b> (OWL) da parte del WebOnt,
+    il gruppo dedicato alle ontologie per il web del World Wide Web Consortium, tutt’oggi largamente diffuso e in uso.
+    La versione 2 di questo linguaggio trova posto in diversi ragionatori automatici, quali <b style="color: #036d6d;">Pellet</b>,
+    <b style="color: #036d6d;">RacerPro</b>, <b style="color: #036d6d;">FaCT++</b> e <b style="color: #036d6d;">HermiT</b>.
+    Il software <b style="color: #036d6d;">Protégé</b>, un framework realizzato utilizzando il linguaggio Java,
+    è un editor di ontologie e basi di conoscenze che adotta anch’esso il linguaggio OWL 2,
+    ed è dotato di un’interfaccia grafica per una modellazione intuitiva e strumenti di classificazione
+    deduttiva per validare la consistenza dei modelli che permette di realizzare.
+    L’ultimo che citiamo è senza dubbio il più famoso e popolare linguaggio di programmazione in ogni ambito della logica, ossia <b style="color: #036d6d;">Prolog</b>.
+    Tra i primi linguaggi atti a rappresentare la logica formale, Prolog poggia le sue basi sulla Logica del Primo Ordine,
+    affermandosi come un linguaggio di programmazione dichiarativo; la logica di programma viene rappresentata in termini di fatti e regole,
+    e i calcoli vengono realizzati a partire da interrogazioni su queste relazioni.
+  </p>
+  <h1 style="color: #008d8d;">Descrizione progetto</h1>
+  <p>
+    SDLL nasce con l’obiettivo di creare un linguaggio di facile scrittura, leggibile e comprensibile dalla maggior parte di utenti,
+    anche senza grandi competenze in informatica. Una delle caratteristiche principali è la logica dietro la definizione delle strutture dati utilizzate,
+    basate sullo studio effettuato sulle ontologie formali, utilizzando la DL (Description Logic) e semplificando la struttura implementando la Closed World Assumption e la Single Name Assumption.
+    All’utente finale viene concesso non solo la capacità di poter creare strutture dati in linea con le strutture di ontologia formale
+    (concetti, ruoli e individui), ma anche di metterli in relazione tra di loro e di poterli manipolare utilizzando le operazioni della logica descrittiva
+    (Congiunzione, Disgiunzione, etc.) con un ampio grado di concatenazione delle operazioni, ma anche di controllare l’integrità dei risultati,
+    e di validare la consistenza del modello, mantenendo il più possibile il linguaggio minimale e ad alta astrazione.
+    Data la natura della logica descrittiva, il linguaggio non utilizza tipi primitivi di per sé, bensì definisce tre tipi composti: Concept, Role e
+    Individual, che incapsulano le informazioni per le operazioni successive dell’utente, 
+    Il funzionamento è basato sulla strutturazione del un documento in tre sezioni: Names Declaration, ABox e TBox, dove vengono utilizzati operatori differenti a secondo del tipo
+    di operazione richiesta:
+  </p>
+  <ul>
+    <li>
+      La Names Declaration permette l’istanziazione dei tipi composti;
+    </li>
+    <li>
+      La ABox permette l’assegnazione degli individui ai concetti o ai ruoli;
+    </li>
+    <li>
+      La TBox serve a stabilire i vincoli e relazioni tra i concetti.
+    </li>
+  </ul>
+  <p>
+    Dopo il completamento della Tbox viene effettuato un controllo di validazione della consistenza delle strutture definite,
+    in modo tale da verificare che non si siano commessi errori logici (in particolare individui presenti all’interno di un concetto e del suo negato).
+    Il risultato finale è un elenco che rappresenta e descrive l’interpretazione data dalla base di conoscenza fornita dall’utente.
+  </p>
+  <h2><pre style="color: rgb(83, 67, 67);">&Tab;Requisiti funzionali</pre></h2>
+  <p>
+    I requisiti funzionali sono proposizioni indicative sulle caratteristiche che il linguaggio deve offrire e su come il linguaggio stesso deve reagire in situazioni specifiche.
+    Questi requisiti, dunque, stabiliscono cosa il linguaggio deve fare:
+  </p>
+  <ul>
+    <li>
+      Un utente, anche senza basi di programmazione, deve essere in grado di definire, collegare e generare dei vincoli strutturali di una qualsiasi base di conoscenza. 
+    </li>
+    <li>
+      L’utente deve avere la possibilità di visualizzare il risultato della base di conoscenza, con le varie interazioni con le strutture definite o, in alternativa, i possibili errori della struttura offerta.
+    </li>
+  </ul>
+  <p>In particolare:</p>
+  <ul>
+    <li>
+      L’utente deve essere in grado di definire Ruoli, Concetti e Individui da zero, secondo la struttura che egli vuole generare. (Name Declaration)
+    </li>
+    <li>
+      L’utente deve essere in grado di assegnare gli individui ai vari Ruoli e Concetti definiti in precedenza. (Abox)
+    </li>
+    <li>
+      L’utente deve essere in grado di definire vincoli e svolgere operazioni tra i Ruoli e i Concetti, seguendo le regole della DL. (Tbox)
+    </li>
+    <li>
+      L’utente deve poter visualizzare la struttura relativa alla base di conoscenza generata, con individui,
+      Ruoli e Concetti ottenuti attraverso le operazioni effettuate in precedenza.
+    </li>
+  </ul>
+  <h2><pre style="color: rgb(83, 67, 67);">&Tab;Requisiti non funzionali</pre></h2>
+  <p>
+    I requisiti non funzionali consistono in delle specifiche che non riguardano in modo diretto le funzionalità che il linguaggio dovrebbe offrire,
+    in quanto costituiscono una limitazione alle caratteristiche del linguaggio stesso, e per la maggior parte dei casi riguardano uso di memoria,
+    tempi di risposta, robustezza, facilità di utilizzo, affidabilità.
+  </p>
+  <ul>
+    <li>
+      L’intero codice viene realizzato in un unico file di testo,
+      per mantenere la leggibilità della struttura grammaticale del linguaggio e una più semplice interazione con gli editor di testo.
+    </li>
+    <li>
+      Non è richiesto l’uso né la conoscenza di un editor di testo in particolare: l’unico vincolo è che il file di testo realizzato abbia estensione “<b>.dl</b>”.
+    </li>
+    <li>
+      La grammatica utilizza un insieme molto piccolo di keyword semplici, seguendo un misto tra linguaggio naturale e matematico,
+      per permettere un compromesso tra leggibilità delle definizioni e la natura delle operazioni della DL.
+    </li>
+    <li>
+      Viene garantita la robustezza degli operatori: il linguaggio è programmato in maniera tale da permettere una qualsiasi combinazione di operatori,
+      fintanto che non entrino in conflitto con la logica.
+    </li>
+    <li>
+      Abbiamo dato maggiore peso all’affidabilità del linguaggio, a scapito delle prestazioni riguardanti la gestione della memoria.
+    </li>
+  </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
