@@ -10,6 +10,29 @@
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<style>
+    table.interpreter {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td.td_int, th.th_int {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    pre{
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+</style>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -41,30 +64,120 @@ $(function() {
   <div class="headertitle"> <div class="title">Lexer</div> </div>
 </div><!--header-->
 <div class="contents">
-<h1 style="color: #008d8d;">Decomposizione</h1>
+<h1 style="color: #008d8d;">Codice lexer</h1>
  <p>
-    Il progetto si compone di un singolo package, costituita da tutti gli elementi che riguardano la definizione delle regole del linguaggio,
-    la creazione del lexer ed il parser per la realizzazione del compilatore, oltre che contenere le librerie necessarie per interfacciare bison
-    con il linguaggio scelto (nel nostro caso abbiamo utilizzato C++ per implementare le funzionalità). Il diagramma dei package è mostrato in seguito:
+    Di seguito viene riportata nel dettaglio la scrittura del Lexer. Il parser è salvato nel file corrispondente alla directory /build/lexer.l
  </p>
- <img src="../immagini/decomposition.jpg">
- <h2><pre style="color: rgb(83, 67, 67);">&Tab;Descrizione dei package</pre></h2>
-  <p>
-    SDLL: è il package radice del progetto flex/bison, in cui sono contenuti i file di configurazione dello sviluppo del linguaggio stesso,
-    oltre che l’eseguibile del linguaggio ed i file che descrivono le basi di conoscenze:
-  </p>
-  <ul>
-    <li>
-     build: al suo interno vengono contenuti i file del lexer e del parser, che descrivono nel dettaglio la grammatica del linguaggio; 
-    </li>
-    <li>
-     doc: la documentazione del linguaggio;
-    </li>
-    <li>
-     src: si trovano tutte le librerie, e le loro implementazioni in C++, utilizzate per lo sviluppo.
-    </li>
-  </ul>
-</div><!-- contents -->
+ <table class="interpreter">
+    <tr>
+      <th class="th_int">lexer.l</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+%{
+    #include <string>
+
+    /* Implementation of yyFlexScanner */
+    #include "src/dl_scanner.hpp"
+    #undef  YY_DECL
+    #define YY_DECL int DL::DL_Scanner::yylex( DL::DL_Parser::semantic_type * const lval,   DL::DL_Parser::location_type *location )
+    /* using "token" to make the returns for the tokens shorter to type */
+    using token = DL::DL_Parser::token;
+    #define yyterminate() return( token::END )
+    #define YY_NO_UNISTD_H
+    #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
+    int oldstate;    // Usato nei commenti.
+    int comment_start = 0;
+%}
+
+            </pre>
+            <p>
+              Ridefinisce funzioni del Lexer per renderle compatibile con C++, inoltre la direttiva using per accorciare l’utilizzo del path dei token.
+            </p>  
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">lexer.l</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+^[ \t]*%%[ \t]*$ { return token::SECTION; }
+"."        { return token::DOT; }
+":" |   
+"," | 
+";" |    
+"!" |    
+"=" |    
+"(" |
+")"     { return yytext[0]; }
+
+"=="    { return token::COINCIDENCE; }
+
+            </pre>
+        <p>
+          Definisce i caratteri utilizzati per definire le varie operazioni, dalle sezioni del DL alla concatenazione di operazioni e la coincidenza.
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">lexer.l</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+ALL                  { return token::ALL;        }
+CONCEPT              { return token::CONCEPT; }
+CONJ(UNCTION)?          { return token::CONJ;    }
+DISJ(UNCTION)?      { return token::DISJ;    }
+EX(ISTS)?          { return token::EX;      }
+(INDIVIDUAL|INDV) { return token::INDV;    }
+ROLE              { return token::ROLE;    }
+SUBS(UMPTION)?      { return token::SUBS;    }
+  
+            </pre>
+        <p>
+   			Le parole chiave del linguaggio dedicate alle funzioni built-in.       
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">lexer.l</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+
+[a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
+
+"/*"             { comment_start = yylineno; oldstate = YY_START; BEGIN COMMENT;  }
+<COMMENT>"*/"     { BEGIN oldstate; }
+<COMMENT>.|\n      ;
+<COMMENT><<EOF>> { fprintf(stderr, "Comment at line %d unclosed before EOF.\n", comment_start); exit(EXIT_FAILURE); }
+
+[ \t\n] |
+"//".*  ;    // C++-style comment.
+
+            </pre>
+        <p>
+         Questa regola gestisce la lettura dei nomi, utilizzata per la definizione dei concetti all’interno del Bison, oltre che funzionalità aggiuntive simil-C per la scrittura di commenti all’interno del documento.      
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+</div>
+<!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 </small></address>
