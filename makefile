@@ -1,7 +1,7 @@
 CC    ?= clang
 CXX   ?= clang++
 
-EXE = minidl
+EXE = sdll
 DEBUG = -g -Wall
 
 CSTD = -std=c99
