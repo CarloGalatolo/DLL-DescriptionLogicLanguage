@@ -295,7 +295,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Quantificatore esistenziale.
+<p>Restrizione esistenziale.
 	<br/> Controlla tutti gli individui del dominio in cerca di quelli che sono soggetti di
 	almeno un ruolo "role" con individui appartenenti al concetto <strong class="paramname">concept</strong>.
 	<br/> Gli individui così trovati vanno a formare un nuovo concetto.</p>
@@ -709,7 +709,8 @@ template&lt;class InputIterator &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Quantificatore universale. Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità di ruoli di cui sono soggetti sono ruoli di tipo "r" e verso individui appartenenti al concetto "c". Gli individui trovati vanno a formare un nuovo concetto.</p>
+<p>Restrizione universale.
+	<br/>Controlla tutti gli indivdui del dominio in cerca di quelli la cui totalità di ruoli di cui sono soggetti sono ruoli di tipo "r" e verso individui appartenenti al concetto "c". Gli individui trovati vanno a formare un nuovo concetto.</p>
 <p>Questa funzione esclude il seguente caso, che nella teoria è corretto ma è scomodo nelle applicazioni pratiche: Se un individuo non è soggetto di nessun ruolo, va considerato in ogni applicazione del quantificatore universale.
 	<br/> Dimostrazione: <br/> ∀r.C &equiv; ¬∃r.¬C <br/> Cioè l'individuo non è soggetto di ruoli verso ¬C, che è vero perché non è soggetto di nessun ruolo.</p>
 
