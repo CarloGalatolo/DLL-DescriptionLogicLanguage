@@ -6,7 +6,7 @@ L'eseguibile viene creato nella directory principale con nome "sdll".
 Va eseguito passando come argomento un file di testo con estensione ".dl".
 
 Esempio:
-./minidl hammers.dl
+./sdll hammers.dl
 
 "hammers.dl" è una knowledgebase di esempio ricavata a partire dall'omonimo file PDF.
 
