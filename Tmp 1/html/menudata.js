@@ -24,6 +24,7 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
+{text:"Logica Descrittiva",url:"description_logic.html"},
 {text:"Caratteristiche del Linguaggio", children:[
 {text:"Decomposizione",  url:"decomposition.html"},
 {text:"Specifiche tecniche dell'interprete", url:"interpreter.html"},
