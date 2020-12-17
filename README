@@ -2,7 +2,7 @@ MiniDL è un linguaggio di modellazione e validazione di knowledgebase della log
 
 Su sistemi Linux può essere compilato per intero usando il comando "make" nella directory principale.
 
-L'eseguibile viene creato nella directory principale con nome "minidl".
+L'eseguibile viene creato nella directory principale con nome "sdll".
 Va eseguito passando come argomento un file di testo con estensione ".dl".
 
 Esempio:
