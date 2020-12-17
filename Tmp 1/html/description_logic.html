@@ -16,9 +16,12 @@
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
  <tbody>
+	 <tr>
+		 <img src="../immagini/logo.png" style="margin-top: 3px; margin-left: 3px;" />
+	 </tr>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">SDLL
+   <div id="projectname">SDLL - Simple Description Logic Language
    </div>
   </td>
  </tr>
@@ -41,29 +44,122 @@ $(function() {
   <div class="headertitle"> <div class="title">Logica descrittiva</div> </div>
 </div><!--header-->
 <div class="contents">
-<h1 style="color: #008d8d;">Cos'è la logica descrittiva?</h1>
- <p>
-    Il progetto si compone di un singolo package, costituita da tutti gli elementi che riguardano la definizione delle regole del linguaggio,
-    la creazione del lexer ed il parser per la realizzazione del compilatore, oltre che contenere le librerie necessarie per interfacciare bison
-    con il linguaggio scelto (nel nostro caso abbiamo utilizzato C++ per implementare le funzionalità). Il diagramma dei package è mostrato in seguito:
- </p>
- <img src="../immagini/decomposition.jpg">
- <h2><pre style="color: rgb(83, 67, 67);">&Tab;Descrizione dei package</pre></h2>
-  <p>
-    SDLL: è il package radice del progetto flex/bison, in cui sono contenuti i file di configurazione dello sviluppo del linguaggio stesso,
-    oltre che l’eseguibile del linguaggio ed i file che descrivono le basi di conoscenze:
-  </p>
-  <ul>
-    <li>
-     build: al suo interno vengono contenuti i file del lexer e del parser, che descrivono nel dettaglio la grammatica del linguaggio; 
-    </li>
-    <li>
-     doc: la documentazione del linguaggio;
-    </li>
-    <li>
-     src: si trovano tutte le librerie, e le loro implementazioni in C++, utilizzate per lo sviluppo.
-    </li>
-  </ul>
+	<h1 style="color: #008d8d;">Cos'è la logica descrittiva?</h1>
+	<p>
+		La <b style="color: #036d6d;">Logica Descrittiva</b> (<i>Description Logic</i>, DL) è una famiglia dei linguaggi di
+		rappresentazione delle conoscenze. La logica descrittiva generale si distingue da quelle spaziale, temporale,
+		spaziotemporale e dalla cosiddetta <i>“fuzzy description logic”</i>. Differisce invece dalla
+		<normal style="color: #036d6d;">Logica del Primo Ordine</normal> (<i>First Order Logic</i>, FOL), in quanto linguaggio
+		meno espressivo ma dalla più alta decidibilità dei problemi principali, e dalla 
+		<normal style="color: #036d6d;">Logica Proposizionale</normal>, in quanto
+		più espressiva.<br/>
+		Una curiosa caratteristica della logica descrittiva è la totale assenza di variabili intese in senso matematico.<br/>
+		La Logica Descrittiva viene usata in intelligenza artificiale per descrivere e ragionare sui concetti di un
+		determinato dominio applicativo e in particolare su una delle sue infinite interpretazioni possibili, intesa
+		come un insieme di entità che ne fanno parte (denominate <i style="color: #036d6d;">individui</i>), categorie che raggruppano queste entità in
+		base a proprietà di facile intuizione che le descrivono (denominati <i style="color: #036d6d;">concetti</i>), e relazioni uno-a-uno tra queste
+		entità che le collegano mettendo in risalto ulteriori caratteristiche (denominate <i style="color: #036d6d;">ruoli</i>).
+	</p>
+	<h2 style="color: #036d6d;">Ingredienti principali delle ontologie formali</h2>
+	<h3 style="color: #534343;">Classi o concetti</h3>
+	<p>
+		Descrivono le entità del dominio di interesse, siano esse concrete o astratte. Queste entità, gli individui, si dicono
+		appartenenti al concetto. Per questo motivo, i concetti presentano una forte somiglianza con gli insiemi della teoria
+		degli insiemi.<br/>
+		<i>Esempio:</i> <normal style="color: #036d6d;">Studente</normal> <i>è il concetto che definisce gli studenti.</i> 
+		<normal style="color: #036d6d;">Impiegato</normal> <i>è il concetto che definisce gli impiegati.</i> 
+		<normal style="color: #036d6d;">EmpStud</normal> <i>è il concetto che definisce gli studenti che sono anche impiegati (come un'intersezione di insiemi).</i>
+	</p>
+	<h3 style="color: #534343;">Relazioni o ruoli</h3>
+	<p>
+		Descrivono relazioni tra i concetti o attributi di un concetto. In particolare, stabiliamo i casi in cui un individuo
+		prende parte a un ruolo nei confronti di un altro individuo.<br/>
+		<i>Esempio:</i> <normal style="color: #6639ce">lavoraPer</normal> <i>è il ruolo che indica che un individuo lavora per
+		un altro individuo.</i>
+	</p>
+	<h3 style="color: #534343">Istanze di classi e relazioni</h3>
+	<p>
+		Gli individui denominano gli oggetti del dominio e denotano le rappresentazioni dei concetti. Un individuo può far parte
+		di un dominio e può prendere parte ai ruoli, come soggetto o come oggetto.
+		<i>Esempio:</i> <normal style="color: #b49e20">John</normal> <i>è uno</i> <normal style="color: #036d6d;">Studente</normal>;
+		<normal style="color: #b49e20">Mary</normal> <normal style="color: #6639ce">lavoraPer</normal> <normal style="color: #b49e20">IBM</normal>.
+	</p>
+	<h2 style="color: #036d6d;">Elementi del linguaggio</h2>
+	<h3 style="color: #534343;">Nomi dei concetti atomici</h3>
+	<p>
+		Le classi di base del dominio di interesse.<br/>
+		<i>Esempio:</i> <normal style="color: #036d6d;">Impiegato</normal>, <normal style="color: #036d6d;">Studente</normal>.<br/>
+		Concetti speciali: <b style="color: red;">&#8868;</b> (Tautologia, insieme universo); 
+		<b style="color: red;">&#8869;</b> (Contraddizione, insieme vuoto).
+	</p>
+	<h3 style="color: #534343;">Nomi dei ruoli atomici</h3>
+	<p>
+		Le relazioni di base tra i concetti.<br/>
+		<i>Esempio:</i> <normal style="color: #6639ce">lavoraPer</normal>, <normal style="color: #6639ce">studia</normal>
+	</p>
+	<h3 style="color: #534343;">Nomi degli individui</h3>
+	<p>
+		I nomi degli oggetti del dominio.<br/>
+		<i>Esempio:</i> <normal style="color: #b49e20">John</normal>, <normal style="color: #b49e20">Mary</normal>, <normal style="color: #b49e20">IBM</normal>.
+	</p>
+	<h3 style="color: #534343;">Costruttori booleani</h3>
+	<ul>
+		<li>
+			Negazione di un concetto (<normal style="color: red;">complemento</normal> di una classe): <strong style="color: red;">¬</strong>
+			<ul>
+				<li>
+					¬<normal style="color: #036d6d;">Studente</normal> è un concetto che
+					comprende tutti gli individui che non appartengono a <normal style="color: #036d6d;">Studente</normal>.
+				</li>
+			</ul>
+		</li>
+		<li>
+			Congiunzione di concetti (<normal style="color: red;">intersezione</normal> di classi): <strong style="color: red;">&#8851;</strong>
+			<ul>
+				<li>
+					<normal style="color: #036d6d;">Studente</normal>&#8851;<normal style="color: #036d6d;">Impiegato</normal>
+					è un concetto che comprende tutti gli individui appartenenti sia a <normal style="color: #036d6d;">Studente</normal>
+					sia ad <normal style="color: #036d6d;">Impiegato</normal>.
+				</li>
+			</ul>
+		</li>
+		<li>
+			Disgiunzione di concetti (<normal style="color: red;">unione</normal> di classi): <strong style="color: red;">&#8852;</strong>
+			<ul>
+				<li>
+					<normal style="color: #036d6d;">Studente</normal>&#8852;<normal style="color: #036d6d;">Impiegato</normal>
+					è un concetto che comprende tutti gli individui appartenenti o a <normal style="color: #036d6d;">Studente</normal>
+					oppure ad <normal style="color: #036d6d;">Impiegato</normal>.
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<h3 style="color: #534343;">Restrizioni dei ruoli</h3>
+	<ul>
+		<li>
+			Restrizione esistenziale (<normal style="color: red;">almeno una</normal> relazione): <strong style="color: red;">&#8707;</strong>
+			<ul>
+				<li>
+					&#8707;<normal style="color: #6639ce">lavoraPer</normal>.<normal style="color: #036d6d;">Compagnia</normal>
+					è un concetto che comprende tutti gli individui del dominio che prendono parte almeno a una relazione di tipo <normal style="color: #6639ce">lavoraPer</normal>
+					con un individuo appartenente al concetto <normal style="color: #036d6d;">Compagnia</normal>.
+				</li>
+			</ul>
+		</li>
+		<li>
+			Restrizione universale (<normal style="color: red;">tutte e sole</normal> le relazioni): <strong style="color: red;">&#8704;</strong>
+			<ul>
+				<li>
+					&#8704;<normal style="color: #6639ce">lavoraPer</normal>.<normal style="color: #036d6d;">Compagnia</normal>
+					è un concetto che comprende tutti gli individui del dominio che prendono parte <b>solo</b> a relazioni di tipo <normal style="color: #6639ce">lavoraPer</normal>
+					con un individuo appartenente al concetto <normal style="color: #036d6d;">Compagnia</normal>.
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<h3 style="color: #534343;">Un esempio di interpretazione</h3>
+	<img src="../immagini/domain1.png" />
+
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
