@@ -67,6 +67,7 @@ $(function() {
 <h1 style="color: #008d8d;">Parser</h1>
  <p>
     Di seguito viene riportata nel dettaglio la scrittura del parser. Il parser è salvato nel file corrispondente alla directory /build/parser.yy.
+    <a href="parser_tree.html">Qui</a> si trova il documento html per la descrizione dell'albero di parsing e <a href="../immagini/parser.png">qui</a> la sua immagine.
  </p>
  <table class="interpreter">
     <tr>
@@ -99,10 +100,271 @@ $(function() {
     #  endif
     # endif
 }
-            </pre>   
+            </pre>
+            <p>
+              %skeleton,%require e %language permette di attivare l’interfaccia con C++, insieme alla versione minima richiesta del parser e il linguaggio scelto.<br \>
+              %defines per scrivere l’header del parser contenente le definizione dei nomi dei tokens. <br \>
+              %error-verbose per stampare in modo esteso possibili errori generati durante il parsing dei token. <br \>
+              %define api.namespace per definire il namespace della classe del parser. <br \>
+              %define parser_class_name {DL_Parser} il nome effettivo della classe del parser. <br \>
+              %code requires dove vincoliamo la creazione del parser. <br \>
+              la parte finale serve a definire il valore di nullpointer, che è presente in C++ ma assente in C. <br \>
+            </p>  
       </td>
     </tr>
   </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+%code {
+    #include &lt;iostream&gt;
+    #include &lt;cstdlib&gt;
+    #include &lt;fstream&gt;
+    #include &lt;cstdio&gt;
+    #include &lt;cstring&gt;
+    #include &lt;string&gt;
+    #include "src/dl_driver.hpp"
+    #include "src/Ontology.hpp"
+
+    #undef yylex
+    #define yylex scanner.yylex
+}
+  
+            </pre>
+        <p>
+          Questo frammento contiene tutte le librerie necessarie per il funzionamento del parser, 
+          compreso della libreria dl_driver per chiamare le funzioni del parser, e Ontology per il funzionamento effettivo del programma.
+          #undef e #define vengono utilizzati per ridefinire il parser generato da C++.
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+%define api.value.type variant    // Ignores union
+%define parse.assert
+
+%token &lt;std::string&gt; NAME
+%token DOT CONCEPT ROLE INDV SUBS COINCIDENCE CONJ DISJ EX ALL SECTION
+%token END 0 "end of file"
+
+%type &lt;std::string&gt; complex_concept indv_assert role_assert
+
+    /* Precedence levels */
+%left CONJ DISJ
+%right '!'
+%nonassoc DOT
+    
+  
+            </pre>
+        <p>
+          %define api.value.type serve per non dovere generare Union, che non sono compatibili con le classi C++.
+          %define parse.assert In C++  serve per controllare le variants, che devono essere generate e distrutte in modo corretto.
+          La definizione dei token è il punto a seguire, l’unico punto particolare è l’utilizzo di &lt;std::string&gt; permesso dalle due define precedenti.
+          Le definizioni di tipo servono successivamente per la ricorsività di regole e produzioni.
+          Il livello di precedenza scelto viene definito subito dopo, dando priorità al punto, alla negazione (‘!’)
+          e alle operazione di congiunzione e disgiunzione, oltre a definire il termine di precedenza per l’associatività.          
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <h1 style="color: #008d8d;">Grammatica</h1>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+program:
+names_decl SECTION abox SECTION tbox {DL::Ontology::getInstance().validate();} END
+;
+            </pre>
+        <p>
+          Qui definiamo la struttura del documento, composto dalle tre parti names_decl, ABox e la TBox separati dai token SECTION (‘%%’).       
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+names_decl:
+/* empty */
+|  names_decl decl ';'
+;
+
+decl:
+    concept_decl
+|   role_decl
+|   indv_decl
+;
+
+concept_decl:
+    CONCEPT NAME            { try {DL::Ontology::getInstance().put_c($2);}
+                              catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
+|   concept_decl ',' NAME   { try {DL::Ontology::getInstance().put_c($3);}
+                              catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
+;
+
+role_decl:
+    ROLE NAME               { try {DL::Ontology::getInstance().put_r($2);}
+                              catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
+|   role_decl ',' NAME      { try {DL::Ontology::getInstance().put_r($3);}
+                              catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
+;
+
+indv_decl:
+    INDV NAME               { try {DL::Ontology::getInstance().put_i($2);}
+                              catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
+|   indv_decl ',' NAME      { try {DL::Ontology::getInstance().put_i($3);}
+                              catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
+;
+            </pre>
+        <p>
+          Questa parte definisce l’analizzatore sintattico creato per la gestione della Names Declaration.       
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+abox:
+  /* empty */    
+| abox a_stmt ';'
+;
+
+a_stmt:
+  indv_assert
+|    role_assert
+;
+
+indv_assert:
+    NAME ':' NAME                            { try {DL::Ontology::getInstance().get_c($3).addIndividual($1);}
+                                               catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
+                                               $$ = $3; }
+|   NAME ',' indv_assert                     { try {DL::Ontology::getInstance().get_c($3).addIndividual($1);}
+                                               catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
+                                               $$ = $3; }
+;
+
+role_assert:
+    '(' NAME ',' NAME ')' ':' NAME           { try {DL::Ontology::getInstance().get_r($7).insert($2, $4);}
+                                               catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
+                                               $$ = $7; }
+|   '(' NAME ',' NAME ')' ',' role_assert    { try {DL::Ontology::getInstance().get_r($7).insert($2, $4);}
+                                               catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
+                                               $$ = $7; }
+            </pre>
+        <p>
+          Questa parte definisce l’analizzatore sintattico creato per la gestione della ABox.       
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+tbox:
+  /* empty */
+| tbox t_stmt ';'
+;
+
+t_stmt:
+    NAME                     SUBS NAME                      { DL::Ontology::getInstance().subsumption($1, $3); }
+|   complex_concept         SUBS NAME                       { DL::Ontology::getInstance().subsumption($1, $3); }
+|   '(' complex_concept ')' SUBS NAME                       { DL::Ontology::getInstance().subsumption($2, $5); }
+|   complex_concept            SUBS complex_concept         { DL::Ontology::getInstance().subsumption($1, $3); }
+|   complex_concept            SUBS '(' complex_concept ')' { DL::Ontology::getInstance().subsumption($1, $4); }
+|   '(' complex_concept ')'    SUBS complex_concept         { DL::Ontology::getInstance().subsumption($2, $5); }
+|   '(' complex_concept ')' SUBS '(' complex_concept ')'    { DL::Ontology::getInstance().subsumption($2, $6); }
+|   NAME                     '=' NAME                       { DL::Ontology::getInstance().alias($1, $3); }
+|   complex_concept         '=' NAME                        { DL::Ontology::getInstance().alias($1, $3); }
+|   '(' complex_concept ')' '=' NAME                        { DL::Ontology::getInstance().alias($2, $5); }
+|   NAME                     COINCIDENCE NAME               { DL::Ontology::getInstance().coincidence($1, $3); }
+|   complex_concept         COINCIDENCE NAME                { DL::Ontology::getInstance().coincidence($1, $3); }
+|   '(' complex_concept ')' COINCIDENCE NAME                { DL::Ontology::getInstance().coincidence($2, $5); }
+|   complex_concept                                         /* for testing purposes */
+;
+
+complex_concept:
+    NAME                     CONJ NAME                      { $$ = DL::Ontology::getInstance().conjunction($1, $3); }
+|    '(' complex_concept ')' CONJ NAME                      { $$ = DL::Ontology::getInstance().conjunction($2, $5); }
+|    '(' complex_concept ')' CONJ '(' complex_concept ')'   { $$ = DL::Ontology::getInstance().conjunction($2, $6); }
+|    NAME                     DISJ NAME                     { $$ = DL::Ontology::getInstance().disjunction($1, $3); }
+|    '(' complex_concept ')' DISJ NAME                      { $$ = DL::Ontology::getInstance().disjunction($2, $5); }
+|    '(' complex_concept ')' DISJ '(' complex_concept ')'   { $$ = DL::Ontology::getInstance().disjunction($2, $6); }
+|    '!' NAME                                               { $$ = DL::Ontology::getInstance().negation($2,false); }
+|    '!' '(' complex_concept ')'                            { $$ = DL::Ontology::getInstance().negation($3,true); }
+|    EX  NAME DOT NAME                                      { $$ = DL::Ontology::getInstance().existential($2, $4); }
+|    EX  NAME DOT '(' complex_concept ')'                   { $$ = DL::Ontology::getInstance().existential($2, $5); }
+|    ALL NAME DOT NAME                                      { $$ = DL::Ontology::getInstance().universal($2, $4); }
+|    ALL NAME DOT '(' complex_concept ')'                   { $$ = DL::Ontology::getInstance().universal($2, $5); }
+;
+            </pre>
+        <p>
+          Questa parte definisce l’analizzatore sintattico creato per la gestione della ABox. Come si nota abbiamo lasciato la produzione complex_concept
+          per effettuare dei test sulla correttezza delle singole caratteristiche del linguaggio, ad esempio EX role_name . concept_name.
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
+  <table class="interpreter">
+    <tr>
+      <th class="th_int">parser.yy</th>
+    </tr>
+    <tr>
+      <td class="td_int">
+   <pre>
+void DL::DL_Parser::error( const location_type &l, const std::string &err_message )
+{
+  /**
+    * Funzione errore del parser. Va chiamata così:
+    *         error(@N, std::string("qualcosa"));
+    * In caso di try/catch:
+    *        error(@N, std::string(e.what()));
+    */
+  std::cerr &lt;&lt; "Error: " &lt;&lt; err_message &lt;&lt; " at " &lt;&lt; l &lt;&lt; std::endl;
+  exit(EXIT_FAILURE);
+}
+    
+            </pre>
+        <p>
+          Funzione generica di errore.       
+        </p>   
+      </td>
+    </tr>
+  </table>
+  <br \><br \><br \>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
