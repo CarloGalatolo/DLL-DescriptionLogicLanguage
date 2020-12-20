@@ -27,11 +27,11 @@
 %option noyywrap
 %option c++
 %option yylineno
+%option case-insensitive
 
 %x COMMENT
 
-/* A line containing only "%%" and white spaces. */
-SECTION ^[ \t]*%%[ \t]*$
+
 
 %%
 
@@ -40,7 +40,11 @@ SECTION ^[ \t]*%%[ \t]*$
 %}
 
 	/* Changing section with "%%" */
-{SECTION} { return token::SECTION; }
+	/* A line containing only "%%" and white spaces. */
+^[ \t]*%%[ \t]*$ 	{ return token::SECTION; }
+^[ \t]*.+[ \t]*%%[ \t]*$			{ fprintf(stderr, "Section line must contain only '%%' and no other chracters, not even comments.\n"); exit(EXIT_FAILURE); }
+^[ \t]*%%[ \t]*.+[ \t]*$			{ fprintf(stderr, "Section line must contain only '%%' and no other chracters, not even comments.\n"); exit(EXIT_FAILURE); }
+^[ \t]*.+[ \t]*%%[ \t]*.+[ \t]*$	{ fprintf(stderr, "Section line must contain only '%%' and no other chracters, not even comments.\n"); exit(EXIT_FAILURE); }
 
  /* Single character literal tokens */
 	/* DL punctuation */

@@ -90,11 +90,11 @@ $(function() {
     #define yyterminate() return( token::END )
     #define YY_NO_UNISTD_H
     #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
-    int oldstate;    // Usato nei commenti.
+	
+    int oldstate;
     int comment_start = 0;
 %}
-
-            </pre>
+</pre>
             <p>
               Ridefinisce funzioni del Lexer per renderle compatibile con C++, inoltre la direttiva using per accorciare l’utilizzo del path dei token.
             </p>  
@@ -109,8 +109,12 @@ $(function() {
     <tr>
       <td class="td_int">
    <pre>
-^[ \t]*%%[ \t]*$ { return token::SECTION; }
-"."        { return token::DOT; }
+^[ \t]*%%[ \t]*$                    { return token::SECTION; }
+^[ \t]*.+[ \t]*%%[ \t]*$            { /* error action */ }
+^[ \t]*%%[ \t]*.+[ \t]*$            { /* error action */ }
+^[ \t]*.+[ \t]*%%[ \t]*.+[ \t]*$    { /* error action */ }
+
+"."     { return token::DOT; }
 ":" |   
 "," | 
 ";" |    
@@ -120,8 +124,7 @@ $(function() {
 ")"     { return yytext[0]; }
 
 "=="    { return token::COINCIDENCE; }
-
-            </pre>
+</pre>
         <p>
           Definisce i caratteri utilizzati per definire le varie operazioni, dalle sezioni del DL alla concatenazione di operazioni e la coincidenza.
         </p>   
@@ -135,19 +138,18 @@ $(function() {
     </tr>
     <tr>
       <td class="td_int">
-   <pre>
-ALL                  { return token::ALL;        }
-CONCEPT              { return token::CONCEPT; }
-CONJ(UNCTION)?          { return token::CONJ;    }
-DISJ(UNCTION)?      { return token::DISJ;    }
-EX(ISTS)?          { return token::EX;      }
+<pre>
+ALL               { return token::ALL;     }
+CONCEPT           { return token::CONCEPT; }
+CONJ(UNCTION)?    { return token::CONJ;    }
+DISJ(UNCTION)?    { return token::DISJ;    }
+EX(ISTS)?         { return token::EX;      }
 (INDIVIDUAL|INDV) { return token::INDV;    }
 ROLE              { return token::ROLE;    }
-SUBS(UMPTION)?      { return token::SUBS;    }
-  
-            </pre>
+SUBS(UMPTION)?    { return token::SUBS;    }
+</pre>
         <p>
-   			Le parole chiave del linguaggio dedicate alle funzioni built-in.       
+   			Le parole chiave del linguaggio dedicate alle funzioni aggregate.       
         </p>   
       </td>
     </tr>
@@ -160,18 +162,16 @@ SUBS(UMPTION)?      { return token::SUBS;    }
     <tr>
       <td class="td_int">
    <pre>
-
 [a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
 
 "/*"             { comment_start = yylineno; oldstate = YY_START; BEGIN COMMENT;  }
-<COMMENT>"*/"     { BEGIN oldstate; }
-<COMMENT>.|\n      ;
-<COMMENT><<EOF>> { fprintf(stderr, "Comment at line %d unclosed before EOF.\n", comment_start); exit(EXIT_FAILURE); }
+&lt;COMMENT&gt;"*/"    { BEGIN oldstate; }
+&lt;COMMENT&gt;.|\n    ;
+&lt;COMMENT&gt;&lt;&lt;EOF&gt;&gt; { /* error action */ }
 
 [ \t\n] |
 "//".*  ;    // C++-style comment.
-
-            </pre>
+</pre>
         <p>
          Questa regola gestisce la lettura dei nomi, utilizzata per la definizione dei concetti all’interno del Bison, oltre che funzionalità aggiuntive simil-C per la scrittura di commenti all’interno del documento.      
         </p>   

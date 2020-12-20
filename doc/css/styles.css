@@ -1,0 +1,55 @@
+h1 {
+	color: #008d8d;
+}
+
+h2 > pre, h3 > pre {
+	color: #534343;
+}
+
+h2, h3 {
+	color: #534343;
+	font-family: monospace;
+	padding-top: 12px;
+}
+
+table.interpreter {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+td.td_int, th.th_int {
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(odd) {
+	background-color: #dddddd;
+}
+
+.classe {
+	font-weight: bold;
+}
+
+.code {
+	font-family: monospace;
+}
+
+.concept {
+	color: #07567a;
+}
+
+.indv {
+	color: #bda51d;
+}
+
+.role {
+	color: #6f41db;
+}
+
+.token {
+	font-family: monospace;
+	color: #008d8d;
+	text-align: center;
+}

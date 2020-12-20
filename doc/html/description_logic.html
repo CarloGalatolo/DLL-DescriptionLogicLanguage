@@ -1,16 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.20"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SDLL: Logica descrittiva</title>
-<link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
+	<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+	<meta name="generator" content="Doxygen 1.8.20"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>SDLL: Logica descrittiva</title>
+	<link href="tabs.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="dynsections.js"></script>
+	<link href="doxygen.css" rel="stylesheet" type="text/css" />
+	<link href="../css/styles.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
@@ -58,58 +61,58 @@ $(function() {
 		determinato dominio applicativo e in particolare su una delle sue infinite interpretazioni possibili, intesa
 		come un insieme di entità che ne fanno parte (denominate <i style="color: #036d6d;">individui</i>), categorie che raggruppano queste entità in
 		base a proprietà di facile intuizione che le descrivono (denominati <i style="color: #036d6d;">concetti</i>), e relazioni uno-a-uno tra queste
-		entità che le collegano mettendo in risalto ulteriori caratteristiche (denominate <i style="color: #036d6d;">ruoli</i>).
+		entità che le collegano mettendo in risalto ulteriori caratteristiche (denominate <i stysle="color: #036d6d;">ruoli</i>).
 	</p>
 	<h2 style="color: #036d6d;">Ingredienti principali delle ontologie formali</h2>
-	<h3 style="color: #534343;">Classi o concetti</h3>
+	<h3>Classi o concetti</h3>
 	<p>
 		Descrivono le entità del dominio di interesse, siano esse concrete o astratte. Queste entità, gli individui, si dicono
 		appartenenti al concetto. Per questo motivo, i concetti presentano una forte somiglianza con gli insiemi della teoria
 		degli insiemi.<br/>
-		<i>Esempio:</i> <normal style="color: #036d6d;">Studente</normal> <i>è il concetto che definisce gli studenti.</i> 
-		<normal style="color: #036d6d;">Impiegato</normal> <i>è il concetto che definisce gli impiegati.</i> 
-		<normal style="color: #036d6d;">EmpStud</normal> <i>è il concetto che definisce gli studenti che sono anche impiegati (come un'intersezione di insiemi).</i>
+		<i>Esempio:</i> <normal class="concept">Studente</normal> <i>è il concetto che definisce gli studenti.</i> 
+		<normal class="concept">Impiegato</normal> <i>è il concetto che definisce gli impiegati.</i> 
+		<normal class="concept">EmpStud</normal> <i>è il concetto che definisce gli studenti che sono anche impiegati (come un'intersezione di insiemi).</i>
 	</p>
 	<h3 style="color: #534343;">Relazioni o ruoli</h3>
 	<p>
 		Descrivono relazioni tra i concetti o attributi di un concetto. In particolare, stabiliamo i casi in cui un individuo
 		prende parte a un ruolo nei confronti di un altro individuo.<br/>
-		<i>Esempio:</i> <normal style="color: #6639ce">lavoraPer</normal> <i>è il ruolo che indica che un individuo lavora per
+		<i>Esempio:</i> <normal class="role">lavoraPer</normal> <i>è il ruolo che indica che un individuo lavora per
 		un altro individuo.</i>
 	</p>
 	<h3 style="color: #534343">Istanze di classi e relazioni</h3>
 	<p>
 		Gli individui denominano gli oggetti del dominio e denotano le rappresentazioni dei concetti. Un individuo può far parte
 		di un dominio e può prendere parte ai ruoli, come soggetto o come oggetto.<br/>
-		<i>Esempio:</i> <normal style="color: #b49e20">John</normal> <i>è uno</i> <normal style="color: #036d6d;">Studente</normal>;
-		<normal style="color: #b49e20">Mary</normal> <normal style="color: #6639ce">lavoraPer</normal> <normal style="color: #b49e20">IBM</normal>.
+		<i>Esempio:</i> <normal class="indv">john</normal> <i>è uno</i> <normal class="concept">Studente</normal>;
+		<normal class="indv">mary</normal> <normal class="role">lavoraPer</normal> <normal class="indv">ibm</normal>.
 	</p>
 	<h2 style="color: #036d6d;">Elementi del linguaggio</h2>
 	<h3 style="color: #534343;">Nomi dei concetti atomici</h3>
 	<p>
 		Le classi di base del dominio di interesse.<br/>
-		<i>Esempio:</i> <normal style="color: #036d6d;">Impiegato</normal>, <normal style="color: #036d6d;">Studente</normal>.<br/>
+		<i>Esempio:</i> <normal class="concept">Impiegato</normal>, <normal class="concept">Studente</normal>.<br/>
 		Concetti speciali: <b style="color: red;">&#8868;</b> (Tautologia, insieme universo); 
 		<b style="color: red;">&#8869;</b> (Contraddizione, insieme vuoto).
 	</p>
-	<h3 style="color: #534343;">Nomi dei ruoli atomici</h3>
+	<h3>Nomi dei ruoli atomici</h3>
 	<p>
 		Le relazioni di base tra i concetti.<br/>
-		<i>Esempio:</i> <normal style="color: #6639ce">lavoraPer</normal>, <normal style="color: #6639ce">studia</normal>
+		<i>Esempio:</i> <normal class="role">lavoraPer</normal>, <normal class="role">studia</normal>.
 	</p>
-	<h3 style="color: #534343;">Nomi degli individui</h3>
+	<h3>Nomi degli individui</h3>
 	<p>
 		I nomi degli oggetti del dominio.<br/>
-		<i>Esempio:</i> <normal style="color: #b49e20">John</normal>, <normal style="color: #b49e20">Mary</normal>, <normal style="color: #b49e20">IBM</normal>.
+		<i>Esempio:</i> <normal class="indv">john</normal>, <normal class="indv">mary</normal>, <normal class="indv">ibm</normal>.
 	</p>
-	<h3 style="color: #534343;">Costruttori booleani</h3>
+	<h3>Costruttori booleani</h3>
 	<ul>
 		<li>
 			Negazione di un concetto (<normal style="color: red;">complemento</normal> di una classe): <strong style="color: red;">¬</strong>
 			<ul>
 				<li>
-					¬<normal style="color: #036d6d;">Studente</normal> è un concetto che
-					comprende tutti gli individui che non appartengono a <normal style="color: #036d6d;">Studente</normal>.
+					¬<normal class="concept">Studente</normal> è un concetto che
+					comprende tutti gli individui che non appartengono a <normal class="concept">Studente</normal>.
 				</li>
 			</ul>
 		</li>
@@ -117,9 +120,9 @@ $(function() {
 			Congiunzione di concetti (<normal style="color: red;">intersezione</normal> di classi): <strong style="color: red;">&#8851;</strong>
 			<ul>
 				<li>
-					<normal style="color: #036d6d;">Studente</normal>&#8851;<normal style="color: #036d6d;">Impiegato</normal>
-					è un concetto che comprende tutti gli individui appartenenti sia a <normal style="color: #036d6d;">Studente</normal>
-					sia ad <normal style="color: #036d6d;">Impiegato</normal>.
+					<normal class="concept">Studente</normal>&#8851;<normal class="concept">Impiegato</normal>
+					è un concetto che comprende tutti gli individui appartenenti sia a <normal class="concept">Studente</normal>
+					sia ad <normal class="concept">Impiegato</normal>.
 				</li>
 			</ul>
 		</li>
@@ -127,22 +130,22 @@ $(function() {
 			Disgiunzione di concetti (<normal style="color: red;">unione</normal> di classi): <strong style="color: red;">&#8852;</strong>
 			<ul>
 				<li>
-					<normal style="color: #036d6d;">Studente</normal>&#8852;<normal style="color: #036d6d;">Impiegato</normal>
-					è un concetto che comprende tutti gli individui appartenenti o a <normal style="color: #036d6d;">Studente</normal>
-					oppure ad <normal style="color: #036d6d;">Impiegato</normal>.
+					<normal class="concept">Studente</normal>&#8852;<normal class="concept">Impiegato</normal>
+					è un concetto che comprende tutti gli individui appartenenti o a <normal class="concept">Studente</normal>
+					oppure ad <normal class="concept">Impiegato</normal>.
 				</li>
 			</ul>
 		</li>
 	</ul>
-	<h3 style="color: #534343;">Restrizioni dei ruoli</h3>
+	<h3>Restrizioni dei ruoli</h3>
 	<ul>
 		<li>
 			Restrizione esistenziale (<normal style="color: red;">almeno una</normal> relazione): <strong style="color: red;">&#8707;</strong>
 			<ul>
 				<li>
-					&#8707;<normal style="color: #6639ce">lavoraPer</normal>.<normal style="color: #036d6d;">Compagnia</normal>
+					&#8707;<normal class="role">lavoraPer</normal>.<normal class="concept">Compagnia</normal>
 					è un concetto che comprende tutti gli individui del dominio che prendono parte almeno a una relazione di tipo <normal style="color: #6639ce">lavoraPer</normal>
-					con un individuo appartenente al concetto <normal style="color: #036d6d;">Compagnia</normal>.
+					con un individuo appartenente al concetto <normal class="concept">Compagnia</normal>.
 				</li>
 			</ul>
 		</li>
@@ -150,14 +153,43 @@ $(function() {
 			Restrizione universale (<normal style="color: red;">tutte e sole</normal> le relazioni): <strong style="color: red;">&#8704;</strong>
 			<ul>
 				<li>
-					&#8704;<normal style="color: #6639ce">lavoraPer</normal>.<normal style="color: #036d6d;">Compagnia</normal>
+					&#8704;<normal class="role">lavoraPer</normal>.<normal class="concept">Compagnia</normal>
 					è un concetto che comprende tutti gli individui del dominio che prendono parte <b>solo</b> a relazioni di tipo <normal style="color: #6639ce">lavoraPer</normal>
 					con un individuo appartenente al concetto <normal style="color: #036d6d;">Compagnia</normal>.
 				</li>
 			</ul>
 		</li>
 	</ul>
-	<h3 style="color: #534343;">Un esempio di interpretazione</h3>
+	<h3>Sussunzione</h3>
+	<ul>
+		<li>
+			Sussunzione tra due concetti (un concetto è <normal style="color: red;">più specifico</normal> di un altro): 
+			<strong style="color: red;">&#8847;</strong>
+			<ul>
+				<li>
+					<normal class="concept">Impiegato</normal>&#8847;<normal class="concept">Lavoratore</normal> indica che il
+					concetto <normal class="concept">Impiegato</normal> è contenuto nel concetto <normal class="concept">Lavoratore</normal>,
+					dunque <normal class="concept">Lavoratore</normal> è un concetto più generale di <normal class="concept">Impiegato</normal>.
+				</li>
+			</ul>
+		</li>
+		<li>
+			Coincidenza di due concetti: <strong style="color: red;">&equiv;</strong>
+			<ul>
+				<li>
+					<normal class="concept">EmpStud</normal>&equiv;<normal class="concept">Studente</normal>&#8851;<normal class="concept">Impiegato</normal> 
+					indica che <normal class="concept">EmpStud</normal> corrisponde esattamente all'intersezione tra <normal class="concept">Studente</normal>
+					e <normal class="concept">Impiegato</normal>.
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<h2 style="color: #036d6d;">Un esempio di interpretazione</h3>
+	<p>
+		Un'intepretazione <i style="font-family: 'Lucida Handwriting', Lucida, cursive;">I</i> della logica descrittiva può essere
+		rappresentata dal seguente schema. È facile individuare i concetti atomici, gli individui e i ruoli che li mettono in
+		relazione, le intersezioni tra i diversi concetti e le sussunzioni tra di essi.
+	</p>
 	<img src="../immagini/domain1.png" />
 
 </div><!-- contents -->

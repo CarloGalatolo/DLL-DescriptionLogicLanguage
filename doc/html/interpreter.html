@@ -10,23 +10,8 @@
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<style>
-    table.interpreter {
-      font-family: arial, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    td.td_int, th.th_int {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
-    
-    tr:nth-child(odd) {
-      background-color: #dddddd;
-    }
-</style>
+<link href="../css/styles.css" rel="stylesheet" type="text/css" />
+
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -70,20 +55,20 @@ $(function() {
     Il file “scanner.hpp” definisce la classe DL_Scanner, che verrà usata dall’analizzatore lessicale,
     mentre i file “driver.hpp” e “driver.cpp” istanziano la classe DL_Driver, contenente le funzioni che facilitano il parsing.    
  </p>
- <h2><pre style="color: rgb(83, 67, 67);">&Tab;Strutture</pre></h2>
+ <h2><pre style="color: rgb(83, 67, 67);">    Strutture</pre></h2>
   <p>
     Le classi di oggetti del linguaggio sono riportate di seguito.
   </p>
   <table class="interpreter">
     <tr>
       <th class="th_int">Classe</th>
-      <th class="th_int">*Campi</th>
+      <th class="th_int">Campi</th>
       <th class="th_int">Token</th>
       <th class="th_int">Funzionalità</th>
     </tr>
     <tr>
-      <td class="td_int">Ontology</td>
-      <td class="td_int">
+      <td class="td_int classe">Ontology</td>
+      <td class="td_int code">
         std::vector&lt;std::string&gt;allNames;<br />
         std::vector&lt;DL::Individual&gt;allIndividuals;<br />
         std::vector&lt;DL::Role&gt;allRoles;<br />
@@ -91,7 +76,7 @@ $(function() {
         std::multimap&lt;std::string, std::string&gt;subsGraph;<br />
         std::map&lt;std::string, std::string&gt;negateMap;<br />
       </td>
-      <td class="td_int">//</td>
+      <td class="td_int token" style="text-align: center;">-</td>
       <td class="td_int">
           Classe singleton che memorizza tutte le strutture istanziate
           dal programma, insieme alla lista dei nomi per un veloce controllo
@@ -101,12 +86,12 @@ $(function() {
       </td>
     </tr>
     <tr>
-      <td class="td_int">Concept</td>
-      <td class="td_int">
+      <td class="td_int classe">Concept</td>
+      <td class="td_int code">
         std::string name;<br />
         std::vector&lt;std::string&gt;individuals;<br />
     </td>
-      <td class="td_int">CONCEPT</td>
+      <td class="td_int token" style="text-align: center;">CONCEPT</td>
       <td class="td_int">
           Modella i singoli concetti come insiemi degli individui che contengono.
           Anche i risultati degli operatori della logica descrittiva creano nuovi oggetti
@@ -115,12 +100,12 @@ $(function() {
       </td>
     </tr>
     <tr>
-        <td class="td_int">Role</td>
-        <td class="td_int">
+        <td class="td_int classe">Role</td>
+        <td class="td_int code">
           std::string name;<br />
           std::multimap&lt;std::string, std::string&gt;pairs;<br />
       </td>
-        <td class="td_int">ROLE</td>
+        <td class="td_int token" style="text-align: center;">ROLE</td>
         <td class="td_int">
             Memorizza i ruoli associando gli individui che ne prendono parte tramite
             una struttura std::multimap. Ogni coppia all’interno di quest’ultima associa
@@ -129,13 +114,13 @@ $(function() {
         </td>
     </tr>
     <tr>
-        <td class="td_int">Individual</td>
-        <td class="td_int">
+        <td class="td_int classe">Individual</td>
+        <td class="td_int code">
           std::string name;<br />
           std::vector&lt;std::string&gt;concepts;<br />
           std::vector&lt;std::string&gt;roles;<br />
       </td>
-        <td class="td_int">INDV</td>
+        <td class="td_int token" style="text-align: center;">INDV</td>
         <td class="td_int">
             Vengono modellati gli individui assegnando ad ognuno di essi:
             il nome, i concetti di appartenenza (come std::vector) ed i
@@ -144,6 +129,67 @@ $(function() {
     </tr>
   </table>
   <img src="../immagini/UML.jpg">
+
+	<h2><pre>    Funzioni aggregate</pre></h2>
+	<table class="interpreter">
+		<tr>
+			<th class="th_int">Operatore</th>
+			<th class="th_int">Token</th>
+			<th class="th_int">Funzionalità</th>
+		</tr>
+		<tr>
+			<td class="td_int classe">Congiunzione</td>
+			<td class="td_int token" style="text-align: center;">CONJ</td>
+			<td class="td_int">
+				Istanzia un nuovo concetto comprendente tutti gli individui che appartengono a ciascuno dei due concetti operandi.
+			</td>
+		</tr>
+		<tr>
+			<td class="td_int classe">Disgiunzione</td>
+			<td class="td_int token" style="text-align: center;">DISJ</td>
+			<td class="td_int">
+				Istanzia un nuovo concetto comprendente tutti gli individui che appartengono almeno a uno qualsiasi dei due concetti operandi.
+			</td>
+		</tr>
+		<tr>
+			<td class="td_int classe">Negazione</td>
+			<td class="td_int token" style="text-align: center;">"!"</td>
+			<td class="td_int">
+				Istanzia un nuovo concetto comprendente tutti gli individui che non appartengono al concetto operando. 
+			</td>
+		</tr>
+		<tr>
+			<td class="td_int classe">Restrizione esistenziale</td>
+			<td class="td_int token" style="text-align: center;">EX</td>
+			<td class="td_int">
+				Istanzia un nuovo concetto comprendente tutti gli individui del dominio che partecipano ad almeno un ruolo del tipo
+				del ruolo operando verso un individuo appartenente al concetto operando.
+			</td>
+		</tr>
+		<tr>
+			<td class="td_int classe">Restrizione universale</td>
+			<td class="td_int token" style="text-align: center;">ALL</td>
+			<td class="td_int">
+				Istanzia un nuovo concetto comprendente solo gli individui del dominio i cui tutti e soli ruoli in cui partecipano 
+				sono del tipo del ruolo operando verso un individuo appartenente al concetto operando.
+			</td>
+		</tr>
+		<tr>
+			<td class="td_int classe">Sussunzione</td>
+			<td class="td_int token" style="text-align: center;">SUBS</td>
+			<td class="td_int">
+				Aggiorna il concetto generale inserendo gli individui del concetto specifico. Inoltre aggiorna il grafo delle sussunzioni.
+			</td>
+		</tr>
+		<tr>
+			<td class="td_int classe">Coincidenza</td>
+			<td class="td_int token" style="text-align: center;">"=="</td>
+			<td class="td_int">
+				Aggiorna entrambi i concetti in modo che contengano gli stessi individui. Inoltre aggiorna il grafo delle sussunzioni.
+			</td>
+		</tr>
+	</table>
+
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

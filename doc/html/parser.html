@@ -1,39 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.20"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SDLL: Parser</title>
-<link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
-<style>
-    table.interpreter {
-      font-family: arial, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    td.td_int, th.th_int {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
 
-    pre{
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
-    
-    tr:nth-child(odd) {
-      background-color: #dddddd;
-    }
-</style>
+<head>
+	<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+	<meta name="generator" content="Doxygen 1.8.20"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>SDLL: Parser</title>
+	<link href="tabs.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="dynsections.js"></script>
+	<link href="doxygen.css" rel="stylesheet" type="text/css" />
+	<link href="../css/styles.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
@@ -103,20 +83,20 @@ $(function() {
     #  endif
     # endif
 }
-            </pre>
-            <p>
-              %skeleton,%require e %language permette di attivare l’interfaccia con C++, insieme alla versione minima richiesta del parser e il linguaggio scelto.<br \>
-              %defines per scrivere l’header del parser contenente le definizione dei nomi dei tokens. <br \>
-              %error-verbose per stampare in modo esteso possibili errori generati durante il parsing dei token. <br \>
-              %define api.namespace per definire il namespace della classe del parser. <br \>
-              %define parser_class_name {DL_Parser} il nome effettivo della classe del parser. <br \>
-              %code requires dove vincoliamo la creazione del parser. <br \>
-              la parte finale serve a definire il valore di nullpointer, che è presente in C++ ma assente in C. <br \>
-            </p>  
-      </td>
+</pre>
+    	</td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		%skeleton,%require e %language permette di attivare l’interfaccia con C++, insieme alla versione minima richiesta del parser e il linguaggio scelto.<br \>
+		%defines per scrivere l’header del parser contenente le definizione dei nomi dei tokens. <br \>
+		%error-verbose per stampare in modo esteso possibili errori generati durante il parsing dei token. <br \>
+		%define api.namespace per definire il namespace della classe del parser. <br \>
+		%define parser_class_name {DL_Parser} il nome effettivo della classe del parser. <br \>
+		%code requires dove vincoliamo la creazione del parser. <br \>
+		la parte finale serve a definire il valore di nullpointer, che è presente in C++ ma assente in C. <br \>
+	</p>
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">parser.yy</th>
@@ -137,17 +117,16 @@ $(function() {
     #undef yylex
     #define yylex scanner.yylex
 }
-  
-            </pre>
-        <p>
-          Questo frammento contiene tutte le librerie necessarie per il funzionamento del parser, 
-          compreso della libreria dl_driver per chiamare le funzioni del parser, e Ontology per il funzionamento effettivo del programma.
-          #undef e #define vengono utilizzati per ridefinire il parser generato da C++.
-        </p>   
+</pre>  
       </td>
     </tr>
-  </table>
-  <br \><br \><br \>
+	</table>
+	<p>
+		Questo frammento contiene tutte le librerie necessarie per il funzionamento del parser, 
+		compreso della libreria dl_driver per chiamare le funzioni del parser, e Ontology per il funzionamento effettivo del programma.
+		#undef e #define vengono utilizzati per ridefinire il parser generato da C++.
+	</p> 
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">parser.yy</th>
@@ -168,21 +147,19 @@ $(function() {
 %left CONJ DISJ
 %right '!'
 %nonassoc DOT
-    
-  
-            </pre>
-        <p>
-          %define api.value.type serve per non dovere generare Union, che non sono compatibili con le classi C++.
-          %define parse.assert In C++  serve per controllare le variants, che devono essere generate e distrutte in modo corretto.
-          La definizione dei token è il punto a seguire, l’unico punto particolare è l’utilizzo di &lt;std::string&gt; permesso dalle due define precedenti.
-          Le definizioni di tipo servono successivamente per la ricorsività di regole e produzioni.
-          Il livello di precedenza scelto viene definito subito dopo, dando priorità al punto, alla negazione (‘!’)
-          e alle operazione di congiunzione e disgiunzione, oltre a definire il termine di precedenza per l’associatività.          
-        </p>   
+</pre>   
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		%define api.value.type serve per non dovere generare Union, che non sono compatibili con le classi C++.
+		%define parse.assert In C++  serve per controllare le variants, che devono essere generate e distrutte in modo corretto.
+		La definizione dei token è il punto a seguire, l’unico punto particolare è l’utilizzo di &lt;std::string&gt; permesso dalle due define precedenti.
+		Le definizioni di tipo servono successivamente per la ricorsività di regole e produzioni.
+		Il livello di precedenza scelto viene definito subito dopo, dando priorità al punto, alla negazione (‘!’)
+		e alle operazione di congiunzione e disgiunzione, oltre a definire il termine di precedenza per l’associatività.          
+	</p>
+  <br /><br />
   <h1 style="color: #008d8d;">Grammatica</h1>
   <table class="interpreter">
     <tr>
@@ -192,16 +169,16 @@ $(function() {
       <td class="td_int">
    <pre>
 program:
-names_decl SECTION abox SECTION tbox {DL::Ontology::getInstance().validate();} END
+    names_decl SECTION abox SECTION tbox {DL::Ontology::getInstance().validate();} END
 ;
-            </pre>
-        <p>
-          Qui definiamo la struttura del documento, composto dalle tre parti names_decl, ABox e la TBox separati dai token SECTION (‘%%’).       
-        </p>   
+</pre>
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Qui definiamo la struttura del documento, composto dalle tre parti names_decl, ABox e la TBox separati dai token SECTION (‘%%’).       
+	</p>
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">parser.yy</th>
@@ -240,14 +217,14 @@ indv_decl:
 |   indv_decl ',' NAME      { try {DL::Ontology::getInstance().put_i($3);}
                               catch (std::logic_error e) {driver.soft_error(std::string(e.what()));} }
 ;
-            </pre>
-        <p>
-          Questa parte definisce l’analizzatore sintattico creato per la gestione della Names Declaration.       
-        </p>   
+</pre>  
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Questa parte definisce l’analizzatore sintattico creato per la gestione della Names Declaration.       
+	</p> 
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">parser.yy</th>
@@ -281,14 +258,14 @@ role_assert:
 |   '(' NAME ',' NAME ')' ',' role_assert    { try {DL::Ontology::getInstance().get_r($7).insert($2, $4);}
                                                catch (std::logic_error e) {driver.soft_error(std::string(e.what()));}
                                                $$ = $7; }
-            </pre>
-        <p>
-          Questa parte definisce l’analizzatore sintattico creato per la gestione della ABox.       
-        </p>   
+</pre>  
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Questa parte definisce l’analizzatore sintattico creato per la gestione della ABox.       
+	</p> 
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">parser.yy</th>
@@ -332,15 +309,15 @@ complex_concept:
 |    ALL NAME DOT NAME                                      { $$ = DL::Ontology::getInstance().universal($2, $4); }
 |    ALL NAME DOT '(' complex_concept ')'                   { $$ = DL::Ontology::getInstance().universal($2, $5); }
 ;
-            </pre>
-        <p>
-          Questa parte definisce l’analizzatore sintattico creato per la gestione della ABox. Come si nota abbiamo lasciato la produzione complex_concept
-          per effettuare dei test sulla correttezza delle singole caratteristiche del linguaggio, ad esempio EX role_name . concept_name.
-        </p>   
+</pre> 
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Questa parte definisce l’analizzatore sintattico creato per la gestione della ABox. Come si nota abbiamo lasciato la produzione complex_concept
+		per effettuare dei test sulla correttezza delle singole caratteristiche del linguaggio, ad esempio EX role_name . concept_name.
+	</p>  
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">parser.yy</th>
@@ -350,24 +327,16 @@ complex_concept:
    <pre>
 void DL::DL_Parser::error( const location_type &l, const std::string &err_message )
 {
-  /**
-    * Funzione errore del parser. Va chiamata così:
-    *         error(@N, std::string("qualcosa"));
-    * In caso di try/catch:
-    *        error(@N, std::string(e.what()));
-    */
   std::cerr &lt;&lt; "Error: " &lt;&lt; err_message &lt;&lt; " at " &lt;&lt; l &lt;&lt; std::endl;
   exit(EXIT_FAILURE);
 }
-    
-            </pre>
-        <p>
-          Funzione generica di errore.       
-        </p>   
+</pre>  
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Funzione generica di errore.       
+	</p> 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

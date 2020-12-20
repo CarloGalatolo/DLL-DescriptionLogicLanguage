@@ -397,6 +397,61 @@ void DL::Ontology::coincidence (string& s1, string& s2)
 
 	ont.subsumption(s1, s2);
 	ont.subsumption(s2, s1);
+
+	// Aggiorno subsGraph in modo che i concetti coincidenti abbiano gli stessi concetti sussunti e sussumenti.
+	std::vector<string> subsumingS1, subsumedByS1, subsumingS2, subsumedByS2;
+	for (auto pair : subsGraph)
+	{
+		if (pair.first == s1 && pair.second != s2)
+		{
+			// s1 è sussunto da un altro concetto => s2 deve essere sussunto da quel concetto.
+			subsumingS1.push_back(pair.second);
+			continue;
+		}
+		
+		if (pair.second == s1 && pair.first != s2)
+		{
+			// s1 sussume un altro concetto => s2 deve sussumere quel concetto.
+			subsumedByS1.push_back(pair.first);
+			continue;
+		}
+
+		if (pair.first == s2 && pair.second != s1)
+		{
+			// s2 è sussunto da un altro concetto => s1 deve essere sussunto da quel concetto.
+			//subsGraph.insert(std::make_pair(s2, pair.second));
+			subsumingS2.push_back(pair.second);
+			continue;
+		}
+
+		if (pair.second == s2 && pair.first != s1)
+		{
+			// s2 sussume un altro concetto => s1 deve sussumere quel concetto.
+			//subsGraph.insert(std::make_pair(pair.first, s1));
+			subsumedByS2.push_back(pair.first);
+			continue;
+		}
+	}
+
+	for (string s : subsumingS1)
+	{
+		subsGraph.insert(std::make_pair(s2, s));
+	}
+
+	for (string s : subsumedByS1)
+	{
+		subsGraph.insert(std::make_pair(s, s2));
+	}
+
+	for (string s : subsumingS2)
+	{
+		subsGraph.insert(std::make_pair(s1, s));
+	}
+
+	for (string s : subsumedByS2)
+	{
+		subsGraph.insert(std::make_pair(s, s1));
+	}
 }
 
 std::string DL::Ontology::conjunction (std::string& s1, std::string& s2) // Intersezione

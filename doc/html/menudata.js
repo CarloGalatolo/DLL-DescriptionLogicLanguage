@@ -23,8 +23,9 @@
  @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var menudata={children:[
-{text:"Pagina Principale",url:"index.html"},
+{text:"Documentazione",url:"index.html"},
 {text:"Logica Descrittiva", url:"description_logic.html"},
+{text:"Tutorial", url:"tutorial.html"},
 {text:"Caratteristiche del Linguaggio", url:"", children:[
 {text:"Decomposizione", url:"decomposition.html"},
 {text:"Specifiche tecniche dell'interprete", url:"interpreter.html"},
