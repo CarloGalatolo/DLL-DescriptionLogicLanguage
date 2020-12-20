@@ -91,7 +91,7 @@ $(function() {
         std::string name;<br />
         std::vector&lt;std::string&gt;individuals;<br />
     </td>
-      <td class="td_int token" style="text-align: center;">CONCEPT</td>
+      <td class="token">CONCEPT</td>
       <td class="td_int">
           Modella i singoli concetti come insiemi degli individui che contengono.
           Anche i risultati degli operatori della logica descrittiva creano nuovi oggetti
@@ -105,7 +105,7 @@ $(function() {
           std::string name;<br />
           std::multimap&lt;std::string, std::string&gt;pairs;<br />
       </td>
-        <td class="td_int token" style="text-align: center;">ROLE</td>
+        <td class="token">ROLE</td>
         <td class="td_int">
             Memorizza i ruoli associando gli individui che ne prendono parte tramite
             una struttura std::multimap. Ogni coppia all’interno di quest’ultima associa
@@ -139,28 +139,28 @@ $(function() {
 		</tr>
 		<tr>
 			<td class="td_int classe">Congiunzione</td>
-			<td class="td_int token" style="text-align: center;">CONJ</td>
+			<td class="token">CONJ</td>
 			<td class="td_int">
 				Istanzia un nuovo concetto comprendente tutti gli individui che appartengono a ciascuno dei due concetti operandi.
 			</td>
 		</tr>
 		<tr>
 			<td class="td_int classe">Disgiunzione</td>
-			<td class="td_int token" style="text-align: center;">DISJ</td>
+			<td class="token">DISJ</td>
 			<td class="td_int">
 				Istanzia un nuovo concetto comprendente tutti gli individui che appartengono almeno a uno qualsiasi dei due concetti operandi.
 			</td>
 		</tr>
 		<tr>
 			<td class="td_int classe">Negazione</td>
-			<td class="td_int token" style="text-align: center;">"!"</td>
+			<td class="token">"!"</td>
 			<td class="td_int">
 				Istanzia un nuovo concetto comprendente tutti gli individui che non appartengono al concetto operando. 
 			</td>
 		</tr>
 		<tr>
 			<td class="td_int classe">Restrizione esistenziale</td>
-			<td class="td_int token" style="text-align: center;">EX</td>
+			<td class="token">EX</td>
 			<td class="td_int">
 				Istanzia un nuovo concetto comprendente tutti gli individui del dominio che partecipano ad almeno un ruolo del tipo
 				del ruolo operando verso un individuo appartenente al concetto operando.
@@ -168,7 +168,7 @@ $(function() {
 		</tr>
 		<tr>
 			<td class="td_int classe">Restrizione universale</td>
-			<td class="td_int token" style="text-align: center;">ALL</td>
+			<td class="token">ALL</td>
 			<td class="td_int">
 				Istanzia un nuovo concetto comprendente solo gli individui del dominio i cui tutti e soli ruoli in cui partecipano 
 				sono del tipo del ruolo operando verso un individuo appartenente al concetto operando.
@@ -176,14 +176,14 @@ $(function() {
 		</tr>
 		<tr>
 			<td class="td_int classe">Sussunzione</td>
-			<td class="td_int token" style="text-align: center;">SUBS</td>
+			<td class="token">SUBS</td>
 			<td class="td_int">
 				Aggiorna il concetto generale inserendo gli individui del concetto specifico. Inoltre aggiorna il grafo delle sussunzioni.
 			</td>
 		</tr>
 		<tr>
 			<td class="td_int classe">Coincidenza</td>
-			<td class="td_int token" style="text-align: center;">"=="</td>
+			<td class="token">"=="</td>
 			<td class="td_int">
 				Aggiorna entrambi i concetti in modo che contengano gli stessi individui. Inoltre aggiorna il grafo delle sussunzioni.
 			</td>

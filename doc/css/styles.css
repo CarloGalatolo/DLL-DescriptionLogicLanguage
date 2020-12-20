@@ -24,8 +24,12 @@ td.td_int, th.th_int {
 	padding: 8px;
 }
 
-tr:nth-child(odd) {
-	background-color: #dddddd;
+.interpreter tr:nth-child(odd) {
+	background-color: #e1f4f7;
+}
+
+.interpreter th {
+	background-color: #cfebf0;
 }
 
 .classe {
@@ -48,8 +52,11 @@ tr:nth-child(odd) {
 	color: #6f41db;
 }
 
-.token {
+td.token {
 	font-family: monospace;
+	font-weight: bold;
 	color: #008d8d;
 	text-align: center;
+	border: 1px solid #dddddd;
+	padding: 8px;
 }
