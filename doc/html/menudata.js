@@ -26,7 +26,7 @@ var menudata={children:[
 {text:"Documentazione",url:"index.html"},
 {text:"Logica Descrittiva", url:"description_logic.html"},
 {text:"Tutorial", url:"tutorial.html"},
-{text:"Caratteristiche del Linguaggio", url:"", children:[
+{text:"Caratteristiche del Linguaggio", url:"decomposition.html", children:[
 {text:"Decomposizione", url:"decomposition.html"},
 {text:"Specifiche tecniche dell'interprete", url:"interpreter.html"},
 {text:"Lexer", url:"lexer.html"},

@@ -1,39 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.20"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SDLL: Lexer</title>
-<link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
-<style>
-    table.interpreter {
-      font-family: arial, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    td.td_int, th.th_int {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
 
-    pre{
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
-    
-    tr:nth-child(odd) {
-      background-color: #dddddd;
-    }
-</style>
+<head>
+	<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+	<meta name="generator" content="Doxygen 1.8.20"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>SDLL: Lexer</title>
+	<link href="tabs.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="dynsections.js"></script>
+	<link href="doxygen.css" rel="stylesheet" type="text/css" />
+	<link href="../css/styles.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
@@ -95,20 +75,20 @@ $(function() {
     int comment_start = 0;
 %}
 </pre>
-            <p>
-              Ridefinisce funzioni del Lexer per renderle compatibile con C++, inoltre la direttiva using per accorciare l’utilizzo del path dei token.
-            </p>  
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Ridefinisce funzioni del Lexer per renderle compatibile con C++, inoltre la direttiva using per accorciare l’utilizzo del path dei token.
+	</p>  
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">lexer.l</th>
     </tr>
     <tr>
       <td class="td_int">
-   <pre>
+<pre>
 ^[ \t]*%%[ \t]*$                    { return token::SECTION; }
 ^[ \t]*.+[ \t]*%%[ \t]*$            { /* error action */ }
 ^[ \t]*%%[ \t]*.+[ \t]*$            { /* error action */ }
@@ -124,14 +104,14 @@ $(function() {
 ")"     { return yytext[0]; }
 
 "=="    { return token::COINCIDENCE; }
-</pre>
-        <p>
-          Definisce i caratteri utilizzati per definire le varie operazioni, dalle sezioni del DL alla concatenazione di operazioni e la coincidenza.
-        </p>   
+</pre> 
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Definisce i caratteri utilizzati per definire le varie operazioni, dalle sezioni del DL alla concatenazione di operazioni e la coincidenza.
+	</p>  
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">lexer.l</th>
@@ -147,21 +127,21 @@ EX(ISTS)?         { return token::EX;      }
 (INDIVIDUAL|INDV) { return token::INDV;    }
 ROLE              { return token::ROLE;    }
 SUBS(UMPTION)?    { return token::SUBS;    }
-</pre>
-        <p>
-   			Le parole chiave del linguaggio dedicate alle funzioni aggregate.       
-        </p>   
+</pre>  
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Le parole chiave del linguaggio dedicate alle funzioni aggregate.       
+	</p> 
+  <br /><br />
   <table class="interpreter">
     <tr>
       <th class="th_int">lexer.l</th>
     </tr>
     <tr>
       <td class="td_int">
-   <pre>
+<pre>
 [a-zA-Z_][a-zA-Z0-9_]* { yylval->build<std::string>(yytext); return token::NAME; }
 
 "/*"             { comment_start = yylineno; oldstate = YY_START; BEGIN COMMENT;  }
@@ -171,18 +151,19 @@ SUBS(UMPTION)?    { return token::SUBS;    }
 
 [ \t\n] |
 "//".*  ;    // C++-style comment.
-</pre>
-        <p>
-         Questa regola gestisce la lettura dei nomi, utilizzata per la definizione dei concetti all’interno del Bison, oltre che funzionalità aggiuntive simil-C per la scrittura di commenti all’interno del documento.      
-        </p>   
+</pre>  
       </td>
     </tr>
   </table>
-  <br \><br \><br \>
+	<p>
+		Questa regola gestisce la lettura dei nomi, utilizzata per la definizione dei concetti all’interno del Bison, oltre che funzionalità aggiuntive simil-C per la scrittura di commenti all’interno del documento.      
+	</p>
+  <br /><br />
 </div>
 <!-- contents -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-</small></address>
+<hr class="footer"/>
+<address class="footer"><small></small></address>
 </body>
+
 </html>
