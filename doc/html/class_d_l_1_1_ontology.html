@@ -203,8 +203,7 @@ Public Attributes</h2></td></tr>
 	<p>Operatore coincidenza di due concetti di nomi <strong class="paramname">s1</strong> e <strong class="paramname">s2</strong>.
 		<br/> Un concetto A coincide con il concetto B se e solo se sia A è sussunto da B
 		sia B è sussunto da A.
-		<br/> La funzione svolge l'operazione di doppia sussunzione, aggiornando tutti gli
-		individui e il grafo delle sussunzioni di conseguenza.</p>
+		<br/> La funzione svolge l'operazione di doppia sussunzione tra i due concetti.</p>
 
 </div>
 </div>
@@ -682,7 +681,9 @@ template&lt;class InputIterator &gt; </div>
 		parte anche del concetto B. Tutti gli oggetti vengono aggiornati di conseguenza,
 		in modo che B abbia informazione sui nuovi individui al suo interno ed essi abbiano
 		l'informazione sul nuovo concetto di cui fanno parte.
-		<br/> Inoltre, viene aggiornato il grafo delle sussunzioni, indicando che A è sussunto da B.</p>
+		<br/> Inoltre, viene aggiornato il grafo delle sussunzioni, indicando che A è sussunto da B,
+		che tutti i concetti sussunti da A sono anche sussunti da B e che tutti i concetti
+		che sussumono B sussumono anche A.</p>
 
 </div>
 </div>

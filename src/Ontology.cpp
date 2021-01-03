@@ -330,7 +330,6 @@ void DL::Ontology::alias (string& before, string& after)
 				}
 			}			
 		}
-
 	}
 	else
 	{
@@ -339,7 +338,7 @@ void DL::Ontology::alias (string& before, string& after)
 	//std::cout << "Ho finito" << std::endl;
 }
 
-void DL::Ontology::subsumption (std::string& s1, std::string& s2) // a subsumed by b
+void DL::Ontology::subsumption (std::string& s1, std::string& s2) // s1 contenuto da s2
 {
 	/**
 	 * Operatore di sussunzione di un concetto @param s1 in un altro concetto @param s2.
@@ -347,7 +346,9 @@ void DL::Ontology::subsumption (std::string& s1, std::string& s2) // a subsumed 
 	 * parte anche del concetto B. Tutti gli oggetti vengono aggiornati di conseguenza,
 	 * in modo che B abbia informazione sui nuovi individui al suo interno ed essi abbiano
 	 * l'informazione sul nuovo concetto di cui fanno parte.
-	 * Inoltre, viene aggiornato il grafo delle sussunzioni, indicando che A è sussunto da B.
+	 * Inoltre, viene aggiornato il grafo delle sussunzioni, indicando che A è sussunto da B,
+	 * che tutti i concetti sussunti da A sono anche sussunti da B e che tutti i concetti
+	 * che sussumono B sussumono anche A.
 	 */
 	
 	Ontology& ont = Ontology::getInstance();
@@ -357,10 +358,52 @@ void DL::Ontology::subsumption (std::string& s1, std::string& s2) // a subsumed 
 
 	std::pair<string, string> pair = std::make_pair(s1, s2);
 
-	if (find_pair(subsGraph, pair) == subsGraph.end()) // Not there.
+	if (find_pair(subsGraph, pair) == subsGraph.end()) // La coppia non è presente nel grafo.
 	{
 		this->subsGraph.insert(pair);
-		// All the individuals of the subsumed concept are put into the subsuming concept as well.
+
+		// Tutti i concetti contenuti da s1 sono anche contenuti da s2.
+		std::vector<string> subsumedByS1, subsumingS2;
+		for (auto pair : subsGraph)
+		{			
+			if (pair.second == s1 && pair.first != s2)
+			{
+				// s1 sussume un altro concetto => s2 deve sussumere quel concetto.
+				subsumedByS1.push_back(pair.first);
+				continue;
+			}
+
+			if (pair.first == s2 && pair.second != s1)
+			{
+				// s2 è sussunto da un altro concetto => s1 deve essere sussunto da quel concetto.
+				subsumingS2.push_back(pair.second);
+				continue;
+			}
+		}
+
+		std::pair<string, string> pair;
+
+		for (string s : subsumedByS1)
+		{
+			pair = std::make_pair(s, s2);
+
+			if (find_pair(subsGraph, pair) == subsGraph.end())
+			{
+				subsGraph.insert(pair);
+			}
+		}
+
+		for (string s : subsumingS2)
+		{
+			pair = std::make_pair(s1, s);
+
+			if (find_pair(subsGraph, pair) == subsGraph.end())
+			{
+				subsGraph.insert(pair);
+			}
+		}
+
+		// Tutti gli individui del concetto sussunto appartengono anche al concetto sussumente.
 		for (string ind : individualsInTheSubsumedConcept)
 		{
 			subsumes.addIndividual(ind);
@@ -378,8 +421,7 @@ void DL::Ontology::coincidence (string& s1, string& s2)
 	 * Operatore coincidenza di due concetti di nomi @param s1 e @param s2.
 	 * Un concetto A coincide con il concetto B se e solo se sia A è sussunto da B
 	 * sia B è sussunto da A.
-	 * La funzione svolge l'operazione di doppia sussunzione, aggiornando tutti gli
-	 * individui e il grafo delle sussunzioni di conseguenza.
+	 * La funzione svolge l'operazione di doppia sussunzione tra i due concetti.
 	 */
 	
 	Ontology& ont = Ontology::getInstance();
@@ -397,61 +439,6 @@ void DL::Ontology::coincidence (string& s1, string& s2)
 
 	ont.subsumption(s1, s2);
 	ont.subsumption(s2, s1);
-
-	// Aggiorno subsGraph in modo che i concetti coincidenti abbiano gli stessi concetti sussunti e sussumenti.
-	std::vector<string> subsumingS1, subsumedByS1, subsumingS2, subsumedByS2;
-	for (auto pair : subsGraph)
-	{
-		if (pair.first == s1 && pair.second != s2)
-		{
-			// s1 è sussunto da un altro concetto => s2 deve essere sussunto da quel concetto.
-			subsumingS1.push_back(pair.second);
-			continue;
-		}
-		
-		if (pair.second == s1 && pair.first != s2)
-		{
-			// s1 sussume un altro concetto => s2 deve sussumere quel concetto.
-			subsumedByS1.push_back(pair.first);
-			continue;
-		}
-
-		if (pair.first == s2 && pair.second != s1)
-		{
-			// s2 è sussunto da un altro concetto => s1 deve essere sussunto da quel concetto.
-			//subsGraph.insert(std::make_pair(s2, pair.second));
-			subsumingS2.push_back(pair.second);
-			continue;
-		}
-
-		if (pair.second == s2 && pair.first != s1)
-		{
-			// s2 sussume un altro concetto => s1 deve sussumere quel concetto.
-			//subsGraph.insert(std::make_pair(pair.first, s1));
-			subsumedByS2.push_back(pair.first);
-			continue;
-		}
-	}
-
-	for (string s : subsumingS1)
-	{
-		subsGraph.insert(std::make_pair(s2, s));
-	}
-
-	for (string s : subsumedByS1)
-	{
-		subsGraph.insert(std::make_pair(s, s2));
-	}
-
-	for (string s : subsumingS2)
-	{
-		subsGraph.insert(std::make_pair(s1, s));
-	}
-
-	for (string s : subsumedByS2)
-	{
-		subsGraph.insert(std::make_pair(s, s1));
-	}
 }
 
 std::string DL::Ontology::conjunction (std::string& s1, std::string& s2) // Intersezione

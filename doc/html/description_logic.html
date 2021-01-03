@@ -157,6 +157,12 @@ $(function() {
 					è un concetto che comprende tutti gli individui del dominio che prendono parte <b>solo</b> a relazioni di tipo <normal style="color: #6639ce">lavoraPer</normal>
 					con un individuo appartenente al concetto <normal style="color: #036d6d;">Compagnia</normal>.
 				</li>
+				<li>
+					<b>Attenzione</b>: se un individuo non è soggetto di nessun ruolo, va considerato in ogni applicazione della restrizione universale.
+					<br />Dimostrazione:
+					<br />∀<normal class="role">r</normal>.<normal class="concept">C</normal> ≡ ¬∃<normal class="role">r</normal>.¬<normal class="concept">C</normal>
+					<br />Cioè l'individuo non è soggetto di ruoli verso ¬<normal class="concept">C</normal>, che è vero perché non è soggetto di nessun ruolo.
+				</li>
 			</ul>
 		</li>
 	</ul>
@@ -191,6 +197,8 @@ $(function() {
 		relazione, le intersezioni tra i diversi concetti e le sussunzioni tra di essi.
 	</p>
 	<img src="../immagini/domain1.png" />
+	<p><i>Fonte: slide del corso </i>ESSLLI 2018<i> del prof. <strong>Ivan Varzinczak</strong> c/o</i> CRIL, Univ. Artois & CNRS
+		Lens, Francia.</p>
 
 </div><!-- contents -->
 <!-- start footer part -->
