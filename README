@@ -1,6 +1,7 @@
-MiniDL è un linguaggio di modellazione e validazione di knowledgebase della logica descrittiva, basato su Flex e Bison in C++.
+[IT]
+SDLL è un linguaggio di modellazione e validazione di basi di conoscenze della logica descrittiva, realizzato con Flex e Bison in C++.
 
-Su sistemi Linux può essere compilato per intero usando il comando "make" nella directory principale.
+Su sistemi Linux, il codice sorgente può essere compilato per intero usando il comando "make" nella directory principale.
 
 L'eseguibile viene creato nella directory principale con nome "sdll".
 Va eseguito passando come argomento un file di testo con estensione ".dl".
@@ -11,3 +12,17 @@ Esempio:
 "hammers.dl" è una knowledgebase di esempio ricavata a partire dall'omonimo file PDF.
 
 La documentazione si trova nella cartella "doc". Per navigarla, aprire con un browser il file "doc/html/index.html".
+
+[EN]
+SDLL is a logic programming language for modelling and validate description logic knowledgebases, made with Flex and Bison in C++.
+
+On Linux systems, the source code can be compiled as a whole using the command "make" in the main directory.
+The executable is created in the main directory with name "sdll", and it requires a text file with extension ".dl" containing the knowledgebase in order to work.
+
+Example:
+./sdll hammers.dl
+
+"hammers.dl" is an example knowledgebase acquired from the homonym PDF file.
+
+The full documentation is found in the "doc" folder. To browse it, the file "doc/html/index.html" must be open in a web browser.
+The documentation is entirely in Italian, except the class and function names. Many of the comments in the source code are in Italian as well.
